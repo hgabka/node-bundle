@@ -16,6 +16,7 @@
     "require": {
         "php" : "~7.0",
         "hgabka/utils-bundle": "^3.0",
+        "hgabka/utils-bundle": "^3.0",
         "symfony/symfony": "~3.2"
     },
     "require-dev": {
