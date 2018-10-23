@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Controller;
+namespace Hgabka\NodeBundle\Controller;
 
 interface SlugActionInterface
 {

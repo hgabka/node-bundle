@@ -1,10 +1,9 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Repository;
+namespace Hgabka\NodeBundle\Repository;
 
-use Kunstmaan\AdminBundle\Entity\BaseUser;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Entity\NodeVersionLock;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\NodeVersionLock;
 
 /**
  * NodeVersionLockRepository.
@@ -20,11 +19,11 @@ class NodeVersionLockRepository extends \Doctrine\ORM\EntityRepository
      * @param NodeTranslation $nodeTranslation
      * @param bool            $isPublicVersion
      * @param int             $threshold
-     * @param BaseUser        $userToExclude
+     * @param object          $userToExclude
      *
      * @return NodeVersionLock[]
      */
-    public function getLocksForNodeTranslation(NodeTranslation $nodeTranslation, $isPublicVersion, $threshold, BaseUser $userToExclude = null)
+    public function getLocksForNodeTranslation(NodeTranslation $nodeTranslation, $isPublicVersion, $threshold, $userToExclude = null)
     {
         $qb = $this->createQueryBuilder('nvl')
             ->select('nvl')
@@ -36,7 +35,7 @@ class NodeVersionLockRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('date', new \DateTime(sprintf('-%s seconds', $threshold)))
         ;
 
-        if (null !== $userToExclude) {
+        if (null !== $userToExclude && method_exists($userToExclude, 'getUsername')) {
             $qb->andWhere('nvl.owner <> :owner')
                 ->setParameter('owner', $userToExclude->getUsername())
             ;

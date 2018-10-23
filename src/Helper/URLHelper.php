@@ -1,10 +1,10 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Helper;
+namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManager;
-use Kunstmaan\AdminBundle\Helper\DomainConfigurationInterface;
-use Kunstmaan\NodeBundle\Validation\URLValidator;
+use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
+use Hgabka\NodeBundle\Validation\URLValidator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;

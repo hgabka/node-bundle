@@ -1,15 +1,14 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Repository;
+namespace Hgabka\NodeBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Kunstmaan\AdminBundle\Entity\BaseUser;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\Node;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Entity\NodeVersion;
-use Kunstmaan\UtilitiesBundle\Helper\ClassLookup;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\UtilsBundle\Helper\ClassLookup;
 
 /**
  * NodeRepository.
@@ -323,7 +322,7 @@ class NodeTranslationRepository extends EntityRepository
      * @param HasNodeInterface $hasNode The hasNode
      * @param string           $lang    The locale
      * @param Node             $node    The node
-     * @param BaseUser         $owner   The user
+     * @param object           $owner   The user
      *
      * @throws \InvalidArgumentException
      *
@@ -333,7 +332,7 @@ class NodeTranslationRepository extends EntityRepository
         HasNodeInterface $hasNode,
         $lang,
         Node $node,
-        BaseUser $owner
+        $owner
     ) {
         $em = $this->getEntityManager();
         $className = ClassLookup::getClass($hasNode);
@@ -354,7 +353,7 @@ class NodeTranslationRepository extends EntityRepository
 
         $em->persist($nodeTranslation);
 
-        $nodeVersion = $em->getRepository('KunstmaanNodeBundle:NodeVersion')
+        $nodeVersion = $em->getRepository(NodeVersion::class)
             ->createNodeVersionFor(
                 $hasNode,
                 $nodeTranslation,
@@ -377,7 +376,7 @@ class NodeTranslationRepository extends EntityRepository
      * @param HasNodeInterface $hasNode The hasNode
      * @param string           $lang    The locale
      * @param Node             $node    The node
-     * @param BaseUser         $owner   The user
+     * @param object           $owner   The user
      *
      * @throws \InvalidArgumentException
      *
@@ -387,7 +386,7 @@ class NodeTranslationRepository extends EntityRepository
         HasNodeInterface $hasNode,
         $lang,
         Node $node,
-        BaseUser $owner
+        $owner
     ) {
         $em = $this->getEntityManager();
         $className = ClassLookup::getClass($hasNode);
@@ -398,9 +397,9 @@ class NodeTranslationRepository extends EntityRepository
             );
         }
 
-        $nodeTranslation = $em->getRepository('KunstmaanNodeBundle:NodeTranslation')->findOneBy(['lang' => $lang, 'node' => $node]);
+        $nodeTranslation = $em->getRepository(NodeTranslation::class)->findOneBy(['lang' => $lang, 'node' => $node]);
 
-        $em->getRepository('KunstmaanNodeBundle:NodeVersion')
+        $em->getRepository(NodeVersion::class)
             ->createNodeVersionFor(
                 $hasNode,
                 $nodeTranslation,

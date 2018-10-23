@@ -6,9 +6,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeRepository;
 use Hgabka\NodeBundle\Helper\HasPagePartsInterface;
-use Kunstmaan\SeoBundle\Repository\SeoRepository;
+use Hgabka\SeoBundle\Entity\Seo;
+use Hgabka\SeoBundle\Repository\SeoRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -59,7 +61,7 @@ class PageCreatorService
     public function setContainer(ContainerInterface $container = null)
     {
         $this->setEntityManager($container->get('doctrine.orm.entity_manager'));
-        $this->setACLPermissionCreatorService($container->get('kunstmaan_node.acl_permission_creator_service'));
+        $this->setACLPermissionCreatorService($container->get('hgabka_node.acl_permission_creator_service'));
         $this->setUserEntityClass($container->getParameter('fos_user.model.user.class'));
     }
 
@@ -105,12 +107,12 @@ class PageCreatorService
         $em = $this->entityManager;
 
         /** @var NodeRepository $nodeRepo */
-        $nodeRepo = $em->getRepository('KunstmaanNodeBundle:Node');
+        $nodeRepo = $em->getRepository(Node::class);
         /** @var $userRepo UserRepository */
         $userRepo = $em->getRepository($this->userEntityClass);
         // @var $seoRepo SeoRepository
         try {
-            $seoRepo = $em->getRepository('KunstmaanSeoBundle:Seo');
+            $seoRepo = $em->getRepository(Seo::class);
         } catch (ORMException $e) {
             $seoRepo = null;
         }
@@ -129,8 +131,8 @@ class PageCreatorService
         $first = true;
         $rootNode = null;
 
-        // @var \Kunstmaan\NodeBundle\Repository\NodeTranslationRepository $nodeTranslationRepo
-        $nodeTranslationRepo = $em->getRepository('KunstmaanNodeBundle:NodeTranslation');
+        /** @var \Hgabka\NodeBundle\Repository\NodeTranslationRepository $nodeTranslationRepo */
+        $nodeTranslationRepo = $em->getRepository(NodeTranslation::class);
 
         foreach ($translations as $translation) {
             $language = $translation['language'];

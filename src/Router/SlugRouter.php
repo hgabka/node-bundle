@@ -1,10 +1,10 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Router;
+namespace Hgabka\NodeBundle\Router;
 
-use Kunstmaan\AdminBundle\Helper\DomainConfigurationInterface;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Repository\NodeTranslationRepository;
+use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -56,8 +56,8 @@ class SlugRouter implements RouterInterface
     {
         $this->container = $container;
         $this->slugPattern = "[a-zA-Z0-9\-_\/]*";
-        $this->domainConfiguration = $container->get('kunstmaan_admin.domain_configuration');
-        $this->adminKey = $container->getParameter('kunstmaan_admin.admin_prefix');
+        $this->domainConfiguration = $container->get('hgabka_utils.domain_configuration');
+        $this->adminKey = $container->getParameter('hgabka_utils.admin_prefix');
     }
 
     /**
@@ -201,7 +201,7 @@ class SlugRouter implements RouterInterface
     {
         $previewPath = sprintf('/%s/preview/{url}', $this->adminKey);
         $previewDefaults = [
-            '_controller' => 'KunstmaanNodeBundle:Slug:slug',
+            '_controller' => 'HgabkaNodeBundle:Slug:slug',
             'preview' => true,
             'url' => '',
             '_locale' => $this->getDefaultLocale(),
@@ -348,7 +348,7 @@ class SlugRouter implements RouterInterface
 
         // @var NodeTranslationRepository $nodeTranslationRepo
         $nodeTranslationRepo = $em->getRepository(
-            'KunstmaanNodeBundle:NodeTranslation'
+            NodeTranslation::class
         );
 
         return $nodeTranslationRepo;

@@ -1,15 +1,15 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Helper;
+namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Kunstmaan\AdminBundle\Helper\DomainConfigurationInterface;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\AclHelper;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\Node;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Repository\NodeRepository;
+use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Repository\NodeRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class NodeMenu
@@ -202,7 +202,7 @@ class NodeMenu
             $this->breadCrumb = [];
 
             // @var NodeRepository $repo
-            $repo = $this->em->getRepository('KunstmaanNodeBundle:Node');
+            $repo = $this->em->getRepository(Node::class);
 
             // Generate breadcrumb MenuItems - fetch *all* languages so you can link translations if needed
             $parentNodes = $repo->getAllParents($this->currentNode);
@@ -305,10 +305,10 @@ class NodeMenu
     }
 
     /**
-     * @param \Kunstmaan\NodeBundle\Entity\Node $node
+     * @param Node $node
      * @param bool                              $includeHiddenFromNav
      *
-     * @return array|\Kunstmaan\NodeBundle\Helper\NodeMenuItem[]
+     * @return array|NodeMenuItem[]
      */
     public function getSiblings(Node $node, $includeHiddenFromNav = true)
     {
@@ -329,10 +329,10 @@ class NodeMenu
     }
 
     /**
-     * @param \Kunstmaan\NodeBundle\Entity\Node $node
+     * @param Node $node
      * @param bool                              $includeHiddenFromNav
      *
-     * @return bool|\Kunstmaan\NodeBundle\Helper\NodeMenuItem
+     * @return NodeMenuItem
      */
     public function getPreviousSibling(Node $node, $includeHiddenFromNav = true)
     {
@@ -352,10 +352,10 @@ class NodeMenu
     }
 
     /**
-     * @param \Kunstmaan\NodeBundle\Entity\Node $node
+     * @param Node $node
      * @param bool                              $includeHiddenFromNav
      *
-     * @return bool|\Kunstmaan\NodeBundle\Helper\NodeMenuItem
+     * @return bool|NodeMenuItem
      */
     public function getNextSibling(Node $node, $includeHiddenFromNav = true)
     {
@@ -404,7 +404,7 @@ class NodeMenu
      */
     public function getNodeBySlug(NodeTranslation $parentNode, $slug)
     {
-        return $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        return $this->em->getRepository(NodeTranslation::class)
             ->getNodeTranslationForSlug($slug, $parentNode);
     }
 
@@ -451,7 +451,7 @@ class NodeMenu
                     $parentNode = $parent->getNode();
                 } elseif ($parent instanceof HasNodeInterface) {
                     $repo = $this->em->getRepository(
-                        'KunstmaanNodeBundle:Node'
+                        Node::class
                     );
                     $parentNode = $repo->getNodeFor($parent);
                 }
@@ -641,7 +641,7 @@ class NodeMenu
         $this->nodesByInternalName = [];
 
         // @var NodeRepository $repo
-        $repo = $this->em->getRepository('KunstmaanNodeBundle:Node');
+        $repo = $this->em->getRepository(Node::class);
 
         // Get all possible menu items in one query (also fetch offline nodes)
         $nodes = $repo->getChildNodes(

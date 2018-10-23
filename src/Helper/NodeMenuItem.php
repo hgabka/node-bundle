@@ -1,11 +1,11 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Helper;
+namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManager;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\Node;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
 
 /**
  * NodeMenuItem.

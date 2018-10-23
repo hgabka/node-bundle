@@ -1,12 +1,12 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Controller;
+namespace Hgabka\NodeBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Kunstmaan\MultiDomainBundle\Helper\DomainConfiguration;
-use Kunstmaan\NodeBundle\Entity\StructureNode;
-use Kunstmaan\NodeBundle\Helper\Menu\SimpleTreeView;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
+use Hgabka\NodeBundle\Entity\StructureNode;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -65,16 +65,15 @@ class WidgetsController extends Controller
     {
         // @var EntityManager $em
         $em = $this->getDoctrine()->getManager();
-        $host = $request->getSession()->get(DomainConfiguration::SWITCH_HOST);
         $locale = $request->getLocale();
 
-        $result = $em->getRepository('KunstmaanNodeBundle:Node')
+        $result = $em->getRepository(Node::class)
             ->getAllMenuNodes(
                 $locale,
                 PermissionMap::PERMISSION_VIEW,
-                $this->get('kunstmaan_admin.acl.native.helper'),
+                $this->get('hgabka_utils.acl.native.helper'),
                 true,
-                $this->get('kunstmaan_admin.domain_configuration')->getRootNode($host)
+                $this->get('hgabka_utils.domain_configuration')->getRootNode()
             );
 
         $simpleTreeView = new SimpleTreeView();
@@ -89,14 +88,14 @@ class WidgetsController extends Controller
         $allBundles = $this->getParameter('kernel.bundles');
         $mediaChooserLink = null;
 
-        if (array_key_exists('KunstmaanMediaBundle', $allBundles)) {
+        if (array_key_exists('HgabkaMediaBundle', $allBundles)) {
             $params = ['linkChooser' => 1];
             $cKEditorFuncNum = $request->get('CKEditorFuncNum');
             if (!empty($cKEditorFuncNum)) {
                 $params['CKEditorFuncNum'] = $cKEditorFuncNum;
             }
             $mediaChooserLink = $this->generateUrl(
-                'KunstmaanMediaBundle_chooser',
+                'HgabkaMediaBundle_chooser',
                 $params
             );
         }

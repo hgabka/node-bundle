@@ -1,14 +1,14 @@
-KunstmaanNodeBundle_widgets:
-    resource: '@KunstmaanNodeBundle/Controller/WidgetsController.php'
+HgabkaNodeBundle_widgets:
+    resource: '@HgabkaNodeBundle/Controller/WidgetsController.php'
     type:     annotation
-    prefix:   /%kunstmaan_admin.admin_prefix%/nodewidgets
+    prefix:   /nodewidgets
 
-KunstmaanNodeBundle_nodes:
-    resource: '@KunstmaanNodeBundle/Controller/NodeAdminController.php'
+HgabkaNodeBundle_nodes:
+    resource: '@HgabkaNodeBundle/Controller/NodeAdminController.php'
     type:     annotation
-    prefix:   /%kunstmaan_admin.admin_prefix%/nodes
+    prefix:   /nodes
 
-kunstmaan_node.url_replace.controller:
-    resource: '@KunstmaanNodeBundle/Controller/UrlReplaceController.php'
+hgabka_node.url_replace.controller:
+    resource: '@HgabkaNodeBundle/Controller/UrlReplaceController.php'
     type:     annotation
-    prefix:   /%kunstmaan_admin.admin_prefix%/url-replace
+    prefix:   /url-replace

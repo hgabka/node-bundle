@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Entity;
+namespace Hgabka\NodeBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\EntityManager;

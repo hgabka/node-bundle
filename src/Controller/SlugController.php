@@ -1,15 +1,16 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Controller;
+namespace Hgabka\NodeBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Event\Events;
-use Kunstmaan\NodeBundle\Event\SlugEvent;
-use Kunstmaan\NodeBundle\Event\SlugSecurityEvent;
-use Kunstmaan\NodeBundle\Helper\RenderContext;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\NodeBundle\Event\Events;
+use Hgabka\NodeBundle\Event\SlugEvent;
+use Hgabka\NodeBundle\Event\SlugSecurityEvent;
+use Hgabka\NodeBundle\Helper\RenderContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,7 +64,7 @@ class SlugController extends Controller
             ->setRequest($request)
             ->setNodeTranslation($nodeTranslation);
 
-        $nodeMenu = $this->container->get('kunstmaan_node.node_menu');
+        $nodeMenu = $this->container->get('hgabka_node.node_menu');
         $nodeMenu->setLocale($locale);
         $nodeMenu->setCurrentNode($node);
         $nodeMenu->setIncludeOffline($preview);
@@ -121,7 +122,7 @@ class SlugController extends Controller
      * @param EntityManagerInterface $em
      * @param NodeTranslation        $nodeTranslation
      *
-     * @return \Kunstmaan\NodeBundle\Entity\HasNodeInterface
+     * @return HasNodeInterface
      */
     private function getPageEntity(Request $request, $preview, EntityManagerInterface $em, NodeTranslation $nodeTranslation)
     {
@@ -130,7 +131,7 @@ class SlugController extends Controller
         if ($preview) {
             $version = $request->get('version');
             if (!empty($version) && is_numeric($version)) {
-                $nodeVersion = $em->getRepository('KunstmaanNodeBundle:NodeVersion')->find($version);
+                $nodeVersion = $em->getRepository(NodeVersion::class)->find($version);
                 if (null !== $nodeVersion) {
                     $entity = $nodeVersion->getRef($em);
                 }

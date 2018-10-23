@@ -1,14 +1,13 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Repository;
+namespace Hgabka\NodeBundle\Repository;
 
 use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Kunstmaan\AdminBundle\Entity\BaseUser;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Entity\NodeVersion;
-use Kunstmaan\UtilitiesBundle\Helper\ClassLookup;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\UtilsBundle\Helper\ClassLookup;
 
 /**
  * NodeRepository.
@@ -43,7 +42,7 @@ class NodeVersionRepository extends EntityRepository
     public function createNodeVersionFor(
         HasNodeInterface $hasNode,
         NodeTranslation $nodeTranslation,
-        BaseUser $owner,
+        $owner,
         NodeVersion $origin = null,
         $type = 'public',
         $created = null
