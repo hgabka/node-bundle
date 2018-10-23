@@ -3,7 +3,7 @@
 namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
@@ -90,26 +90,26 @@ class NodeMenu
     private $rootNodeMenuItem;
 
     /**
-     * @var DomainConfigurationInterface
+     * @var HgabkaUtils
      */
-    private $domainConfiguration;
+    private $hgabkaUtils;
 
     /**
      * @param EntityManagerInterface       $em                  The entity manager
      * @param TokenStorageInterface        $tokenStorage        The security token storage
      * @param AclHelper                    $aclHelper           The ACL helper pages
-     * @param DomainConfigurationInterface $domainConfiguration The current domain configuration
+     * @param HgabkaUtils $hgabkaUtils The current domain configuration
      */
     public function __construct(
         EntityManagerInterface $em,
         TokenStorageInterface $tokenStorage,
         AclHelper $aclHelper,
-        DomainConfigurationInterface $domainConfiguration
+        HgabkaUtils $hgabkaUtils
     ) {
         $this->em = $em;
         $this->tokenStorage = $tokenStorage;
         $this->aclHelper = $aclHelper;
-        $this->domainConfiguration = $domainConfiguration;
+        $this->hgabkaUtils = $hgabkaUtils;
     }
 
     /**
@@ -513,7 +513,7 @@ class NodeMenu
     public function getRootNodeMenuItem()
     {
         if (null === $this->rootNodeMenuItem) {
-            $rootNode = $this->domainConfiguration->getRootNode();
+            $rootNode = null;
             if (null !== $rootNode) {
                 $nodeTranslation = $rootNode->getNodeTranslation(
                     $this->locale,
@@ -651,7 +651,7 @@ class NodeMenu
             $this->aclHelper,
             $this->includeHiddenFromNav,
             true,
-            $this->domainConfiguration->getRootNode()
+            null
         );
         foreach ($nodes as $node) {
             $this->allNodes[$node->getId()] = $node;

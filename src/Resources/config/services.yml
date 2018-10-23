@@ -16,7 +16,7 @@ services:
 
     hgabka_node.nodetranslation.listener:
         class: Hgabka\NodeBundle\EventListener\NodeTranslationListener
-        arguments: ['@session', '@hgabka_utils.logger' , '@hgabka_utils.slugifier', '@hgabka_utils.domain_configuration', '@hgabka_node.pages_configuration']
+        arguments: ['@session', '@hgabka_utils.logger' , '@hgabka_utils.slugifier', '@hgabka_utils.hgabka_utils', '@hgabka_node.pages_configuration']
         calls:
             - [ 'setRequestStack', ['@request_stack'] ]
         tags:
@@ -149,7 +149,7 @@ services:
 
     hgabka_node.node_menu:
         class: Hgabka\NodeBundle\Helper\NodeMenu
-        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage', '@hgabka_utils.acl.helper', '@hgabka_utils.domain_configuration']
+        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage', '@hgabka_utils.acl.helper', '@hgabka_utils.hgabka_utils']
 
     hgabka_node.node.twig.extension:
         class: Hgabka\NodeBundle\Twig\NodeTwigExtension
@@ -164,7 +164,7 @@ services:
             - "@router"
             - "@logger"
             - "@request_stack"
-            - "@hgabka_utils.domain_configuration"
+            - "@hgabka_utils.hgabka_utils"
 
     hgabka_node.url_replace.controller:
         class: "%hgabka_multi_domain.url_replace.controller.class%"

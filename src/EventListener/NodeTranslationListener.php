@@ -6,13 +6,13 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
-use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\SlugifierInterface;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -38,9 +38,9 @@ class NodeTranslationListener
     private $requestStack;
 
     /**
-     * @var DomainConfigurationInterface
+     * @var HgabkaUtils
      */
-    private $domainConfiguration;
+    private $hgabkaUtils;
 
     /**
      * @var PagesConfiguration
@@ -51,21 +51,21 @@ class NodeTranslationListener
      * @param Session                      $session             The session
      * @param Logger                       $logger              The logger
      * @param SlugifierInterface           $slugifier
-     * @param DomainConfigurationInterface $domainConfiguration
+     * @param HgabkaUtils $hgabkaUtils
      * @param PagesConfiguration           $pagesConfiguration
      */
     public function __construct(
         Session $session,
         $logger,
         SlugifierInterface $slugifier,
-        DomainConfigurationInterface $domainConfiguration,
+        HgabkaUtils $hgabkaUtils,
         PagesConfiguration $pagesConfiguration
     ) {
         $this->nodeTranslations = [];
         $this->session = $session;
         $this->logger = $logger;
         $this->slugifier = $slugifier;
-        $this->domainConfiguration = $domainConfiguration;
+        $this->hgabkaUtils = $hgabkaUtils;
         $this->pagesConfiguration = $pagesConfiguration;
     }
 
@@ -318,7 +318,7 @@ class NodeTranslationListener
             $translation->getLang(),
             false,
             $translation,
-            $this->domainConfiguration->getRootNode()
+            null
         );
 
         $this->logger->addDebug(
