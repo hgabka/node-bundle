@@ -1,13 +1,13 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Twig;
+namespace Hgabka\NodeBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Kunstmaan\NodeBundle\Entity\Node;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Entity\PageInterface;
-use Kunstmaan\NodeBundle\Entity\StructureNode;
-use Kunstmaan\NodeBundle\Helper\NodeMenu;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\PageInterface;
+use Hgabka\NodeBundle\Entity\StructureNode;
+use Hgabka\NodeBundle\Helper\NodeMenu;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Extension;
@@ -40,7 +40,7 @@ class NodeTwigExtension extends Twig_Extension
     /**
      * @param \Doctrine\ORM\EntityManagerInterface                       $em
      * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $generator
-     * @param \Kunstmaan\NodeBundle\Helper\NodeMenu                      $nodeMenu
+     * @param \Hgabka\NodeBundle\Helper\NodeMenu                      $nodeMenu
      * @param \Symfony\Component\HttpFoundation\RequestStack             $requestStack
      */
     public function __construct(
@@ -116,7 +116,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeTranslationByNodeId($nodeId, $lang)
     {
-        $repo = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation');
+        $repo = $this->em->getRepository(NodeTranslation::class);
 
         return $repo->getNodeTranslationByNodeIdQueryBuilder($nodeId, $lang);
     }
@@ -138,7 +138,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeFor(PageInterface $page)
     {
-        return $this->em->getRepository('KunstmaanNodeBundle:Node')->getNodeFor($page);
+        return $this->em->getRepository(Node::class)->getNodeFor($page);
     }
 
     /**
@@ -148,7 +148,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeTranslationFor(PageInterface $page)
     {
-        return $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')->getNodeTranslationFor($page);
+        return $this->em->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
     }
 
     /**
@@ -159,7 +159,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeByInternalName($internalName, $locale)
     {
-        $nodes = $this->em->getRepository('KunstmaanNodeBundle:Node')
+        $nodes = $this->em->getRepository(Node::class)
             ->getNodesByInternalName($internalName, $locale);
         if (!empty($nodes)) {
             return $nodes[0];
@@ -245,7 +245,7 @@ class NodeTwigExtension extends Twig_Extension
     private function getRouteParametersByInternalName($internalName, $locale, $parameters = [])
     {
         $url = '';
-        $translation = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $translation = $this->em->getRepository(NodeTranslation::class)
             ->getNodeTranslationByLanguageAndInternalName($locale, $internalName);
 
         if (null !== $translation) {

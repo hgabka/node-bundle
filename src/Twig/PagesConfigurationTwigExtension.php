@@ -1,9 +1,9 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Twig;
+namespace Hgabka\NodeBundle\Twig;
 
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Helper\PagesConfiguration;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Helper\PagesConfiguration;
 
 class PagesConfigurationTwigExtension extends \Twig_Extension
 {

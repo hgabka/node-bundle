@@ -1,8 +1,8 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Twig;
+namespace Hgabka\NodeBundle\Twig;
 
-use Kunstmaan\NodeBundle\Helper\URLHelper;
+use Hgabka\NodeBundle\Helper\URLHelper;
 
 class UrlReplaceTwigExtension extends \Twig_Extension
 {

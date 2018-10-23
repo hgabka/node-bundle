@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Validation;
+namespace Hgabka\NodeBundle\Validation;
 
 trait URLValidator
 {

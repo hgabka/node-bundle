@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Helper;
+namespace Hgabka\NodeBundle\Helper;
 
 /**
  * Implement this interface to give you control over the navigation behavior of this page.

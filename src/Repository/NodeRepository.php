@@ -1,18 +1,17 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Repository;
+namespace Hgabka\NodeBundle\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Kunstmaan\AdminBundle\Entity\BaseUser;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\AclHelper;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\AclNativeHelper;
-use Kunstmaan\AdminBundle\Helper\Security\Acl\Permission\PermissionDefinition;
-use Kunstmaan\NodeBundle\Entity\HasNodeInterface;
-use Kunstmaan\NodeBundle\Entity\Node;
-use Kunstmaan\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Entity\NodeVersion;
-use Kunstmaan\NodeBundle\Helper\HiddenFromNavInterface;
-use Kunstmaan\UtilitiesBundle\Helper\ClassLookup;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\NodeBundle\Helper\HiddenFromNavInterface;
+use Hgabka\UtilsBundle\Helper\ClassLookup;
 
 /**
  * NodeRepository.
@@ -120,7 +119,7 @@ class NodeRepository extends NestedTreeRepository
     {
         // @var NodeVersion $nodeVersion
         $nodeVersion = $this->getEntityManager()->getRepository(
-            'KunstmaanNodeBundle:NodeVersion'
+            NodeVersion::class
         )->getNodeVersionFor(
             $hasNode
         );
@@ -145,7 +144,7 @@ class NodeRepository extends NestedTreeRepository
     {
         // @var NodeVersion $nodeVersion
         $nodeVersion = $this->getEntityManager()->getRepository(
-            'KunstmaanNodeBundle:NodeVersion'
+            NodeVersion::class
         )->findOneBy(
             ['refId' => $id, 'refEntityName' => $entityName]
         );
@@ -190,7 +189,7 @@ class NodeRepository extends NestedTreeRepository
     /**
      * @param HasNodeInterface $hasNode      The object to link to
      * @param string           $lang         The locale
-     * @param BaseUser         $owner        The user
+     * @param object           $owner        The user
      * @param string           $internalName The internal name (may be null)
      *
      * @throws \InvalidArgumentException
@@ -200,7 +199,7 @@ class NodeRepository extends NestedTreeRepository
     public function createNodeFor(
         HasNodeInterface $hasNode,
         $lang,
-        BaseUser $owner,
+        $owner,
         $internalName = null
     ) {
         $em = $this->getEntityManager();
@@ -219,7 +218,7 @@ class NodeRepository extends NestedTreeRepository
         if ($parent) {
             // @var NodeVersion $parentNodeVersion
             $parentNodeVersion = $em->getRepository(
-                'KunstmaanNodeBundle:NodeVersion'
+                NodeVersion::class
             )->findOneBy(
                 [
                     'refId' => $parent->getId(),
@@ -238,7 +237,7 @@ class NodeRepository extends NestedTreeRepository
         $em->persist($node);
         $em->flush();
         $em->refresh($node);
-        $em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $em->getRepository(NodeTranslation::class)
             ->createNodeTranslationFor(
                 $hasNode,
                 $lang,
@@ -330,7 +329,7 @@ SQL;
         }
 
         $permissionDef = new PermissionDefinition([$permission]);
-        $permissionDef->setEntity('Kunstmaan\NodeBundle\Entity\Node');
+        $permissionDef->setEntity(Node::class);
         $permissionDef->setAlias('n');
         $qb = $aclNativeHelper->apply($qb, $permissionDef);
 
