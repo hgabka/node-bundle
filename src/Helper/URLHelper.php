@@ -3,8 +3,8 @@
 namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManager;
-use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Hgabka\NodeBundle\Validation\URLValidator;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -47,24 +47,24 @@ class URLHelper
     private $requestStack;
 
     /**
-     * @var DomainConfigurationInterface
+     * @var HgabkaUtils
      */
-    private $domainConfiguration;
+    private $hgabkaUtils;
 
     /**
      * @param EntityManager                $em
      * @param RouterInterface              $router
      * @param LoggerInterface              $logger
-     * @param DomainConfigurationInterface $domainConfiguration
+     * @param HgabkaUtils                  $hgabkaUtils
      * @param RequestStack                 $requestStack
      */
-    public function __construct(EntityManager $em, RouterInterface $router, LoggerInterface $logger, RequestStack $requestStack, DomainConfigurationInterface $domainConfiguration)
+    public function __construct(EntityManager $em, RouterInterface $router, LoggerInterface $logger, RequestStack $requestStack, HgabkaUtils $hgabkaUtils)
     {
         $this->em = $em;
         $this->router = $router;
         $this->logger = $logger;
         $this->requestStack = $requestStack;
-        $this->domainConfiguration = $domainConfiguration;
+        $this->hgabkaUtils = $hgabkaUtils;
     }
 
     /**
@@ -89,8 +89,8 @@ class URLHelper
                     $nodeTranslationFound = false;
                     $fullTag = $match[0];
                     $hostId = $match[2];
-                    $hostConfig = $this->domainConfiguration->getFullHostById($hostId);
-                    $hostBaseUrl = $this->domainConfiguration->getHostBaseUrl($hostConfig['host']);
+                    $hostConfig = null;
+                    $hostBaseUrl = null;
 
                     $nodeTranslationId = $match[3];
 
@@ -99,18 +99,10 @@ class URLHelper
                             $urlParams = ['url' => $nodeTranslation['url']];
                             $nodeTranslationFound = true;
                             // Only add locale if multilingual site
-                            if ($this->domainConfiguration->isMultiLanguage($hostConfig['host'])) {
-                                $urlParams['_locale'] = $nodeTranslation['lang'];
-                            }
-
-                            // Only add other site, when having this.
-                            if ($hostId) {
-                                $urlParams['otherSite'] = $hostId;
-                            }
 
                             $url = $this->router->generate('_slug', $urlParams);
 
-                            $text = str_replace($fullTag, $hostId ? $hostBaseUrl.$url : $url, $text);
+                            $text = str_replace($fullTag, $url, $text);
                         }
                     }
 
