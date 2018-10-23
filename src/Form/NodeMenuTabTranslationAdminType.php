@@ -3,7 +3,7 @@
 namespace Hgabka\NodeBundle\Form;
 
 use Hgabka\NodeBundle\Entity\NodeTranslation;
-use Kunstmaan\NodeBundle\Form\Type\SlugType;
+use Hgabka\NodeBundle\Form\Type\SlugType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;

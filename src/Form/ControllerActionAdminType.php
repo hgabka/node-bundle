@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Form;
+namespace Hgabka\NodeBundle\Form;
 
 use Hgabka\NodeBundle\Entity\AbstractControllerAction;
 use Symfony\Component\Form\AbstractType;
