@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\Helper\Routing;
+namespace Hgabka\NodeBundle\Helper\Routing;
 
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
