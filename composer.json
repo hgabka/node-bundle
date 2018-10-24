@@ -17,6 +17,7 @@
         "php" : "~7.0",
         "hgabka/utils-bundle": "^3.0",
         "hgabka/seo-bundle": "^3.0",
+        "hgabka/pagepart-bundle": "^3.0",
         "symfony/symfony": "~3.2"
     },
     "require-dev": {
