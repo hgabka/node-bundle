@@ -32,7 +32,7 @@ class NodeVersionLock
     /**
      * @var NodeTranslation
      *
-     * @ORM\ManyToOne(targetEntity="Kunstmaan\NodeBundle\Entity\NodeTranslation")
+     * @ORM\ManyToOne(targetEntity="Hgabka\NodeBundle\Entity\NodeTranslation")
      * @ORM\JoinColumn(name="node_translation_id", referencedColumnName="id")
      */
     private $nodeTranslation;
@@ -136,11 +136,11 @@ class NodeVersionLock
     /**
      * Set nodeTranslation.
      *
-     * @param \Kunstmaan\NodeBundle\Entity\NodeTranslation $nodeTranslation
+     * @param \Hgabka\NodeBundle\Entity\NodeTranslation $nodeTranslation
      *
      * @return NodeVersionLock
      */
-    public function setNodeTranslation(\Kunstmaan\NodeBundle\Entity\NodeTranslation $nodeTranslation = null)
+    public function setNodeTranslation(\Hgabka\NodeBundle\Entity\NodeTranslation $nodeTranslation = null)
     {
         $this->nodeTranslation = $nodeTranslation;
 
@@ -150,7 +150,7 @@ class NodeVersionLock
     /**
      * Get nodeTranslation.
      *
-     * @return \Kunstmaan\NodeBundle\Entity\NodeTranslation
+     * @return \Hgabka\NodeBundle\Entity\NodeTranslation
      */
     public function getNodeTranslation()
     {

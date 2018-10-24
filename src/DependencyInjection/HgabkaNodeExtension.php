@@ -1,6 +1,6 @@
 <?php
 
-namespace Kunstmaan\NodeBundle\DependencyInjection;
+namespace Hgabka\NodeBundle\DependencyInjection;
 
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Symfony\Component\Config\FileLocator;
@@ -32,16 +32,16 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
             ['HgabkaNodeBundle:Form:formWidgets.html.twig']
         ));
 
-        $container->setDefinition('hg_node.pages_configuration', new Definition(
+        $container->setDefinition('hgabka_node.pages_configuration', new Definition(
             PagesConfiguration::class,
             [$config['pages']]
         ));
 
-        $container->setParameter('hg_node.show_add_homepage', $config['show_add_homepage']);
-        $container->setParameter('hg_node.lock_check_interval', $config['lock']['check_interval']);
-        $container->setParameter('hg_node.lock_threshold', $config['lock']['threshold']);
-        $container->setParameter('hg_node.lock_enabled', $config['lock']['enabled']);
-        $container->setParameter('hg_node.user_entity_class', $config['user_entity_class']);
+        $container->setParameter('hgabka_node.show_add_homepage', $config['show_add_homepage']);
+        $container->setParameter('hgabka_node.lock_check_interval', $config['lock']['check_interval']);
+        $container->setParameter('hgabka_node.lock_threshold', $config['lock']['threshold']);
+        $container->setParameter('hgabka_node.lock_enabled', $config['lock']['enabled']);
+        $container->setParameter('hgabka_node.user_entity_class', $config['user_entity_class']);
 
         $loader->load('services.yml');
     }
