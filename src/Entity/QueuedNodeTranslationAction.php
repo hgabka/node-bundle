@@ -62,6 +62,7 @@ class QueuedNodeTranslationAction
 
     /**
      * @param mixed $id
+     *
      * @return QueuedNodeTranslationAction
      */
     public function setId($id)

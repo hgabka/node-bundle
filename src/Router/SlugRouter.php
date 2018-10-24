@@ -2,9 +2,9 @@
 
 namespace Hgabka\NodeBundle\Router;
 
-use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
+use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,7 +44,6 @@ class SlugRouter implements RouterInterface
     /** @var DomainConfigurationInterface */
     protected $domainConfiguration;
 
-
     /**
      * The constructor for this service.
      *
@@ -55,7 +54,7 @@ class SlugRouter implements RouterInterface
         $this->container = $container;
         $this->slugPattern = "[a-zA-Z0-9\-_\/]*";
         $this->domainConfiguration = $container->get('hgabka_utils.domain_configuration');
-   }
+    }
 
     /**
      * Match given urls via the context to the routes we defined.

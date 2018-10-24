@@ -3,8 +3,6 @@
 namespace Hgabka\NodeBundle\Helper\NodeAdmin;
 
 use Doctrine\ORM\EntityManager;
-use Hgabka\UtilsBundle\Helper\CloneHelper;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
@@ -12,6 +10,8 @@ use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Event\NodeEvent;
+use Hgabka\UtilsBundle\Helper\CloneHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;

@@ -2,12 +2,12 @@
 
 namespace Hgabka\NodeBundle\EventListener;
 
-use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionAdmin;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMapInterface;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Event\AdaptFormEvent;
 use Hgabka\NodeBundle\Helper\FormWidgets\PermissionsFormWidget;
+use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionAdmin;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMapInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NodeListener

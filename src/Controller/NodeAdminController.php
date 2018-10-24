@@ -5,13 +5,6 @@ namespace Hgabka\NodeBundle\Controller;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use InvalidArgumentException;
-use Hgabka\UtilsBundle\Entity\EntityInterface;
-use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
-use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
-use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
@@ -26,12 +19,18 @@ use Hgabka\NodeBundle\Form\NodeMenuTabAdminType;
 use Hgabka\NodeBundle\Form\NodeMenuTabTranslationAdminType;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper;
 use Hgabka\NodeBundle\Repository\NodeVersionRepository;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
+use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
+use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
+use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
+use InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,7 +94,7 @@ class NodeAdminController extends CRUDController
         $acl = $this->authorizationChecker;
         $itemRoute = function (EntityInterface $item) use ($locale, $acl) {
             if ($acl->isGranted(PermissionMap::PERMISSION_VIEW, $item->getNode())) {
-                return $this->render('HgabkaNodeBundle:Admin:list.html.twig',[
+                return $this->render('HgabkaNodeBundle:Admin:list.html.twig', [
                     'path' => '_slug_preview',
                     'params' => ['_locale' => $locale, 'url' => $item->getUrl()],
                 ]);
@@ -487,7 +486,7 @@ class NodeAdminController extends CRUDController
 
         //set the title
         $title = $request->get('title');
-        if (is_string($title) && !empty($title)) {
+        if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
             $newPage->setTitle('New page');
@@ -1258,7 +1257,7 @@ class NodeAdminController extends CRUDController
         $newPage = new $type();
 
         $title = $request->get('title');
-        if (is_string($title) && !empty($title)) {
+        if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
             $newPage->setTitle($this->get('translator')->trans('kuma_node.admin.new_page.title.default'));

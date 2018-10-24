@@ -14,7 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NodeVersionLock
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer", name="id")
@@ -59,6 +58,7 @@ class NodeVersionLock
 
     /**
      * @param mixed $id
+     *
      * @return NodeVersionLock
      */
     public function setId($id)

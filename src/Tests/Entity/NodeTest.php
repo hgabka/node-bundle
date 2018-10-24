@@ -165,7 +165,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $this->object->addNode($child);
         $parents = $grandChild->getParents();
 
-        $this->assertSame(2, count($parents));
+        $this->assertSame(2, \count($parents));
         $this->assertSame($child, $parents[1]);
         $this->assertSame($this->object, $parents[0]);
     }

@@ -3,9 +3,9 @@
 namespace Hgabka\NodeBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Event\SlugSecurityEvent;
 use Hgabka\NodeBundle\Helper\NodeMenu;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

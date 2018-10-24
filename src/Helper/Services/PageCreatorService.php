@@ -7,8 +7,8 @@ use Doctrine\ORM\ORMException;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
-use Hgabka\NodeBundle\Repository\NodeRepository;
 use Hgabka\NodeBundle\Helper\HasPagePartsInterface;
+use Hgabka\NodeBundle\Repository\NodeRepository;
 use Hgabka\SeoBundle\Entity\Seo;
 use Hgabka\SeoBundle\Repository\SeoRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -100,7 +100,7 @@ class PageCreatorService
             $options = [];
         }
 
-        if (null === $translations || (0 === count($translations))) {
+        if (null === $translations || (0 === \count($translations))) {
             throw new \InvalidArgumentException('There has to be at least 1 translation in the translations array');
         }
 

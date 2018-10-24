@@ -106,6 +106,7 @@ class NodeVersion
 
     /**
      * @param mixed $id
+     *
      * @return NodeVersion
      */
     public function setId($id)

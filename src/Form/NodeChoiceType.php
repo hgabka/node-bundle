@@ -39,8 +39,8 @@ class NodeChoiceType extends AbstractType
         );
 
         $queryBuilderNormalizer = function (Options $options, $queryBuilder) {
-            if (is_callable($queryBuilder)) {
-                $queryBuilder = call_user_func($queryBuilder, $options['em']->getRepository($options['class']));
+            if (\is_callable($queryBuilder)) {
+                $queryBuilder = \call_user_func($queryBuilder, $options['em']->getRepository($options['class']));
             }
 
             if (!empty($options['page_class'])) {

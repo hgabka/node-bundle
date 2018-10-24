@@ -3,9 +3,8 @@
 namespace Hgabka\NodeBundle\Helper;
 
 use // @noinspection PhpDeprecationInspection
-    Hgabka\NodeBundle\Entity\HideFromNodeTreeInterface;
-use // @noinspection PhpDeprecationInspection
-    Hgabka\NodeBundle\Helper\SearchTypeInterface;
+    Hgabka\NodeBundle\Entity\HideFromNodeTreeInterface;// @noinspection PhpDeprecationInspection
+    
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\HomePageInterface;
 use Hgabka\SearchBundle\Helper\IndexableInterface;
@@ -104,17 +103,17 @@ class PagesConfiguration
      */
     private function getValue($ref, $name, $default = null)
     {
-        $refName = is_object($ref) ? ClassLookup::getClass($ref) : $ref;
+        $refName = \is_object($ref) ? ClassLookup::getClass($ref) : $ref;
 
         if (isset($this->configuration[$refName][$name])) {
             return $this->configuration[$refName][$name];
         }
 
-        if (false === is_callable($default)) {
+        if (false === \is_callable($default)) {
             return $default;
         }
 
-        $page = is_string($ref) ? new $refName() : $ref;
+        $page = \is_string($ref) ? new $refName() : $ref;
         $result = $default($page);
         unset($page);
 

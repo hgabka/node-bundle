@@ -43,6 +43,14 @@ abstract class AbstractPage implements PageInterface
     protected $parent;
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -52,6 +60,7 @@ abstract class AbstractPage implements PageInterface
 
     /**
      * @param mixed $id
+     *
      * @return AbstractPage
      */
     public function setId($id)
@@ -59,14 +68,6 @@ abstract class AbstractPage implements PageInterface
         $this->id = $id;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getTitle();
     }
 
     /**

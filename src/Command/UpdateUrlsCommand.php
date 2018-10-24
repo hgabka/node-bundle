@@ -32,7 +32,7 @@ class UpdateUrlsCommand extends ContainerAwareCommand
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $mainNodes = $em->getRepository(NodeTranslation::class)->getTopNodeTranslations();
-        if (count($mainNodes)) {
+        if (\count($mainNodes)) {
             // @var NodeTranslation $mainNode
             foreach ($mainNodes as $mainNode) {
                 $mainNode->setUrl('');

@@ -23,7 +23,7 @@ trait URLValidator
     {
         preg_match_all("/\[(([a-z_A-Z]+):)?NT([0-9]+)\]/", $link, $matches, PREG_SET_ORDER);
 
-        return count($matches) > 0;
+        return \count($matches) > 0;
     }
 
     /**
@@ -35,6 +35,6 @@ trait URLValidator
     {
         preg_match_all("/\[(([a-z_A-Z]+):)?M([0-9]+)\]/", $link, $matches, PREG_SET_ORDER);
 
-        return count($matches) > 0;
+        return \count($matches) > 0;
     }
 }

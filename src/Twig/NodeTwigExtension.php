@@ -40,7 +40,7 @@ class NodeTwigExtension extends Twig_Extension
     /**
      * @param \Doctrine\ORM\EntityManagerInterface                       $em
      * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $generator
-     * @param \Hgabka\NodeBundle\Helper\NodeMenu                      $nodeMenu
+     * @param \Hgabka\NodeBundle\Helper\NodeMenu                         $nodeMenu
      * @param \Symfony\Component\HttpFoundation\RequestStack             $requestStack
      */
     public function __construct(

@@ -3,13 +3,13 @@
 namespace Hgabka\NodeBundle\Helper\Menu;
 
 use Doctrine\ORM\EntityManager;
-use Knp\Menu\FactoryInterface;
-use Knp\Menu\ItemInterface;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Event\ConfigureActionMenuEvent;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
+use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
