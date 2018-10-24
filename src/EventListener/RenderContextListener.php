@@ -71,13 +71,13 @@ class RenderContextListener
                 'nodemenu' => $nodeMenu,
             ];
 
-            if (is_array($parameters) || $parameters instanceof \ArrayObject) {
+            if (\is_array($parameters) || $parameters instanceof \ArrayObject) {
                 $parameters = array_merge($renderContext, (array) $parameters);
             } else {
                 $parameters = $renderContext;
             }
 
-            if (is_array($response)) {
+            if (\is_array($response)) {
                 // If the response is an array, merge with rendercontext
                 $parameters = array_merge($parameters, $response);
             }

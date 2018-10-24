@@ -48,6 +48,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
 
     /**
      * @param mixed $id
+     *
      * @return AbstractControllerAction
      */
     public function setId($id)

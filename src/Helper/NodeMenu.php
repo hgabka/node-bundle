@@ -3,13 +3,13 @@
 namespace Hgabka\NodeBundle\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Hgabka\UtilsBundle\Helper\HgabkaUtils;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeRepository;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class NodeMenu
@@ -95,10 +95,10 @@ class NodeMenu
     private $hgabkaUtils;
 
     /**
-     * @param EntityManagerInterface       $em                  The entity manager
-     * @param TokenStorageInterface        $tokenStorage        The security token storage
-     * @param AclHelper                    $aclHelper           The ACL helper pages
-     * @param HgabkaUtils $hgabkaUtils The current domain configuration
+     * @param EntityManagerInterface $em           The entity manager
+     * @param TokenStorageInterface  $tokenStorage The security token storage
+     * @param AclHelper              $aclHelper    The ACL helper pages
+     * @param HgabkaUtils            $hgabkaUtils  The current domain configuration
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -166,7 +166,7 @@ class NodeMenu
     public function getTopNodes()
     {
         $this->init();
-        if (!is_array($this->topNodeMenuItems)) {
+        if (!\is_array($this->topNodeMenuItems)) {
             $this->topNodeMenuItems = [];
 
             // To be backwards compatible we need to create the top node MenuItems
@@ -198,7 +198,7 @@ class NodeMenu
     public function getBreadCrumb()
     {
         $this->init();
-        if (!is_array($this->breadCrumb)) {
+        if (!\is_array($this->breadCrumb)) {
             $this->breadCrumb = [];
 
             // @var NodeRepository $repo
@@ -236,8 +236,8 @@ class NodeMenu
     {
         $this->init();
         $breadCrumb = $this->getBreadCrumb();
-        if (count($breadCrumb) > 0) {
-            return $breadCrumb[count($breadCrumb) - 1];
+        if (\count($breadCrumb) > 0) {
+            return $breadCrumb[\count($breadCrumb) - 1];
         }
 
         return null;
@@ -251,7 +251,7 @@ class NodeMenu
     public function getActiveForDepth($depth)
     {
         $breadCrumb = $this->getBreadCrumb();
-        if (count($breadCrumb) >= $depth) {
+        if (\count($breadCrumb) >= $depth) {
             return $breadCrumb[$depth - 1];
         }
 
@@ -306,7 +306,7 @@ class NodeMenu
 
     /**
      * @param Node $node
-     * @param bool                              $includeHiddenFromNav
+     * @param bool $includeHiddenFromNav
      *
      * @return array|NodeMenuItem[]
      */
@@ -330,7 +330,7 @@ class NodeMenu
 
     /**
      * @param Node $node
-     * @param bool                              $includeHiddenFromNav
+     * @param bool $includeHiddenFromNav
      *
      * @return NodeMenuItem
      */
@@ -353,7 +353,7 @@ class NodeMenu
 
     /**
      * @param Node $node
-     * @param bool                              $includeHiddenFromNav
+     * @param bool $includeHiddenFromNav
      *
      * @return bool|NodeMenuItem
      */
@@ -365,7 +365,7 @@ class NodeMenu
             $siblings = $this->getChildren($parent, $includeHiddenFromNav);
 
             foreach ($siblings as $index => $child) {
-                if ($child->getNode() === $node && (($index + 1) < count(
+                if ($child->getNode() === $node && (($index + 1) < \count(
                             $siblings
                         ))
                 ) {
@@ -483,7 +483,7 @@ class NodeMenu
                     }
                 }
             } else {
-                if (count($nodes) > 0) {
+                if (\count($nodes) > 0) {
                     $resultNode = $nodes[0];
                 }
             }

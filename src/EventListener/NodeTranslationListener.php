@@ -48,11 +48,11 @@ class NodeTranslationListener
     private $pagesConfiguration;
 
     /**
-     * @param Session                      $session             The session
-     * @param Logger                       $logger              The logger
-     * @param SlugifierInterface           $slugifier
-     * @param HgabkaUtils $hgabkaUtils
-     * @param PagesConfiguration           $pagesConfiguration
+     * @param Session            $session            The session
+     * @param Logger             $logger             The logger
+     * @param SlugifierInterface $slugifier
+     * @param HgabkaUtils        $hgabkaUtils
+     * @param PagesConfiguration $pagesConfiguration
      */
     public function __construct(
         Session $session,
@@ -198,7 +198,7 @@ class NodeTranslationListener
         EntityManager $em
     ) {
         $children = $node->getNode()->getChildren();
-        if (count($children) > 0) {
+        if (\count($children) > 0) {
             // @var Node $child
             foreach ($children as $child) {
                 $translation = $child->getNodeTranslation(
@@ -322,7 +322,7 @@ class NodeTranslationListener
         );
 
         $this->logger->addDebug(
-            'Found '.count(
+            'Found '.\count(
                 $translations
             ).' node(s) that match url \''.$translation->getUrl().'\''
         );
@@ -336,7 +336,7 @@ class NodeTranslationListener
             }
         }
 
-        if (count($translations) > 0) {
+        if (\count($translations) > 0) {
             $oldUrl = $translation->getFullSlug();
             $translation->setSlug(
                 $this->slugifier->slugify(
@@ -350,9 +350,9 @@ class NodeTranslationListener
             $flashes[] = $message;
 
             $this->ensureUniqueUrl($translation, $em, $flashes);
-        } elseif (count($flashes) > 0 && $this->isInRequestScope()) {
+        } elseif (\count($flashes) > 0 && $this->isInRequestScope()) {
             // No translations found so we're certain we can show this message.
-            $flash = current(array_slice($flashes, -1));
+            $flash = current(\array_slice($flashes, -1));
             $this->session->getFlashBag()->add(FlashTypes::WARNING, $flash);
         }
 
@@ -377,7 +377,7 @@ class NodeTranslationListener
 
         preg_match($finalDigitGrabberRegex, $string, $matches);
 
-        if (count($matches) > 0) {
+        if (\count($matches) > 0) {
             $digit = (int) $matches[0];
             ++$digit;
 

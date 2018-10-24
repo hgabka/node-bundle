@@ -31,7 +31,7 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
 
         $queuedNodeTranslationActions = $em->getRepository(QueuedNodeTranslationAction::class)->findAll();
 
-        if (count($queuedNodeTranslationActions)) {
+        if (\count($queuedNodeTranslationActions)) {
             foreach ($queuedNodeTranslationActions as $queuedNodeTranslationAction) {
                 $now = new \DateTime();
                 if ($queuedNodeTranslationAction->getDate()->getTimestamp() < $now->getTimestamp()) {

@@ -3,11 +3,11 @@
 namespace Hgabka\NodeBundle\Helper\FormWidgets;
 
 use Doctrine\ORM\EntityManager;
+use Hgabka\NodeBundle\Entity\HasNodeInterface;
+use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionAdmin;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMapInterface;
-use Hgabka\NodeBundle\Entity\HasNodeInterface;
-use Hgabka\NodeBundle\Entity\Node;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;

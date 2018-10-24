@@ -110,6 +110,16 @@ class NodeTranslation
     protected $updated;
 
     /**
+     * contructor.
+     */
+    public function __construct()
+    {
+        $this->nodeVersions = new ArrayCollection();
+        $this->setCreated(new \DateTime());
+        $this->setUpdated(new \DateTime());
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -119,6 +129,7 @@ class NodeTranslation
 
     /**
      * @param mixed $id
+     *
      * @return NodeTranslation
      */
     public function setId($id)
@@ -126,16 +137,6 @@ class NodeTranslation
         $this->id = $id;
 
         return $this;
-    }
-
-    /**
-     * contructor.
-     */
-    public function __construct()
-    {
-        $this->nodeVersions = new ArrayCollection();
-        $this->setCreated(new \DateTime());
-        $this->setUpdated(new \DateTime());
     }
 
     /**
@@ -357,7 +358,7 @@ class NodeTranslation
 
         $nodeVersions = $this->getNodeVersions();
 
-        $max = count($nodeVersions);
+        $max = \count($nodeVersions);
         for ($i = $max - 1; $i >= 0; --$i) {
             // @var NodeVersion $nodeVersion
             $nodeVersion = $nodeVersions[$i];

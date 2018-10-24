@@ -122,6 +122,14 @@ class Node implements GedmoNode
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'node '.$this->getId().', refEntityName: '.$this->getRefEntityName();
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -131,6 +139,7 @@ class Node implements GedmoNode
 
     /**
      * @param mixed $id
+     *
      * @return Node
      */
     public function setId($id)
@@ -138,14 +147,6 @@ class Node implements GedmoNode
         $this->id = $id;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'node '.$this->getId().', refEntityName: '.$this->getRefEntityName();
     }
 
     /**
@@ -182,7 +183,7 @@ class Node implements GedmoNode
     public function getChildren()
     {
         return $this->children->filter(
-            function (Node $entry) {
+            function (self $entry) {
                 if ($entry->isDeleted()) {
                     return false;
                 }
@@ -211,7 +212,7 @@ class Node implements GedmoNode
      *
      * @return Node
      */
-    public function addNode(Node $child)
+    public function addNode(self $child)
     {
         $this->children[] = $child;
         $child->setParent($this);

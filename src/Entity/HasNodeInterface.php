@@ -31,7 +31,7 @@ interface HasNodeInterface extends EntityInterface
     /**
      * @param HasNodeInterface $hasNode
      */
-    public function setParent(HasNodeInterface $hasNode);
+    public function setParent(self $hasNode);
 
     /**
      * @return string

@@ -40,7 +40,7 @@ class URLChooserType extends AbstractType
 
         if ($types = $options['link_types']) {
             foreach ($choices as $key => $choice) {
-                if (!in_array($choice, $types, true)) {
+                if (!\in_array($choice, $types, true)) {
                     unset($choices[$key]);
                 }
             }

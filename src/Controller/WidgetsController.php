@@ -3,10 +3,10 @@
 namespace Hgabka\NodeBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Hgabka\NodeBundle\Entity\StructureNode;
 use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\StructureNode;
 use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

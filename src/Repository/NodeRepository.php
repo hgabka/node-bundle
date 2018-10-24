@@ -3,15 +3,15 @@
 namespace Hgabka\NodeBundle\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
-use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Helper\HiddenFromNavInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 
 /**
  * NodeRepository.

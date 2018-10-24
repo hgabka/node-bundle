@@ -52,11 +52,11 @@ class URLHelper
     private $hgabkaUtils;
 
     /**
-     * @param EntityManager                $em
-     * @param RouterInterface              $router
-     * @param LoggerInterface              $logger
-     * @param HgabkaUtils                  $hgabkaUtils
-     * @param RequestStack                 $requestStack
+     * @param EntityManager   $em
+     * @param RouterInterface $router
+     * @param LoggerInterface $logger
+     * @param HgabkaUtils     $hgabkaUtils
+     * @param RequestStack    $requestStack
      */
     public function __construct(EntityManager $em, RouterInterface $router, LoggerInterface $logger, RequestStack $requestStack, HgabkaUtils $hgabkaUtils)
     {
@@ -83,7 +83,7 @@ class URLHelper
         if ($this->isInternalLink($text)) {
             preg_match_all("/\[(([a-z_A-Z]+):)?NT([0-9]+)\]/", $text, $matches, PREG_SET_ORDER);
 
-            if (count($matches) > 0) {
+            if (\count($matches) > 0) {
                 $map = $this->getNodeTranslationMap();
                 foreach ($matches as $match) {
                     $nodeTranslationFound = false;
@@ -116,7 +116,7 @@ class URLHelper
         if ($this->isInternalMediaLink($text)) {
             preg_match_all("/\[(([a-z_A-Z]+):)?M([0-9]+)\]/", $text, $matches, PREG_SET_ORDER);
 
-            if (count($matches) > 0) {
+            if (\count($matches) > 0) {
                 $map = $this->getMediaMap();
                 foreach ($matches as $match) {
                     $mediaFound = false;
