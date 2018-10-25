@@ -72,14 +72,19 @@ class NodeAdminController extends CRUDController
     protected $aclHelper;
 
     /**
-     * @Route("/", name="KunstmaanNodeBundle_nodes")
-     *
      * @param Request $request
      *
      * @return array
      */
-    public function indexAction(Request $request)
+    public function listAction()
     {
+        $request = $this->getRequest();
+        $this->admin->checkAccess('list');
+        $preResponse = $this->preList($request);
+        if (null !== $preResponse) {
+            return $preResponse;
+        }
+
         $this->init($request);
 
         $nodeAdminListConfigurator = new NodeAdminListConfigurator(
@@ -134,7 +139,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -401,8 +406,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction($id)
     {
+        $request = $this->getRequest();
         $this->init($request);
         // @var Node $node
         $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
@@ -825,7 +831,7 @@ class NodeAdminController extends CRUDController
      *
      * @return array|RedirectResponse
      */
-    public function editAction(Request $request, $id, $subaction)
+    public function editAction($id = null)
     {
         $this->init($request);
         // @var Node $node
