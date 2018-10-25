@@ -10,18 +10,18 @@
         <div class="alert alert-warning">
             <strong>{{ "Warning" | trans }}: </strong>
             {% if queuedNodeTranslationAction.action == 'publish' %}
-                {{ 'hg_node.status.will_be_publish_at.%date%.raw'
+                {{ 'kuma_node.status.will_be_publish_at.%date%.raw'
                     |trans({'%date%': queuedNodeTranslationAction.date|date('Y-m-d H:i:s')})
                     |raw
                 }}
             {% else %}
-                {{ 'hg_node.status.will_be_unpublish_at.%date%.raw'
+                {{ 'kuma_node.status.will_be_unpublish_at.%date%.raw'
                     |trans({'%date%':queuedNodeTranslationAction.date|date('Y-m-d H:i:s')})
                     |raw
                 }}
             {% endif %}
             <a href="{{ path('KunstmaanNodeBundle_nodes_unschedule_publish', { 'id': node.id}) }}" class="btn btn-warning btn--raise-on-hover alert__action">
-                {{ 'hg_node.status.button.schedulle_cancel'|trans() }}
+                {{ 'kuma_node.status.button.schedulle_cancel'|trans() }}
             </a>
         </div>
     {% endif %}
@@ -48,7 +48,7 @@
 
         {% if draft %}
             <small class="app__content__header__title__small app__content__header__title__small--offline">
-                {{ 'hg_node.status.offline_draft.%public_url%.raw'
+                {{ 'kuma_node.status.offline_draft.%public_url%.raw'
                     |trans({'%public_url%': path('KunstmaanNodeBundle_nodes_edit', { 'id': node.id})})
                     |raw
                 }}
@@ -56,18 +56,18 @@
         {% elseif not is_structure_node(page) %}
             <small class="app__content__header__title__small {% if nodeTranslation.online %}app__content__header__title__small--online{% else %}app__content__header__title__small--offline{% endif %}">
                 {% if nodeTranslation.online %}
-                    {{ 'hg_node.status.online_public.raw'
+                    {{ 'kuma_node.status.online_public.raw'
                         |trans()
                         |raw
                     }}
                 {% else %}
-                    {{ 'hg_node.status.offline.raw'
+                    {{ 'kuma_node.status.offline.raw'
                         |trans()
                         |raw
                     }}
                 {% endif %}
                 {% if draftNodeVersion is not null %}
-                    {{ 'hg_node.status.go_to_draft_version.%url%.raw'
+                    {{ 'kuma_node.status.go_to_draft_version.%url%.raw'
                         |trans({'%url%': path('KunstmaanNodeBundle_nodes_edit', { 'id': node.id, 'subaction': 'draft'}) })
                         |raw
                     }}

@@ -8,7 +8,7 @@
     <div class="col-sm-6 col-md-8">
         <h1 class="app__content__header__title">
 
-                {{ 'hg_node.title' | trans }} <small class="app__content__header__title__small">
+            {{ 'hg_node.title' | trans }} <small class="app__content__header__title__small">
                 {{ "This list contains all the pages, chronologically ordered by updated date." | trans }}
             </small>
         </h1>
@@ -24,12 +24,12 @@
             <li>
                 <a href="{{ path('sonata_admin_dashboard') }}">{{ 'link_breadcrumb_dashboard' | trans({}, 'SonataAdminBundle') | raw }}</a>
             </li>
-                {% if block('breadcrumb_between') is defined %}
-                    {{ block('breadcrumb_between') }}
-                {% endif %}
-                <li>
-                        <span>{{ 'hg_node.title'|trans }}</span>
-                </li>
+            {% if block('breadcrumb_between') is defined %}
+                {{ block('breadcrumb_between') }}
+            {% endif %}
+            <li>
+                <span>{{ 'hg_node.title'|trans }}</span>
+            </li>
         </ol>
     </div>
 {% endblock %}
@@ -144,5 +144,5 @@
         {{ adminlist_widget(adminlist, adminlist.getIndexUrl()["path"], adminlist.getIndexUrl()) }}
     {% endif %}
 
-{#{% include '@HgabkaNode/Admin/_add_homepage_modal.html.twig' %}#}
+    {% include '@HgabkaNode/Admin/_add_homepage_modal.html.twig' %}
 {% endblock %}
