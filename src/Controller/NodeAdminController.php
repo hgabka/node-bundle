@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Controller;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Hgabka\NodeBundle\AdminList\NodeAdminListConfigurator;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
@@ -19,6 +20,7 @@ use Hgabka\NodeBundle\Form\NodeMenuTabAdminType;
 use Hgabka\NodeBundle\Form\NodeMenuTabTranslationAdminType;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper;
 use Hgabka\NodeBundle\Repository\NodeVersionRepository;
+use Hgabka\UtilsBundle\AdminList\AdminListFactory;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
@@ -92,27 +94,28 @@ class NodeAdminController extends CRUDController
             $this->aclHelper,
             $this->locale,
             PermissionMap::PERMISSION_VIEW,
-            $this->authorizationChecker
+            $this->authorizationChecker,
+            $this->admin
         );
 
         $locale = $this->locale;
         $acl = $this->authorizationChecker;
         $itemRoute = function (EntityInterface $item) use ($locale, $acl) {
             if ($acl->isGranted(PermissionMap::PERMISSION_VIEW, $item->getNode())) {
-                return $this->render('HgabkaNodeBundle:Admin:list.html.twig', [
+                return [
                     'path' => '_slug_preview',
                     'params' => ['_locale' => $locale, 'url' => $item->getUrl()],
-                ]);
+                ];
             }
         };
         $nodeAdminListConfigurator->addSimpleItemAction('Preview', $itemRoute, 'eye');
 
-        $nodeAdminListConfigurator->setDomainConfiguration($this->get('kunstmaan_admin.domain_configuration'));
-        $nodeAdminListConfigurator->setShowAddHomepage($this->getParameter('kunstmaan_node.show_add_homepage') && $this->isGranted('ROLE_SUPER_ADMIN'));
+        $nodeAdminListConfigurator->setShowAddHomepage($this->getParameter('hgabka_node.show_add_homepage') && $this->isGranted('ROLE_SUPER_ADMIN'));
 
         /** @var AdminList $adminlist */
-        $adminlist = $this->get('kunstmaan_adminlist.factory')->createList($nodeAdminListConfigurator);
+        $adminlist = $this->get(AdminListFactory::class)->createList($nodeAdminListConfigurator);
         $adminlist->bindRequest($request);
+        $this->admin->setAdminList($adminlist);
 
         return $this->render('HgabkaNodeBundle:Admin:list.html.twig', [
             'adminlist' => $adminlist,
@@ -123,7 +126,7 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/copyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_copyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage"
      * )
      * @Method("GET")
      * @Template()
@@ -151,7 +154,7 @@ class NodeAdminController extends CRUDController
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -169,14 +172,14 @@ class NodeAdminController extends CRUDController
             )
         );
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $id]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
     /**
      * @Route(
      *      "/{id}/recopyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_recopyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage"
      * )
      * @Method("POST")
      * @Template()
@@ -192,18 +195,18 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
-        $otherLanguageNodeTranslation = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')->find($request->get('source'));
+        $otherLanguageNodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')->find($request->get('source'));
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
         $myLanguagePage = $this->get('kunstmaan_admin.clone.helper')
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
             ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -221,14 +224,14 @@ class NodeAdminController extends CRUDController
             )
         );
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $id, 'subaction' => NodeVersion::DRAFT_VERSION]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id, 'subaction' => NodeVersion::DRAFT_VERSION]));
     }
 
     /**
      * @Route(
      *      "/{id}/createemptypage",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_createemptypage"
+     *      name="HgabkaNodeBundle_nodes_createemptypage"
      * )
      * @Method("GET")
      * @Template()
@@ -244,7 +247,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -256,7 +259,7 @@ class NodeAdminController extends CRUDController
         $this->em->persist($myLanguagePage);
         $this->em->flush();
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -265,13 +268,13 @@ class NodeAdminController extends CRUDController
             new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage)
         );
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $id]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
     /**
      * @Route("/{id}/publish", requirements={"id" =
      *                         "\d+"},
-     *                         name="KunstmaanNodeBundle_nodes_publish")
+     *                         name="HgabkaNodeBundle_nodes_publish")
      * @Method({"GET", "POST"})
      *
      * @param Request $request
@@ -285,7 +288,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->get('request_stack')->getCurrentRequest();
@@ -312,14 +315,14 @@ class NodeAdminController extends CRUDController
             );
         }
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $node->getId()]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]));
     }
 
     /**
      * @Route(
      *      "/{id}/unpublish",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_unpublish"
+     *      name="HgabkaNodeBundle_nodes_unpublish"
      * )
      * @Method({"GET", "POST"})
      *
@@ -334,7 +337,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->get('request_stack')->getCurrentRequest();
@@ -354,14 +357,14 @@ class NodeAdminController extends CRUDController
             );
         }
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $node->getId()]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]));
     }
 
     /**
      * @Route(
      *      "/{id}/unschedulepublish",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_unschedule_publish"
+     *      name="HgabkaNodeBundle_nodes_unschedule_publish"
      * )
      * @Method({"GET", "POST"})
      *
@@ -377,7 +380,7 @@ class NodeAdminController extends CRUDController
         $this->init($request);
 
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $this->get('kunstmaan_node.admin_node.publisher')->unSchedulePublish($nodeTranslation);
@@ -387,14 +390,14 @@ class NodeAdminController extends CRUDController
             $this->get('translator')->trans('kuma_node.admin.unschedule.flash.success')
         );
 
-        return $this->redirect($this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $id]));
+        return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
     /**
      * @Route(
      *      "/{id}/delete",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_delete"
+     *      name="HgabkaNodeBundle_nodes_delete"
      * )
      * @Template()
      * @Method("POST")
@@ -411,7 +414,7 @@ class NodeAdminController extends CRUDController
         $request = $this->getRequest();
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_DELETE, $node);
 
@@ -438,12 +441,12 @@ class NodeAdminController extends CRUDController
             // Check if we have a parent. Otherwise redirect to pages overview.
             if ($nodeParent) {
                 $url = $this->get('router')->generate(
-                    'KunstmaanNodeBundle_nodes_edit',
+                    'HgabkaNodeBundle_nodes_edit',
                     ['id' => $nodeParent->getId()]
                 );
             } else {
                 $url = $this->get('router')->generate(
-                    'KunstmaanNodeBundle_nodes'
+                    'HgabkaNodeBundle_nodes'
                 );
             }
             $response = new RedirectResponse($url);
@@ -461,7 +464,7 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/duplicate",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_duplicate"
+     *      name="HgabkaNodeBundle_nodes_duplicate"
      * )
      * @Template()
      * @Method("POST")
@@ -477,7 +480,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $parentNode
-        $originalNode = $this->em->getRepository('KunstmaanNodeBundle:Node')
+        $originalNode = $this->em->getRepository('HgabkaNodeBundle:Node')
             ->find($id);
 
         // Check with Acl
@@ -506,7 +509,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('KunstmaanNodeBundle:Node')->createNodeFor(
+        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')->createNodeFor(
             $newPage,
             $this->locale,
             $this->user
@@ -527,7 +530,7 @@ class NodeAdminController extends CRUDController
         );
 
         return $this->redirect(
-            $this->generateUrl('KunstmaanNodeBundle_nodes_edit', ['id' => $nodeNewPage->getId()])
+            $this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $nodeNewPage->getId()])
         );
     }
 
@@ -536,7 +539,7 @@ class NodeAdminController extends CRUDController
      *      "/{id}/revert",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="KunstmaanNodeBundle_nodes_revert"
+     *      name="HgabkaNodeBundle_nodes_revert"
      * )
      * @Template()
      * @Method("GET")
@@ -553,7 +556,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -564,7 +567,7 @@ class NodeAdminController extends CRUDController
         }
 
         // @var NodeVersionRepository $nodeVersionRepo
-        $nodeVersionRepo = $this->em->getRepository('KunstmaanNodeBundle:NodeVersion');
+        $nodeVersionRepo = $this->em->getRepository('HgabkaNodeBundle:NodeVersion');
         // @var NodeVersion $nodeVersion
         $nodeVersion = $nodeVersionRepo->find($version);
 
@@ -609,7 +612,7 @@ class NodeAdminController extends CRUDController
 
         return $this->redirect(
             $this->generateUrl(
-                'KunstmaanNodeBundle_nodes_edit',
+                'HgabkaNodeBundle_nodes_edit',
                 [
                     'id' => $id,
                     'subaction' => 'draft',
@@ -622,7 +625,7 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/add",
      *      requirements={"id" = "\d+"},
-     *      name="KunstmaanNodeBundle_nodes_add"
+     *      name="HgabkaNodeBundle_nodes_add"
      * )
      * @Template()
      * @Method("POST")
@@ -639,7 +642,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $parentNode
-        $parentNode = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $parentNode = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         // Check with Acl
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $parentNode);
@@ -653,13 +656,13 @@ class NodeAdminController extends CRUDController
         $newPage->setParent($parentPage);
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('KunstmaanNodeBundle:Node')
+        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')
             ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
         );
-        $weight = $this->em->getRepository('KunstmaanNodeBundle:NodeTranslation')
+        $weight = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
                 ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
         $nodeTranslation->setWeight($weight);
 
@@ -686,14 +689,14 @@ class NodeAdminController extends CRUDController
 
         return $this->redirect(
             $this->generateUrl(
-                'KunstmaanNodeBundle_nodes_edit',
+                'HgabkaNodeBundle_nodes_edit',
                 ['id' => $nodeNewPage->getId()]
             )
         );
     }
 
     /**
-     * @Route("/add-homepage", name="KunstmaanNodeBundle_nodes_add_homepage")
+     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage")
      * @Template()
      * @Method("POST")
      *
@@ -714,7 +717,7 @@ class NodeAdminController extends CRUDController
         $newPage = $this->createNewPage($request, $type);
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('KunstmaanNodeBundle:Node')
+        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')
             ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
@@ -740,14 +743,14 @@ class NodeAdminController extends CRUDController
 
         return $this->redirect(
             $this->generateUrl(
-                'KunstmaanNodeBundle_nodes_edit',
+                'HgabkaNodeBundle_nodes_edit',
                 ['id' => $nodeNewPage->getId()]
             )
         );
     }
 
     /**
-     * @Route("/reorder", name="KunstmaanNodeBundle_nodes_reorder")
+     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder")
      * @Method("POST")
      *
      * @param Request $request
@@ -765,7 +768,7 @@ class NodeAdminController extends CRUDController
 
         foreach ($nodeIds as $id) {
             // @var Node $node
-            $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+            $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
             $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
             $nodes[] = $node;
         }
@@ -774,7 +777,7 @@ class NodeAdminController extends CRUDController
         foreach ($nodes as $node) {
             $newParentId = isset($changeParents[$node->getId()]) ? $changeParents[$node->getId()] : null;
             if ($newParentId) {
-                $parent = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($newParentId);
+                $parent = $this->em->getRepository('HgabkaNodeBundle:Node')->find($newParentId);
                 $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $parent);
                 $node->setParent($parent);
                 $this->em->persist($node);
@@ -818,7 +821,7 @@ class NodeAdminController extends CRUDController
      *      "/{id}/{subaction}",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="KunstmaanNodeBundle_nodes_edit"
+     *      name="HgabkaNodeBundle_nodes_edit"
      * )
      * @Template()
      * @Method({"GET", "POST"})
@@ -835,7 +838,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -999,7 +1002,7 @@ class NodeAdminController extends CRUDController
 
                 return $this->redirect(
                     $this->generateUrl(
-                        'KunstmaanNodeBundle_nodes_edit',
+                        'HgabkaNodeBundle_nodes_edit',
                         $params
                     )
                 );
@@ -1007,13 +1010,13 @@ class NodeAdminController extends CRUDController
         }
 
         $nodeVersions = $this->em->getRepository(
-            'KunstmaanNodeBundle:NodeVersion'
+            'HgabkaNodeBundle:NodeVersion'
         )->findBy(
             ['nodeTranslation' => $nodeTranslation],
             ['updated' => 'ASC']
         );
         $queuedNodeTranslationAction = $this->em->getRepository(
-            'KunstmaanNodeBundle:QueuedNodeTranslationAction'
+            'HgabkaNodeBundle:QueuedNodeTranslationAction'
         )->findOneBy(['nodeTranslation' => $nodeTranslation]);
 
         return [
@@ -1038,7 +1041,7 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "checkNodeVersionLock/{id}/{public}",
      *      requirements={"id" = "\d+", "public" = "(0|1)"},
-     *      name="KunstmaanNodeBundle_nodes_versionlock_check"
+     *      name="HgabkaNodeBundle_nodes_versionlock_check"
      * )
      *
      * @param Request $request
@@ -1054,7 +1057,7 @@ class NodeAdminController extends CRUDController
         $this->init($request);
 
         // @var Node $node
-        $node = $this->em->getRepository('KunstmaanNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         try {
             $this->checkPermission($node, PermissionMap::PERMISSION_EDIT);
@@ -1088,7 +1091,7 @@ class NodeAdminController extends CRUDController
         $this->locale = $request->getLocale();
         $this->authorizationChecker = $this->get('security.authorization_checker');
         $this->user = $this->getUser();
-        $this->aclHelper = $this->get('kunstmaan_admin.acl.helper');
+        $this->aclHelper = $this->get(AclHelper::class);
     }
 
     /**
@@ -1127,7 +1130,7 @@ class NodeAdminController extends CRUDController
         // @var NodeVersion $publicNodeVersion
 
         $publicNodeVersion = $this->em->getRepository(
-            'KunstmaanNodeBundle:NodeVersion'
+            'HgabkaNodeBundle:NodeVersion'
         )->createNodeVersionFor(
             $publicPage,
             $nodeTranslation,
@@ -1312,7 +1315,7 @@ class NodeAdminController extends CRUDController
 
             if ($parentNodeTranslation) {
                 $parentsAreOk = $this->em->getRepository(
-                    'KunstmaanNodeBundle:NodeTranslation'
+                    'HgabkaNodeBundle:NodeTranslation'
                 )->hasParentNodeTranslationsForLanguage(
                     $node->getParent()->getNodeTranslation(
                         $this->locale,
@@ -1326,7 +1329,7 @@ class NodeAdminController extends CRUDController
         }
 
         return $this->render(
-            'KunstmaanNodeBundle:NodeAdmin:pagenottranslated.html.twig',
+            'HgabkaNodeBundle:NodeAdmin:pagenottranslated.html.twig',
             [
                 'node' => $node,
                 'nodeTranslations' => $node->getNodeTranslations(

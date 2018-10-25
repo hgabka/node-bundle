@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 
 /**
  * QueuedNodeTranslationAction.
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="hg_node_queued_node_translation_actions")
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
-class QueuedNodeTranslationAction
+class QueuedNodeTranslationAction implements EntityInterface
 {
     const ACTION_PUBLISH = 'publish';
     const ACTION_UNPUBLISH = 'unpublish';

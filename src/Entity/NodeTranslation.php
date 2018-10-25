@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Hgabka\NodeBundle\Form\NodeTranslationAdminType;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
-class NodeTranslation
+class NodeTranslation implements EntityInterface
 {
     /**
      * @ORM\Id

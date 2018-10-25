@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Node as GedmoNode;
 use Hgabka\NodeBundle\Form\NodeAdminType;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  * @Gedmo\Tree(type="nested")
  */
-class Node implements GedmoNode
+class Node implements GedmoNode, EntityInterface
 {
     /**
      * @ORM\Id
