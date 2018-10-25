@@ -27,7 +27,9 @@ modal:
 pages:
     copynotavailable: "Please translate the parent page first"
 
-kuma_node:
+hg_node:
+    title: Pages
+    group: CMS
     form:
         controller_action:
             title:

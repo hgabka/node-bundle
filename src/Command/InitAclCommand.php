@@ -18,6 +18,14 @@ use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterfac
  */
 class InitAclCommand extends ContainerAwareCommand
 {
+    /** @var ObjectIdentityRetrievalStrategyInterface */
+    protected $oidStrategy;
+
+    public function setOidStrategy($oidStrategy)
+    {
+        $this->oidStrategy = $oidStrategy;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +48,7 @@ class InitAclCommand extends ContainerAwareCommand
         // @var MutableAclProviderInterface $aclProvider
         $aclProvider = $this->getContainer()->get('security.acl.provider');
         // @var ObjectIdentityRetrievalStrategyInterface $oidStrategy
-        $oidStrategy = $this->getContainer()->get('security.acl.object_identity_retrieval_strategy');
+        $oidStrategy = $this->oidStrategy;
 
         // Fetch all nodes & grant access
         $nodes = $em->getRepository(Node::class)->findAll();

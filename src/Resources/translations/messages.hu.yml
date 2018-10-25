@@ -29,7 +29,9 @@ pages:
 
 "This list contains all the pages, chronologically ordered by updated date.": "A lista az összes oldalt tartalmazza az utolsó frissítés idejének sorrendjében."
 
-kuma_node:
+hg_node:
+    title: Oldalak
+    group: CMS
     form:
         controller_action:
             title:

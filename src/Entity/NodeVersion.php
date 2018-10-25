@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Entity;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 
 /**
@@ -15,7 +16,7 @@ use Hgabka\UtilsBundle\Helper\ClassLookup;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
-class NodeVersion
+class NodeVersion implements EntityInterface
 {
     const DRAFT_VERSION = 'draft';
     const PUBLIC_VERSION = 'public';

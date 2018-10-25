@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\AdminList;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
+use Hgabka\NodeBundle\Admin\NodeAdmin;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\AdminList\Configurator\AbstractDoctrineORMAdminListConfigurator;
 use Hgabka\UtilsBundle\AdminList\FilterType\ORM\BooleanFilterType;
@@ -46,6 +47,9 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
      */
     protected $authorizationChecker;
 
+    /** @var NodeAdmin */
+    protected $nodeAdmin;
+
     /**
      * @param EntityManager $em         The entity
      *                                  manager
@@ -54,9 +58,10 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
      *                                  locale
      * @param string        $permission The permission
      */
-    public function __construct(EntityManager $em, AclHelper $aclHelper, $locale, $permission, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(EntityManager $em, AclHelper $aclHelper, $locale, $permission, AuthorizationCheckerInterface $authorizationChecker, NodeAdmin $admin)
     {
         parent::__construct($em, $aclHelper);
+        $this->nodeAdmin = $admin;
         $this->locale = $locale;
         $this->authorizationChecker = $authorizationChecker;
         $this->setPermissionDefinition(
@@ -107,7 +112,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
         $this->addListAction(
             new SimpleListAction(
                 $addHomepageRoute,
-                'kuma_node.modal.add_homepage.h',
+                'hg_node.modal.add_homepage.h',
                 null,
                 'HgabkaNodeBundle:Admin:list_action_button.html.twig'
             )
@@ -149,7 +154,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
         $node = $item->getNode();
 
         return [
-            'path' => 'KunstmaanNodeBundle_nodes_edit',
+            'path' => 'HgabkaNodeBundle_nodes_edit',
             'params' => ['id' => $node->getId()],
         ];
     }
@@ -263,5 +268,20 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     public function getListTitle()
     {
         return null;
+    }
+
+    /**
+     * Return the url to list all the items.
+     *
+     * @return array
+     */
+    public function getIndexUrl()
+    {
+        $params = $this->getExtraParameters();
+
+        return [
+            'path' => $this->nodeAdmin->generateMenuUrl('list')['route'],
+            'params' => $params,
+        ];
     }
 }

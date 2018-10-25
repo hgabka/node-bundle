@@ -1,0 +1,10 @@
+.app__content__header {
+    margin-top: 1rem;
+    padding: 0 0 1em 0;
+    border-bottom: 1px solid #dddddd;
+}
+
+.app__content__header__extra-actions {
+    margin-top: 1rem;
+    text-align: right;
+}

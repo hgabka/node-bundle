@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\UtilsBundle\AdminList\AdminList;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
@@ -13,6 +14,9 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 class NodeAdmin extends AbstractAdmin
 {
     protected $baseRoutePattern = 'cms';
+
+    /** @var AdminList */
+    protected $adminList;
 
     public function createQuery($context = 'list')
     {
@@ -39,5 +43,25 @@ class NodeAdmin extends AbstractAdmin
         }
 
         return $query;
+    }
+
+    /**
+     * @return AdminList
+     */
+    public function getAdminList()
+    {
+        return $this->adminList;
+    }
+
+    /**
+     * @param AdminList $adminList
+     *
+     * @return NodeAdmin
+     */
+    public function setAdminList($adminList)
+    {
+        $this->adminList = $adminList;
+
+        return $this;
     }
 }

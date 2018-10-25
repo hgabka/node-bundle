@@ -11,7 +11,7 @@ services:
     hgabka_node.admin.node:
         class: Hgabka\NodeBundle\Admin\NodeAdmin
         tags:
-        - { name: sonata.admin, manager_type: orm, group: hg_node.group, icon: '<i class="fa fa-sticky-note"></i>', label: hg_node.admin.node.label, label_catalogue: 'HgabkaNodeBundle', label_translator_strategy: 'sonata.admin.label.strategy.underscore' }
+        - { name: sonata.admin, manager_type: orm, group: hg_node.group, icon: '<i class="fa fa-sticky-note"></i>', label: hg_node.group, label_catalogue: 'HgabkaNodeBundle', label_translator_strategy: 'sonata.admin.label.strategy.underscore' }
         arguments: [null, Hgabka\NodeBundle\Entity\Node, HgabkaNodeBundle:NodeAdmin]
 
     hgabka_node.nodetranslation.listener:
@@ -170,5 +170,32 @@ services:
         class: "%hgabka_multi_domain.url_replace.controller.class%"
         arguments:
             - "@hgabka_node.helper.url"
+
+    hgabka_node.command.acl:
+        class: Hgabka\NodeBundle\Command\InitAclCommand
+        calls:
+            - [ setOidStrategy, [ '@security.acl.object_identity_retrieval_strategy' ] ]
+        tags:
+            - { name: console.command }
+
+    hgabka_node.command.convert_sequence:
+        class: Hgabka\NodeBundle\Command\ConvertSequenceNumberToWeightCommand
+        tags:
+        - { name: console.command }
+
+    hgabka_node.command.cron_update_node:
+        class: Hgabka\NodeBundle\Command\CronUpdateNodeCommand
+        tags:
+        - { name: console.command }
+
+    hgabka_node.command.fix_timestamp:
+        class: Hgabka\NodeBundle\Command\FixTimestampsCommand
+        tags:
+        - { name: console.command }
+
+    hgabka_node.command.update_urls:
+        class: Hgabka\NodeBundle\Command\UpdateUrlsCommand
+        tags:
+        - { name: console.command }
 
     Hgabka\NodeBundle\Controller\UrlReplaceController: "@hgabka_node.url_replace.controller"

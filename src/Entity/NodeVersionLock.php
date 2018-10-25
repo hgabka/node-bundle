@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hgabka\UtilsBundle\Entity\EntityInterface;
 
 /**
  * NodeVersionLock.
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * })
  * @ORM\Entity(repositoryClass="Hgabka\NodeBundle\Repository\NodeVersionLockRepository")
  */
-class NodeVersionLock
+class NodeVersionLock implements EntityInterface
 {
     /**
      * @ORM\Id
