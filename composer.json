@@ -18,8 +18,8 @@
         "hgabka/utils-bundle": "^3.0",
         "hgabka/seo-bundle": "^3.0",
         "hgabka/pagepart-bundle": "^3.0",
-        "symfony-cmf/routing-bundle": "^1.0@dev",
-        "symfony-cmf/routing": "^1.0@dev",
+        "symfony-cmf/routing-bundle": "dev-master",
+        "symfony-cmf/routing": "^1.4@dev",
         "symfony/symfony": "~3.2"
     },
     "require-dev": {
