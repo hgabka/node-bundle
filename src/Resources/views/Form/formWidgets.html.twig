@@ -28,7 +28,7 @@
                 <div class="input-group">
                     {% if form.link_type is defined %}
                         {% set linkType = form.link_type %}
-                        {% set label = "pagepart.link.internal" | trans %}
+                        {% set label = "kuma_admin.pagepart.link.internal" | trans %}
 
                         {% if linkType.vars.value %}
                             {% for choice in linkType.vars.choices %}
@@ -56,7 +56,7 @@
                             <input type="hidden" name="{{ linkUrl.full_name }}" value="{{ linkUrl.value ? linkUrl.value : '' }}" id="{{ linkUrl.id }}" class="form-control {% if linkUrl.attr is defined and linkUrl.attr.class is defined %}{{ linkUrl.attr.class }}{% endif %}">
                             <input type="text" disabled="disabled" class="form-control js-urlchooser-value" value="{{ linkUrl.value ? linkUrl.value|replace_url : '' }}">
                             <span class="input-group-btn">
-                        <button type="button" class="btn btn-default btn--raise-on-hover" data-toggle="modal" data-target="#{{ linkUrl.id }}-urlChooserModal" data-link="{{ path('KunstmaanNodeBundle_selecturl') }}">
+                        <button type="button" class="btn btn-default btn--raise-on-hover" data-toggle="modal" data-target="#{{ linkUrl.id }}-urlChooserModal" data-link="{{ path('HgabkaNodeBundle_selecturl') }}">
                             {{ 'form.urlchooser.label' | trans }}
                         </button>
                     </span>

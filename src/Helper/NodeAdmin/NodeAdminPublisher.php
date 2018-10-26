@@ -208,7 +208,7 @@ class NodeAdminPublisher
     public function unSchedulePublish(NodeTranslation $nodeTranslation)
     {
         // @var Node $node
-        $queuedNodeTranslationAction = $this->em->getRepository('KunstmaanNodeBundle:QueuedNodeTranslationAction')
+        $queuedNodeTranslationAction = $this->em->getRepository(QueuedNodeTranslationAction::class)
             ->findOneBy(['nodeTranslation' => $nodeTranslation]);
 
         if (null !== $queuedNodeTranslationAction) {
@@ -234,7 +234,7 @@ class NodeAdminPublisher
         BaseUser $user
     ) {
         $newPublicPage = $this->cloneHelper->deepCloneAndSave($page);
-        $newNodeVersion = $this->em->getRepository('KunstmaanNodeBundle:NodeVersion')->createNodeVersionFor(
+        $newNodeVersion = $this->em->getRepository(NodeVersion::class)->createNodeVersionFor(
             $newPublicPage,
             $nodeTranslation,
             $user,

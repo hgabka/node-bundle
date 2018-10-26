@@ -2,9 +2,9 @@
 
 namespace Hgabka\NodeBundle\Event;
 
+use Hgabka\NodeBundle\Entity\NodeVersion;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
-use Kunstmaan\NodeBundle\Entity\NodeVersion;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

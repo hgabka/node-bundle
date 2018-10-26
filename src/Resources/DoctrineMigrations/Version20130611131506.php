@@ -24,7 +24,7 @@ class Version20130611131506 extends AbstractMigration implements ContainerAwareI
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), "Migration can only be executed safely on 'mysql'.");
 
-        $this->addSql('ALTER TABLE kuma_nodes ADD lft INT DEFAULT NULL, ADD lvl INT DEFAULT NULL, ADD rgt INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE hg_node_nodes ADD lft INT DEFAULT NULL, ADD lvl INT DEFAULT NULL, ADD rgt INT DEFAULT NULL');
 
         $sql = "DROP PROCEDURE IF EXISTS treerecover;
         SET SQL_SAFE_UPDATES=0;

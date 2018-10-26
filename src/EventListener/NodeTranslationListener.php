@@ -12,6 +12,7 @@ use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
+use Hgabka\UtilsBundle\FlashMessages\FlashTypes;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\SlugifierInterface;
 use Symfony\Bridge\Monolog\Logger;
@@ -296,7 +297,7 @@ class NodeTranslationListener
 
         // @var NodeTranslationRepository $nodeTranslationRepository
         $nodeTranslationRepository = $em->getRepository(
-            'KunstmaanNodeBundle:NodeTranslation'
+            NodeTranslation::class
         );
 
         if ($translation->getUrl() === $translation->getFullSlug()) {

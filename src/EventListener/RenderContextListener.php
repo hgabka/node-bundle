@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Hgabka\NodeBundle\Entity\NodeVersion;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -56,7 +57,7 @@ class RenderContextListener
             if (true === $request->get('preview')) {
                 $version = $request->get('version');
                 if (!empty($version) && is_numeric($version)) {
-                    $nodeVersion = $this->em->getRepository('KunstmaanNodeBundle:NodeVersion')->find($version);
+                    $nodeVersion = $this->em->getRepository(NodeVersion::class)->find($version);
                     if (null !== $nodeVersion) {
                         $entity = $nodeVersion->getRef($this->em);
                     }
