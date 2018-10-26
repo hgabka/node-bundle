@@ -152,7 +152,7 @@ class NodeAdminController extends CRUDController
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -891,7 +891,7 @@ class NodeAdminController extends CRUDController
                 $thresholdDate = date(
                     'Y-m-d H:i:s',
                     time() - $this->getParameter(
-                        'kunstmaan_node.version_timeout'
+                        'hgabka_node.version_timeout'
                     )
                 );
                 $updatedDate = date(
@@ -1116,9 +1116,9 @@ class NodeAdminController extends CRUDController
      */
     private function isNodeVersionLocked(NodeTranslation $nodeTranslation, $isPublic)
     {
-        if ($this->container->getParameter('kunstmaan_node.lock_enabled')) {
+        if ($this->container->getParameter('hgabka_node.lock_enabled')) {
             /** @var NodeVersionLockHelper $nodeVersionLockHelper */
-            $nodeVersionLockHelper = $this->get('kunstmaan_node.admin_node.node_version_lock_helper');
+            $nodeVersionLockHelper = $this->get('hgabka_node.admin_node.node_version_lock_helper');
             $nodeVersionIsLocked = $nodeVersionLockHelper->isNodeVersionLocked($this->getUser(), $nodeTranslation, $isPublic);
 
             return $nodeVersionIsLocked;

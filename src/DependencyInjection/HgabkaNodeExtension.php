@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\DependencyInjection;
 
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
+class HgabkaNodeExtension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -60,5 +61,14 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $twigConfig['globals']['publish_later_stepping'] = $config['publish_later_stepping'];
         $twigConfig['globals']['unpublish_later_stepping'] = $config['unpublish_later_stepping'];
         $container->prependExtensionConfig('twig', $twigConfig);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function process(ContainerBuilder $container)
+    {
+        $container->setAlias('router', 'cmf_routing.router');
+        $container->getAlias('router')->setPublic(true);
     }
 }
