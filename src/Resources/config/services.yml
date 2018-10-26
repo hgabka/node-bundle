@@ -100,7 +100,7 @@ services:
         class: '%hgabka_node.slugrouter.class%'
         arguments: ['@service_container']
         tags:
-            - { name: router, priority: 0 }
+            - { name: router, priority: 100 }
 
     hgabka_node.pages_configuration.twig_extension:
         class: Hgabka\NodeBundle\Twig\PagesConfigurationTwigExtension
@@ -153,9 +153,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
 
-    hgabka_node.node_menu:
-        class: Hgabka\NodeBundle\Helper\NodeMenu
+    Hgabka\NodeBundle\Helper\NodeMenu:
+        public: true
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage', '@hgabka_utils.acl.helper', '@hgabka_utils.hgabka_utils']
+
+    hgabka_node.node_menu:
+        alias: Hgabka\NodeBundle\Helper\NodeMenu
 
     hgabka_node.node.twig.extension:
         class: Hgabka\NodeBundle\Twig\NodeTwigExtension

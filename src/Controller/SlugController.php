@@ -10,6 +10,7 @@ use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Event\SlugEvent;
 use Hgabka\NodeBundle\Event\SlugSecurityEvent;
+use Hgabka\NodeBundle\Helper\NodeMenu;
 use Hgabka\NodeBundle\Helper\RenderContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -64,7 +65,7 @@ class SlugController extends Controller
             ->setRequest($request)
             ->setNodeTranslation($nodeTranslation);
 
-        $nodeMenu = $this->container->get('hgabka_node.node_menu');
+        $nodeMenu = $this->container->get(NodeMenu::class);
         $nodeMenu->setLocale($locale);
         $nodeMenu->setCurrentNode($node);
         $nodeMenu->setIncludeOffline($preview);
