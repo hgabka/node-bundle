@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\StructureNode;
 use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,8 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class WidgetsController extends Controller
 {
     /**
-     * @Route("/ckselecturl", name="KunstmaanNodeBundle_ckselecturl")
-     * @Template("KunstmaanNodeBundle:Widgets:selectLink.html.twig")
+     * @Route("/ckselecturl", name="HgabkaNodeBundle_ckselecturl")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
@@ -29,16 +30,15 @@ class WidgetsController extends Controller
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = true;
-        $params['multilanguage'] = $this->getParameter('multilanguage');
+        $params['multilanguage'] = \count($this->get(HgabkaUtils::class)->getAvailableLocales()) > 0;
 
-        return $params;
+        return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
 
     /**
      * Select a link.
      *
-     * @Route   ("/selecturl", name="KunstmaanNodeBundle_selecturl")
-     * @Template("KunstmaanNodeBundle:Widgets:selectLink.html.twig")
+     * @Route   ("/selecturl", name="HgabkaNodeBundle_selecturl")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
@@ -48,9 +48,14 @@ class WidgetsController extends Controller
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = false;
-        $params['multilanguage'] = $this->getParameter('multilanguage');
+        $params['multilanguage'] = \count($this->get(HgabkaUtils::class)->getAvailableLocales()) > 0;
 
-        return $params;
+        return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
+    }
+
+    protected function getBaseTemplate()
+    {
+        return $this->getParameter('sonata.admin.configuration.templates')['layout'];
     }
 
     /**
@@ -71,9 +76,9 @@ class WidgetsController extends Controller
             ->getAllMenuNodes(
                 $locale,
                 PermissionMap::PERMISSION_VIEW,
-                $this->get('hgabka_utils.acl.native.helper'),
+                $this->get(AclNativeHelper::class),
                 true,
-                $this->get('hgabka_utils.domain_configuration')->getRootNode()
+                null
             );
 
         $simpleTreeView = new SimpleTreeView();
@@ -103,6 +108,7 @@ class WidgetsController extends Controller
         return [
             'tree' => $simpleTreeView,
             'mediaChooserLink' => $mediaChooserLink,
+            'base_template' => $this->getBaseTemplate(),
         ];
     }
 

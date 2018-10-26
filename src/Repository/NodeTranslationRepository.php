@@ -165,7 +165,7 @@ class NodeTranslationRepository extends EntityRepository
     {
         // @var NodeVersion $nodeVersion
         $nodeVersion = $this->getEntityManager()
-            ->getRepository('KunstmaanNodeBundle:NodeVersion')
+            ->getRepository(NodeVersion::class)
             ->getNodeVersionFor($hasNode);
 
         if (null !== $nodeVersion) {
@@ -428,15 +428,15 @@ class NodeTranslationRepository extends EntityRepository
 
         $rsm = new ResultSetMappingBuilder($em);
         $rsm->addRootEntityFromClassMetadata(
-            'Kunstmaan\NodeBundle\Entity\NodeTranslation',
+            NodeTranslation::class,
             'nt'
         );
 
         $query = $em
             ->createNativeQuery(
                 'select nt.*
-                from kuma_node_translations nt
-                join kuma_nodes n on n.id = nt.node_id
+                from hg_node_node_translations nt
+                join hg_node_nodes n on n.id = nt.node_id
                 where n.deleted = 0 and nt.lang = :lang and locate(nt.url, :url) = 1
                 order by length(nt.url) desc limit 1',
                 $rsm

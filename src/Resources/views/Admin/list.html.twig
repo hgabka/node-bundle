@@ -1,5 +1,18 @@
 {% extends '@HgabkaUtils/Default/list.html.twig' %}
-    {% set adminlist = admin.getAdminList() %}
+{% set adminmenu = get_admin_menu() %}
+{% if lowestTopChild is not defined %}
+
+    {% set lowestTopChild = adminmenu.lowestTopChild %}
+    {% if lowestTopChild %}
+        {% set navigationChildren = lowestTopChild.navigationChildren %}
+    {% endif %}
+{% endif %}
+
+{% if page is defined %}
+    {%  set hideSidebar = hideSidebarInNodeEditAdmin(page) %}
+{%  else  %}
+    {%  set hideSidebar = false %}
+{%  endif %}
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/hgabkanode/css/hg_node.css') }}">
@@ -16,6 +29,7 @@
 {% endblock %}
 {% block title %}
     {{ 'hg_node.group'|trans }} - {{ 'hg_node.title'| trans }}
+
 {% endblock %}
 
 {% block breadcrumb %}
@@ -34,30 +48,9 @@
     </div>
 {% endblock %}
 
-{% block admin_sidebar %}
-    <!-- Search -->
-    <button type="button" class="js-toggle-btn toggle-button btn app__sidebar__search-toggle-btn" data-target="#sidebar-search-toggle">
-        <i class="fa fa-search"></i>
-    </button>
 
-    <div id="sidebar-search-toggle" class="toggle-item">
-        <div class="toggle-item__content">
-            <div class="app__sidebar__search-toggle-item">
-                <input type="text" placeholder="{{ 'hg_media.label.search' | trans }}" id="app__sidebar__search" class="form-control">
-                <hr>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tree -->
-    <nav role="navigation" id="app__sidebar__navigation" class="app__sidebar__module app__sidebar__navigation" data-reorder-url="{{ path('HgabkaMediaBundle_folder_reorder') }}">
-        <ul>
-        </ul>
-    </nav>
-{% endblock %}
 
 {% block extra_actions_header %}
-
     {% if adminlist.canAdd() or adminlist.canExport() or adminlist.hasListActions() %}
         <div class="col-sm-6 col-md-4">
             <div class="app__content__header__extra-actions">
@@ -146,3 +139,4 @@
 
     {% include '@HgabkaNode/Admin/_add_homepage_modal.html.twig' %}
 {% endblock %}
+

@@ -8,6 +8,9 @@ use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\PageInterface;
 use Hgabka\NodeBundle\Entity\StructureNode;
 use Hgabka\NodeBundle\Helper\NodeMenu;
+use Hgabka\NodeBundle\Helper\PagesConfiguration;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Extension;
@@ -17,6 +20,8 @@ use Twig_Extension;
  */
 class NodeTwigExtension extends Twig_Extension
 {
+    /** @var HgabkaUtils */
+    protected $hgabkaUtils;
     /**
      * @var EntityManagerInterface
      */
@@ -38,6 +43,26 @@ class NodeTwigExtension extends Twig_Extension
     private $requestStack;
 
     /**
+     * @var AclNativeHelper
+     */
+    private $aclNativeHelper;
+
+    /**
+     * @var array
+     */
+    private $treeNodes;
+
+    /**
+     * @var array
+     */
+    private $activeNodeIds;
+
+    /**
+     * @var PagesConfiguration
+     */
+    private $pagesConfiguration;
+
+    /**
      * @param \Doctrine\ORM\EntityManagerInterface                       $em
      * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $generator
      * @param \Hgabka\NodeBundle\Helper\NodeMenu                         $nodeMenu
@@ -47,12 +72,18 @@ class NodeTwigExtension extends Twig_Extension
         EntityManagerInterface $em,
         UrlGeneratorInterface $generator,
         NodeMenu $nodeMenu,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        AclNativeHelper $aclNativeHelper,
+        PagesConfiguration $pagesConfiguration,
+        HgabkaUtils $hgabkaUtils
     ) {
         $this->em = $em;
         $this->generator = $generator;
         $this->nodeMenu = $nodeMenu;
         $this->requestStack = $requestStack;
+        $this->pagesConfiguration = $pagesConfiguration;
+        $this->hgabkaUtils = $hgabkaUtils;
+        $this->aclNativeHelper = $aclNativeHelper;
     }
 
     /**
@@ -213,8 +244,11 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return NodeMenu
      */
-    public function getNodeMenu($locale, Node $node = null, $includeHiddenFromNav = false)
+    public function getNodeMenu($locale = null, Node $node = null, $includeHiddenFromNav = false)
     {
+        if (null === $locale) {
+            $locale = $this->hgabkaUtils->getAdminLocale();
+        }
         $request = $this->requestStack->getMasterRequest();
         $isPreview = $request->attributes->has('preview') && true === $request->attributes->get('preview');
         $this->nodeMenu->setLocale($locale);

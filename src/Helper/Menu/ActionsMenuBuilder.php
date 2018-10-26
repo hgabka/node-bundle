@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\Helper\Menu;
 
 use Doctrine\ORM\EntityManager;
 use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Event\ConfigureActionMenuEvent;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
@@ -155,7 +156,7 @@ class ActionsMenuBuilder
         $activeNodeTranslation = $activeNodeVersion->getNodeTranslation();
         $node = $activeNodeTranslation->getNode();
         $queuedNodeTranslationAction = $this->em->getRepository(
-            'KunstmaanNodeBundle:QueuedNodeTranslationAction'
+            QueuedNodeTranslationAction::class
         )->findOneBy(['nodeTranslation' => $activeNodeTranslation]);
 
         $isFirst = true;

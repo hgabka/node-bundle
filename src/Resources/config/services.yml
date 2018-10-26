@@ -25,6 +25,12 @@ services:
             - { name: 'doctrine.event_listener', event: 'prePersist', method: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate', method: 'preUpdate' }
 
+    hgabka_node.menu.adaptor.pages:
+        class: Hgabka\NodeBundle\Helper\Menu\PageMenuAdaptor
+        arguments: ['@doctrine.orm.entity_manager', '@hgabka_utils.acl.native.helper', '@hgabka_node.pages_configuration']
+        tags:
+        -  { name: 'hgabka_utils.menu.adaptor' }
+
     hgabka_node.form.type.urlchooser:
         class: Hgabka\NodeBundle\Form\Type\URLChooserType
         tags:
@@ -43,16 +49,16 @@ services:
         tags:
             - { name: form.type }
 
-    hgabka_node.admin_node.publisher:
-        class: Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher
+    Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher:
+        public: true
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage', '@security.authorization_checker', '@event_dispatcher', '@hgabka_utils.clone.helper']
 
     hgabka_node.admin_node.node_version_lock_helper:
         class: Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
 
-    hgabka_node.actions_menu_builder:
-        class: Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder
+    Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder:
+        public: true
         arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration' ]
 
     hgabka_node.menu.sub_actions:
@@ -153,7 +159,7 @@ services:
 
     hgabka_node.node.twig.extension:
         class: Hgabka\NodeBundle\Twig\NodeTwigExtension
-        arguments: ['@doctrine.orm.entity_manager', '@router', '@hgabka_node.node_menu', '@request_stack']
+        arguments: ['@doctrine.orm.entity_manager', '@router', '@hgabka_node.node_menu', '@request_stack', '@hgabka_utils.acl.native.helper', '@hgabka_node.pages_configuration', '@hgabka_utils.hgabka_utils']
         tags:
             - { name: twig.extension }
 
@@ -166,9 +172,38 @@ services:
             - "@request_stack"
             - "@hgabka_utils.hgabka_utils"
 
-    hgabka_node.url_replace.controller:
-        class: "%hgabka_multi_domain.url_replace.controller.class%"
+    Hgabka\NodeBundle\Controller\UrlReplaceController:
+        public: true
         arguments:
             - "@hgabka_node.helper.url"
 
-    Hgabka\NodeBundle\Controller\UrlReplaceController: "@hgabka_node.url_replace.controller"
+    hgabka_node.url_replace.controller:
+        alias: Hgabka\NodeBundle\Controller\UrlReplaceController
+
+    hgabka_node.actions_menu_builder:
+        alias: Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder
+
+    Hgabka\NodeBundle\Command\InitAclCommand:
+        calls:
+        -  [ setOiaStrategy, [ '@security.acl.object_identity_retrieval_strategy' ] ]
+        tags:
+        - { name: console.command }
+
+    Hgabka\NodeBundle\Command\ConvertSequenceNumberToWeightCommand:
+        tags:
+        - { name: console.command }
+
+    Hgabka\NodeBundle\Command\CronUpdateNodeCommand:
+        tags:
+        - { name: console.command }
+
+    Hgabka\NodeBundle\Command\FixTimestampsCommand:
+        tags:
+        - { name: console.command }
+
+    Hgabka\NodeBundle\Command\UpdateUrlsCommand:
+        tags:
+        - { name: console.command }
+
+    hgabka_node.admin_node.publisher:
+        alias: Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher

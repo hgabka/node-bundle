@@ -301,16 +301,16 @@ n.ref_entity_name AS ref_entity_name
 SQL;
 
         $qb->select($sql)
-            ->from('kuma_nodes', 'n')
+            ->from('hg_node_nodes', 'n')
             ->leftJoin(
                 'n',
-                'kuma_node_translations',
+                'hg_node_node_translations',
                 't',
                 '(t.node_id = n.id AND t.lang = :lang)'
             )
             ->leftJoin(
                 'n',
-                'kuma_node_translations',
+                'hg_node_node_translations',
                 'v',
                 '(v.node_id = n.id AND v.lang <> :lang)'
             )

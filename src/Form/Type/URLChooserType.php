@@ -33,9 +33,9 @@ class URLChooserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choices = [
-            'pagepart.link.internal' => self::INTERNAL,
-            'pagepart.link.external' => self::EXTERNAL,
-            'pagepart.link.email' => self::EMAIL,
+            'kuma_admin.pagepart.link.internal' => self::INTERNAL,
+            'kuma_admin.pagepart.link.external' => self::EXTERNAL,
+            'kuma_admin.pagepart.link.email' => self::EMAIL,
         ];
 
         if ($types = $options['link_types']) {

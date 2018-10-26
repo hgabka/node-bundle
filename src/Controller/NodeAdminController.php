@@ -18,10 +18,13 @@ use Hgabka\NodeBundle\Event\RecopyPageTranslationNodeEvent;
 use Hgabka\NodeBundle\Event\RevertNodeAction;
 use Hgabka\NodeBundle\Form\NodeMenuTabAdminType;
 use Hgabka\NodeBundle\Form\NodeMenuTabTranslationAdminType;
+use Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder;
+use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper;
 use Hgabka\NodeBundle\Repository\NodeVersionRepository;
 use Hgabka\UtilsBundle\AdminList\AdminListFactory;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
+use Hgabka\UtilsBundle\FlashMessages\FlashTypes;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
@@ -36,10 +39,6 @@ use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
-use Symfony\Component\Security\Acl\Model\EntryInterface;
-use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
-use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -115,9 +114,8 @@ class NodeAdminController extends CRUDController
         /** @var AdminList $adminlist */
         $adminlist = $this->get(AdminListFactory::class)->createList($nodeAdminListConfigurator);
         $adminlist->bindRequest($request);
-        $this->admin->setAdminList($adminlist);
 
-        return $this->render('HgabkaNodeBundle:Admin:list.html.twig', [
+        return $this->renderWithExtraParams('HgabkaNodeBundle:Admin:list.html.twig', [
             'adminlist' => $adminlist,
         ]);
     }
@@ -297,21 +295,21 @@ class NodeAdminController extends CRUDController
             $date = new \DateTime(
                 $request->get('pub_date').' '.$request->get('pub_time')
             );
-            $this->get('kunstmaan_node.admin_node.publisher')->publishLater(
+            $this->get(NodeAdminPublisher::class)->publishLater(
                 $nodeTranslation,
                 $date
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('kuma_node.admin.publish.flash.success_scheduled')
+                $this->get('translator')->trans('hg_node.admin.publish.flash.success_scheduled')
             );
         } else {
-            $this->get('kunstmaan_node.admin_node.publisher')->publish(
+            $this->get(NodeAdminPublisher::class)->publish(
                 $nodeTranslation
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('kuma_node.admin.publish.flash.success_published')
+                $this->get('translator')->trans('hg_node.admin.publish.flash.success_published')
             );
         }
 
@@ -344,16 +342,16 @@ class NodeAdminController extends CRUDController
 
         if ($request->get('unpub_date')) {
             $date = new \DateTime($request->get('unpub_date').' '.$request->get('unpub_time'));
-            $this->get('kunstmaan_node.admin_node.publisher')->unPublishLater($nodeTranslation, $date);
+            $this->get(NodeAdminPublisher::class)->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('kuma_node.admin.unpublish.flash.success_scheduled')
+                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_scheduled')
             );
         } else {
-            $this->get('kunstmaan_node.admin_node.publisher')->unPublish($nodeTranslation);
+            $this->get(NodeAdminPublisher::class)->unPublish($nodeTranslation);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('kuma_node.admin.unpublish.flash.success_unpublished')
+                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_unpublished')
             );
         }
 
@@ -383,11 +381,11 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $this->get('kunstmaan_node.admin_node.publisher')->unSchedulePublish($nodeTranslation);
+        $this->get(NodeAdminPublisher::class)->unSchedulePublish($nodeTranslation);
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('kuma_node.admin.unschedule.flash.success')
+            $this->get('translator')->trans('hg_node.admin.unschedule.flash.success')
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -445,16 +443,14 @@ class NodeAdminController extends CRUDController
                     ['id' => $nodeParent->getId()]
                 );
             } else {
-                $url = $this->get('router')->generate(
-                    'HgabkaNodeBundle_nodes'
-                );
+                $url = $this->admin->generateUrl('list');
             }
             $response = new RedirectResponse($url);
         }
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('kuma_node.admin.delete.flash.success')
+            $this->get('translator')->trans('hg_node.admin.delete.flash.success')
         );
 
         return $response;
@@ -526,7 +522,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('kuma_node.admin.duplicate.flash.success')
+            $this->get('translator')->trans('hg_node.admin.duplicate.flash.success')
         );
 
         return $this->redirect(
@@ -607,7 +603,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('kuma_node.admin.revert.flash.success')
+            $this->get('translator')->trans('hg_node.admin.revert.flash.success')
         );
 
         return $this->redirect(
@@ -816,6 +812,11 @@ class NodeAdminController extends CRUDController
         );
     }
 
+    public function editAction($id = null)
+    {
+        return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $id]);
+    }
+
     /**
      * @Route(
      *      "/{id}/{subaction}",
@@ -823,7 +824,6 @@ class NodeAdminController extends CRUDController
      *      defaults={"subaction" = "public"},
      *      name="HgabkaNodeBundle_nodes_edit"
      * )
-     * @Template()
      * @Method({"GET", "POST"})
      *
      * @param Request $request
@@ -834,12 +834,20 @@ class NodeAdminController extends CRUDController
      *
      * @return array|RedirectResponse
      */
-    public function editAction($id = null)
+    public function editCustomAction($id, $subaction)
     {
+        $request = $this->getRequest();
+
         $this->init($request);
         // @var Node $node
         $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $this->admin->checkAccess('edit', $node);
+        $preResponse = $this->preEdit($request, $node);
+        if (null !== $preResponse) {
+            return $preResponse;
+        }
 
+        $this->admin->setSubject($node);
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
         $tabPane = new TabPane(
@@ -893,7 +901,7 @@ class NodeAdminController extends CRUDController
                 if ($thresholdDate >= $updatedDate || $nodeVersionIsLocked) {
                     $page = $nodeVersion->getRef($this->em);
                     if ($nodeVersion === $nodeTranslation->getPublicNodeVersion()) {
-                        $this->get('kunstmaan_node.admin_node.publisher')
+                        $this->get(NodeAdminPublisher::class)
                             ->createPublicVersion(
                                 $page,
                                 $nodeTranslation,
@@ -913,7 +921,7 @@ class NodeAdminController extends CRUDController
         }
         $isStructureNode = $page->isStructureNode();
 
-        $menubuilder = $this->get('kunstmaan_node.actions_menu_builder');
+        $menubuilder = $this->get(ActionsMenuBuilder::class);
         $menubuilder->setActiveNodeVersion($nodeVersion);
         $menubuilder->setEditableNode(!$isStructureNode);
 
@@ -923,7 +931,7 @@ class NodeAdminController extends CRUDController
         $propertiesWidget->addType('main', $page->getDefaultAdminType(), $page);
         $propertiesWidget->addType('node', $node->getDefaultAdminType(), $node);
 
-        $tabPane->addTab(new Tab('kuma_node.tab.properties.title', $propertiesWidget));
+        $tabPane->addTab(new Tab('hg_node.tab.properties.title', $propertiesWidget));
 
         // Menu tab
         $menuWidget = new FormWidget();
@@ -934,7 +942,7 @@ class NodeAdminController extends CRUDController
             ['slugable' => !$isStructureNode]
         );
         $menuWidget->addType('menunode', NodeMenuTabAdminType::class, $node, ['available_in_nav' => !$isStructureNode]);
-        $tabPane->addTab(new Tab('kuma_node.tab.menu.title', $menuWidget));
+        $tabPane->addTab(new Tab('hg_node.tab.menu.title', $menuWidget));
 
         $this->get('event_dispatcher')->dispatch(
             Events::ADAPT_FORM,
@@ -981,12 +989,12 @@ class NodeAdminController extends CRUDController
                 if ($nodeVersionIsLocked) {
                     $this->addFlash(
                         FlashTypes::SUCCESS,
-                        $this->get('translator')->trans('kuma_node.admin.edit.flash.locked_success')
+                        $this->get('translator')->trans('hg_node.admin.edit.flash.locked_success')
                     );
                 } else {
                     $this->addFlash(
                         FlashTypes::SUCCESS,
-                        $this->get('translator')->trans('kuma_node.admin.edit.flash.success')
+                        $this->get('translator')->trans('hg_node.admin.edit.flash.success')
                     );
                 }
 
@@ -1019,7 +1027,7 @@ class NodeAdminController extends CRUDController
             'HgabkaNodeBundle:QueuedNodeTranslationAction'
         )->findOneBy(['nodeTranslation' => $nodeTranslation]);
 
-        return [
+        return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit.html.twig', [
             'page' => $page,
             'entityname' => ClassLookup::getClass($page),
             'nodeVersions' => $nodeVersions,
@@ -1032,9 +1040,9 @@ class NodeAdminController extends CRUDController
             'tabPane' => $tabPane,
             'editmode' => true,
             'queuedNodeTranslationAction' => $queuedNodeTranslationAction,
-            'nodeVersionLockCheck' => $this->container->getParameter('kunstmaan_node.lock_enabled'),
-            'nodeVersionLockInterval' => $this->container->getParameter('kunstmaan_node.lock_check_interval'),
-        ];
+            'nodeVersionLockCheck' => $this->container->getParameter('hgabka_node.lock_enabled'),
+            'nodeVersionLockInterval' => $this->container->getParameter('hgabka_node.lock_check_interval'),
+        ]);
     }
 
     /**
@@ -1071,13 +1079,19 @@ class NodeAdminController extends CRUDController
 
                 if ($nodeVersionIsLocked) {
                     $users = $nodeVersionLockHelper->getUsersWithNodeVersionLock($nodeTranslation, $public, $this->getUser());
-                    $message = $this->get('translator')->trans('kuma_node.admin.edit.flash.locked', ['%users%' => implode(', ', $users)]);
+                    $message = $this->get('translator')->trans('hg_node.admin.edit.flash.locked', ['%users%' => implode(', ', $users)]);
                 }
             }
         } catch (AccessDeniedException $ade) {
         }
 
         return new JsonResponse(['lock' => $nodeVersionIsLocked, 'message' => $message]);
+    }
+
+    protected function configure()
+    {
+        $this->getRequest()->attributes->set('_sonata_admin', 'hgabka_node.admin.node');
+        parent::configure();
     }
 
     /**
@@ -1183,7 +1197,7 @@ class NodeAdminController extends CRUDController
      */
     private function deleteNodeChildren(
         EntityManager $em,
-        BaseUser $user,
+        $user,
         $locale,
         ArrayCollection $children
     ) {
@@ -1231,27 +1245,7 @@ class NodeAdminController extends CRUDController
      */
     private function updateAcl($originalNode, $nodeNewPage)
     {
-        // @var MutableAclProviderInterface $aclProvider
-        $aclProvider = $this->container->get('security.acl.provider');
-        // @var ObjectIdentityRetrievalStrategyInterface $strategy
-        $strategy = $this->container->get(
-            'security.acl.object_identity_retrieval_strategy'
-        );
-        $originalIdentity = $strategy->getObjectIdentity($originalNode);
-        $originalAcl = $aclProvider->findAcl($originalIdentity);
-
-        $newIdentity = $strategy->getObjectIdentity($nodeNewPage);
-        $newAcl = $aclProvider->createAcl($newIdentity);
-
-        $aces = $originalAcl->getObjectAces();
-        // @var EntryInterface $ace
-        foreach ($aces as $ace) {
-            $securityIdentity = $ace->getSecurityIdentity();
-            if ($securityIdentity instanceof RoleSecurityIdentity) {
-                $newAcl->insertObjectAce($securityIdentity, $ace->getMask());
-            }
-        }
-        $aclProvider->updateAcl($newAcl);
+        $this->container->get(AclHelper::class)->updateAcl($originalNode, $nodeNewPage);
     }
 
     /**
@@ -1269,7 +1263,7 @@ class NodeAdminController extends CRUDController
         if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
-            $newPage->setTitle($this->get('translator')->trans('kuma_node.admin.new_page.title.default'));
+            $newPage->setTitle($this->get('translator')->trans('hg_node.admin.new_page.title.default'));
         }
         $this->em->persist($newPage);
         $this->em->flush();

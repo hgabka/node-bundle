@@ -8,6 +8,7 @@ use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\MaskBuilder;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Security\Acl\Domain\ObjectIdentityRetrievalStrategy;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
@@ -18,6 +19,21 @@ use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterfac
  */
 class InitAclCommand extends ContainerAwareCommand
 {
+    /** @var ObjectIdentityRetrievalStrategy */
+    protected $oiaStrategy;
+
+    /**
+     * @param ObjectIdentityRetrievalStrategy $oiaStrategy
+     *
+     * @return InitAclCommand
+     */
+    public function setOiaStrategy($oiaStrategy)
+    {
+        $this->oiaStrategy = $oiaStrategy;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +56,7 @@ class InitAclCommand extends ContainerAwareCommand
         // @var MutableAclProviderInterface $aclProvider
         $aclProvider = $this->getContainer()->get('security.acl.provider');
         // @var ObjectIdentityRetrievalStrategyInterface $oidStrategy
-        $oidStrategy = $this->getContainer()->get('security.acl.object_identity_retrieval_strategy');
+        $oidStrategy = $this->oiaStrategy;
 
         // Fetch all nodes & grant access
         $nodes = $em->getRepository(Node::class)->findAll();

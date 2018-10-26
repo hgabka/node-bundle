@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Command;
 
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
+use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,12 +46,12 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
                     $nodeTranslation = $queuedNodeTranslationAction->getNodeTranslation();
                     switch ($action) {
                         case QueuedNodeTranslationAction::ACTION_PUBLISH:
-                            $this->getContainer()->get('hgabka_node.admin_node.publisher')->publish($nodeTranslation, $user);
+                            $this->getContainer()->get(NodeAdminPublisher::class)->publish($nodeTranslation, $user);
                             $output->writeln('Published the page '.$nodeTranslation->getTitle());
 
                             break;
                         case QueuedNodeTranslationAction::ACTION_UNPUBLISH:
-                            $this->getContainer()->get('hgabka_node.admin_node.publisher')->unPublish($nodeTranslation);
+                            $this->getContainer()->get(NodeAdminPublisher::class)->unPublish($nodeTranslation);
                             $output->writeln('Unpublished the page '.$nodeTranslation->getTitle());
 
                             break;

@@ -76,7 +76,7 @@ class NodeTranslation implements EntityInterface
     /**
      * @var NodeVersion
      *
-     * @ORM\ManyToOne(targetEntity="NodeVersion")
+     * @ORM\ManyToOne(targetEntity="NodeVersion", fetch="EAGER")
      * @ORM\JoinColumn(name="public_node_version_id", referencedColumnName="id")
      */
     protected $publicNodeVersion;

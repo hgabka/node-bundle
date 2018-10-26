@@ -150,7 +150,7 @@ class URLHelper
     private function getNodeTranslationMap()
     {
         if (null === $this->nodeTranslationMap) {
-            $sql = 'SELECT id, url, lang FROM kuma_node_translations';
+            $sql = 'SELECT id, url, lang FROM hg_node_node_translations';
             $stmt = $this->em->getConnection()->prepare($sql);
             $stmt->execute();
             $this->nodeTranslationMap = $stmt->fetchAll();
