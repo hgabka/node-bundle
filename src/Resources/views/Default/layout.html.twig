@@ -1,2 +1,36 @@
 {% extends '@HgabkaUtils/Default/layout.html.twig' %}
+{% block breadcrumb %}
+    {% set breadcrumbitems = adminmenu.breadcrumb %}
+    {% if breadcrumbitems | length > 0 %}
+        <div class="hidden-xs">
+            <ol class="nav navbar-top-links breadcrumb">
+                <li>
+                    <a href="{{ path('sonata_admin_dashboard') }}">{{ 'link_breadcrumb_dashboard' | trans({}, 'SonataAdminBundle') | raw }}</a>
+                </li>
+                {% for breadcrumbitem in breadcrumbitems %}
+                    {% if block('breadcrumb_between') is defined %}
+                        {{ block('breadcrumb_between') }}
+                    {% endif %}
+                    {% if loop.last %}
+                        <li class="active">
+                            {{ breadcrumbitem.label | trans }}
+                        </li>
+                    {% else %}
+                        <li>
+                            {% if  breadcrumbitem.route %}
+                                <a href="{{ path(breadcrumbitem.route, breadcrumbitem.routeparams) }}">
+                                    {{ breadcrumbitem.label | trans }}
+                                </a>
+                            {% else %}
+                                <span>{{ breadcrumbitem.label | trans }}</span>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
 

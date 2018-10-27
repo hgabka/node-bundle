@@ -231,7 +231,7 @@ class NodeAdminPublisher
         HasNodeInterface $page,
         NodeTranslation $nodeTranslation,
         NodeVersion $nodeVersion,
-        BaseUser $user
+        $user
     ) {
         $newPublicPage = $this->cloneHelper->deepCloneAndSave($page);
         $newNodeVersion = $this->em->getRepository(NodeVersion::class)->createNodeVersionFor(

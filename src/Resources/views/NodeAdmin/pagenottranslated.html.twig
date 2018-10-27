@@ -1,6 +1,6 @@
-{% extends '@KunstmaanAdmin/Default/layout.html.twig' %}
+{% extends '@HgabkaNode/Default/layout.html.twig' %}
 
-{% block content %}
+{% block admin_content %}
     <h1>
         {{ 'pages.pagenottranslated' | trans }}
     </h1>
@@ -10,14 +10,14 @@
             {% for nodeTranslation in nodeTranslations %}
                 <li>
                     {{ 'pages.copyfrom' | trans }}
-                    <a href="{{ path('KunstmaanNodeBundle_nodes_copyfromotherlanguage', { 'id': node.id, 'originallanguage': nodeTranslation.lang}) }}" class="js-prevent-double-click">
-                        {{ nodeTranslation.lang -}}
+                    <a href="{{ path('HgabkaNodeBundle_nodes_copyfromotherlanguage', { 'id': node.id, 'originallanguage': nodeTranslation.lang}) }}" class="js-prevent-double-click">
+                        {{ locale_display_name(nodeTranslation.lang) -}}
                     </a>:
                     {{ nodeTranslation.title }}
                 </li>
             {% endfor %}
             <li>
-                <a href="{{ path('KunstmaanNodeBundle_nodes_createemptypage', { 'id': node.id}) }}" class="js-prevent-double-click">
+                <a href="{{ path('HgabkaNodeBundle_nodes_createemptypage', { 'id': node.id}) }}" class="js-prevent-double-click">
                     {{ 'pages.createemptypage' | trans }}
                 </a>
             </li>

@@ -26,6 +26,7 @@ use Hgabka\UtilsBundle\AdminList\AdminListFactory;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\FlashMessages\FlashTypes;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
+use Hgabka\UtilsBundle\Helper\CloneHelper;
 use Hgabka\UtilsBundle\Helper\FormWidgets\FormWidget;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
@@ -148,7 +149,7 @@ class NodeAdminController extends CRUDController
         $otherLanguageNodeTranslation = $node->getNodeTranslation($originalLanguage, true);
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
-        $myLanguagePage = $this->get('kunstmaan_admin.clone.helper')
+        $myLanguagePage = $this->get(CloneHelper::class)
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
