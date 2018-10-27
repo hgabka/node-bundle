@@ -78,11 +78,11 @@ class PageMenuAdaptor implements MenuAdaptorInterface
         if (null === $parent) {
             $menuItem = new TopMenuItem($menu);
             $menuItem
-                ->setRoute('HgabkaNodeBundle_nodes')
+                ->setRoute('admin_hgabka_node_node_list')
                 ->setUniqueId('pages')
                 ->setLabel('pages.title')
                 ->setParent($parent);
-            if (0 === stripos($request->attributes->get('_route'), $menuItem->getRoute()) || 'admin_hgabka_node_node_list' === $request->attributes->get('_route')) {
+            if (0 === stripos($request->attributes->get('_route'), 'HgabkaNodeBundle_nodes') || 'admin_hgabka_node_node_list' === $request->attributes->get('_route')) {
                 $menuItem->setActive(true);
             }
             $children[] = $menuItem;
@@ -95,7 +95,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
             );
             $activeNodeIds = $this->getActiveNodeIds($request);
 
-            if ('HgabkaNodeBundle_nodes' === $parent->getRoute() && isset($treeNodes[0])) {
+            if (('HgabkaNodeBundle_nodes' === $parent->getRoute() || 'admin_hgabka_node_node_list' === $parent->getRoute()) && isset($treeNodes[0])) {
                 $this->processNodes(
                     $menu,
                     $children,

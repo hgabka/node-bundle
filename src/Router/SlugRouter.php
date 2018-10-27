@@ -23,6 +23,10 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class SlugRouter implements RouterInterface
 {
+    const STRATEGY_PREFIX = 'prefix';
+    const STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
+    const STRATEGY_CUSTOM = 'custom';
+
     public static $SLUG = '_slug';
     public static $SLUG_PREVIEW = '_slug_preview';
 
@@ -49,11 +53,11 @@ class SlugRouter implements RouterInterface
      *
      * @param ContainerInterface $container
      */
-    public function __construct($container)
+    public function __construct($container, HgabkaUtils $hgabkaUtils)
     {
         $this->container = $container;
         $this->slugPattern = "[a-zA-Z0-9\-_\/]*";
-        $this->hgabkaUtils = $container->get(HgabkaUtils::class);
+        $this->hgabkaUtils = $hgabkaUtils;
     }
 
     /**
@@ -76,6 +80,7 @@ class SlugRouter implements RouterInterface
         $result = $urlMatcher->match($pathinfo);
 
         if (!empty($result)) {
+            /** @var NodeTranslation $nodeTranslation */
             $nodeTranslation = $this->getNodeTranslation($result);
             if (null === $nodeTranslation) {
                 throw new ResourceNotFoundException(
@@ -83,6 +88,9 @@ class SlugRouter implements RouterInterface
                 );
             }
             $result['_nodeTranslation'] = $nodeTranslation;
+            if (!isset($result['_locale']) || $result['_locale'] !== $nodeTranslation->getLang()) {
+                $result['_locale'] = $nodeTranslation->getLang();
+            }
         }
 
         return $result;
@@ -131,6 +139,11 @@ class SlugRouter implements RouterInterface
      */
     public function generate($name, $parameters = [], $referenceType = UrlGenerator::ABSOLUTE_PATH)
     {
+        $strategy = $this->getRouteConfig()['strategy'];
+        $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
+        if (\in_array($name, ['_slug', '_slug_preview'], true) && $this->hgabkaUtils->getAvailableLocales() > 1 && $prefixed) {
+            $name .= '_'.$this->hgabkaUtils->getCurrentLocale();
+        }
         $this->urlGenerator = new UrlGenerator(
             $this->getRouteCollection(),
             $this->getContext()
@@ -147,10 +160,23 @@ class SlugRouter implements RouterInterface
     public function getRouteCollection()
     {
         if (null === $this->routeCollection) {
+            $strategy = $this->getRouteConfig()['strategy'];
+            $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
             $this->routeCollection = new RouteCollection();
-
-            $this->addPreviewRoute();
-            $this->addSlugRoute();
+            $allLocales = $this->hgabkaUtils->getAvailableLocales();
+            if (\count($allLocales) < 2 || !$prefixed) {
+                $this->addPreviewRoute();
+                $this->addSlugRoute();
+            } else {
+                foreach ($allLocales as $locale) {
+                    if ($locale !== $this->hgabkaUtils->getDefaultLocale()) {
+                        $this->addPreviewRoute($locale, $prefixed);
+                        $this->addSlugRoute($locale, $prefixed);
+                    }
+                }
+                $this->addPreviewRoute($this->hgabkaUtils->getDefaultLocale(), self::STRATEGY_PREFIX === $strategy);
+                $this->addSlugRoute($this->hgabkaUtils->getDefaultLocale(), self::STRATEGY_PREFIX === $strategy);
+            }
         }
 
         return $this->routeCollection;
@@ -172,35 +198,52 @@ class SlugRouter implements RouterInterface
 
     /**
      * Add the preview route to the route collection.
+     *
+     * @param null|mixed $locale
+     * @param mixed      $addLocale
      */
-    protected function addPreviewRoute()
+    protected function addPreviewRoute($locale = null, $addLocale = true)
     {
-        $routeParameters = $this->getPreviewRouteParameters();
-        $this->addRoute(self::$SLUG_PREVIEW, $routeParameters);
+        $routeParameters = $this->getPreviewRouteParameters($locale, $addLocale);
+        $this->addRoute(self::$SLUG_PREVIEW.($locale ? '_'.$locale : ''), $routeParameters);
     }
 
     /**
      * Add the slug route to the route collection.
+     *
+     * @param null|mixed $locale
+     * @param mixed      $addLocale
      */
-    protected function addSlugRoute()
+    protected function addSlugRoute($locale = null, $addLocale = true)
     {
-        $routeParameters = $this->getSlugRouteParameters();
-        $this->addRoute(self::$SLUG, $routeParameters);
+        $routeParameters = $this->getSlugRouteParameters($locale, $addLocale);
+        $this->addRoute(self::$SLUG.($locale ? '_'.$locale : ''), $routeParameters);
     }
 
     /**
      * Return preview route parameters.
      *
+     * @param null|mixed $locale
+     * @param mixed      $addLocale
+     *
      * @return array
      */
-    protected function getPreviewRouteParameters()
+    protected function getPreviewRouteParameters($locale = null, $addLocale = false)
     {
-        $previewPath = sprintf('/preview/{url}');
+        $previewPath = '/preview'.$this->adjustPath($this->getRoutePattern());
+        if ($locale) {
+            if ($addLocale) {
+                $previewPath = '/'.$locale.str_replace('/{_locale}', '', $previewPath);
+            } else {
+                $previewPath = str_replace('/{_locale}', '', $previewPath);
+            }
+        }
+
         $previewDefaults = [
             '_controller' => 'HgabkaNodeBundle:Slug:slug',
             'preview' => true,
             'url' => '',
-            '_locale' => $this->getDefaultLocale(),
+            '_locale' => $locale ?: $this->getDefaultLocale(),
         ];
         $previewRequirements = [
             'url' => $this->getSlugPattern(),
@@ -216,16 +259,28 @@ class SlugRouter implements RouterInterface
     /**
      * Return slug route parameters.
      *
+     * @param null|mixed $locale
+     * @param mixed      $addLocale
+     *
      * @return array
      */
-    protected function getSlugRouteParameters()
+    protected function getSlugRouteParameters($locale = null, $addLocale = false)
     {
-        $slugPath = '/{url}';
+        $slugPath = $this->adjustPath($this->getRoutePattern());
+
+        if ($locale) {
+            if ($addLocale) {
+                $slugPath = '/'.$locale.str_replace('/{_locale}', '', $slugPath);
+            } else {
+                $slugPath = str_replace('/{_locale}', '', $slugPath);
+            }
+        }
+
         $slugDefaults = [
             '_controller' => 'HgabkaNodeBundle:Slug:slug',
             'preview' => false,
             'url' => '',
-            '_locale' => $this->getDefaultLocale(),
+            '_locale' => $locale ?: $this->getDefaultLocale(),
         ];
         $slugRequirements = [
             'url' => $this->getSlugPattern(),
@@ -236,6 +291,31 @@ class SlugRouter implements RouterInterface
             'defaults' => $slugDefaults,
             'requirements' => $slugRequirements,
         ];
+    }
+
+    protected function adjustPath($path)
+    {
+        return '/{_locale}'.str_replace('/{_locale}', '', $path);
+    }
+
+    protected function getRouteConfig()
+    {
+        return $this->container->getParameter('hgabka_node.route_config');
+    }
+
+    protected function getRoutePattern()
+    {
+        $pattern = $this->getRouteConfig()['pattern'];
+        if (isset($pattern[$this->hgabkaUtils->getCurrentLocale()])) {
+            $slugPattern = $pattern[$this->hgabkaUtils->getCurrentLocale()];
+        } else {
+            $slugPattern = $pattern['default'];
+        }
+
+        return \count($this->hgabkaUtils->getAvailableLocales()) < 2
+            ? str_replace('/{_locale}', '', $slugPattern)
+            : $slugPattern
+            ;
     }
 
     /**

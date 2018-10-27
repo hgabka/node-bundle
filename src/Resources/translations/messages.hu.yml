@@ -26,6 +26,13 @@ modal:
 
 pages:
     copynotavailable: Másolás nem lehetséges
+    title: Oldalak
+    parts: Oldalelem
+    draft: Piszkozat
+    pagenottranslated: Az oldal nincs lefordítva
+    copyfrom: Másolás innen
+    createemptypage: Üres oldal létrehozása
+    movingconfirmation: Biztos, hogy áthelyezi az oldalt?
 
 "This list contains all the pages, chronologically ordered by updated date.": "A lista az összes oldalt tartalmazza az utolsó frissítés idejének sorrendjében."
 

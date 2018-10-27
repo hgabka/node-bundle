@@ -98,7 +98,7 @@ services:
 
     hgabka_node.slugrouter:
         class: '%hgabka_node.slugrouter.class%'
-        arguments: ['@service_container']
+        arguments: ['@service_container', '@hgabka_utils.hgabka_utils']
         tags:
             - { name: router, priority: 100 }
 

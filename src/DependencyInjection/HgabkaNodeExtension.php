@@ -43,6 +43,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('hgabka_node.lock_threshold', $config['lock']['threshold']);
         $container->setParameter('hgabka_node.lock_enabled', $config['lock']['enabled']);
         $container->setParameter('hgabka_node.user_entity_class', $config['user_entity_class']);
+        $container->setParameter('hgabka_node.route_config', $config['route']);
 
         $loader->load('services.yml');
     }
