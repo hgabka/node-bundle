@@ -37,6 +37,9 @@ pages:
 "This list contains all the pages, chronologically ordered by updated date.": "A lista az összes oldalt tartalmazza az utolsó frissítés idejének sorrendjében."
 
 hg_node:
+    version:
+        public: publikus
+        draft: piszkozat
     title: Oldalak
     group: CMS
     form:
@@ -70,6 +73,9 @@ hg_node:
         offline.raw: Nem elérhető
         "go_to_draft_version.%url%.raw": Ugrás a <a href="%url%">piszkozat verzióhoz</a>
     admin:
+        node:
+            label: CMS oldalak
+            list: Adminisztráció
         publish:
             flash:
                 success_published: Az oldal nyilvános

@@ -8,9 +8,23 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NodeMenuTabAdminType extends AbstractType
 {
+    /** @var AuthorizationCheckerInterface */
+    protected $authChecker;
+
+    /**
+     * NodeMenuTabAdminType constructor.
+     *
+     * @param AuthorizationCheckerInterface $authChecker
+     */
+    public function __construct(AuthorizationCheckerInterface $authChecker)
+    {
+        $this->authChecker = $authChecker;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -23,10 +37,12 @@ class NodeMenuTabAdminType extends AbstractType
                 'required' => false,
             ]);
         }
-        $builder->add('internalName', TextType::class, [
-            'label' => 'hg_node.form.menu_tab.internal_name.label',
-            'required' => false,
-        ]);
+        if ($this->authChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $builder->add('internalName', TextType::class, [
+                'label' => 'hg_node.form.menu_tab.internal_name.label',
+                'required' => false,
+            ]);
+        }
     }
 
     /**

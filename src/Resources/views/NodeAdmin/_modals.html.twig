@@ -185,7 +185,7 @@
                     {% set publicVersion = nodeTranslation.getPublicNodeVersion() %}
                     {% for nodeVersion in nodeVersions %}
                         <tr>
-                            <td>{{ nodeVersion.type }}</td>
+                            <td>{{ ('hg_node.version.'~nodeVersion.type)|trans }}</td>
                             <td>{{ nodeVersion.updated | date('Y-m-d H:i:s') }}</td>
                             <td>{{ nodeVersion.owner }}</td>
                             <td class="table__actions">

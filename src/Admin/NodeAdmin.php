@@ -15,6 +15,15 @@ class NodeAdmin extends AbstractAdmin
 {
     protected $baseRoutePattern = 'cms';
 
+    protected $accessMapping = [
+        'copy' => 'COPY',
+        'duplicate' => 'DUPLICATE',
+        'publish' => 'PUBLISH',
+        'unpublish' => 'UNPUBLISH',
+        'revert' => 'REVERT',
+        'reorder' => 'REORDER',
+    ];
+
     public function createQuery($context = 'list')
     {
         /** @var QueryBuilder $queryBuilder */
@@ -45,5 +54,26 @@ class NodeAdmin extends AbstractAdmin
     public function configureRoutes(RouteCollection $collection)
     {
         $collection->add('edit_custom', $this->getRouterIdParameter().'/editCustom');
+    }
+
+    /**
+     * Get the list of actions that can be accessed directly from the dashboard.
+     *
+     * @return array
+     */
+    public function getDashboardActions()
+    {
+        $actions = [];
+
+        if ($this->hasAccess('list')) {
+            $actions['list'] = [
+                'label' => 'hg_node.admin.node.list',
+                'translation_domain' => 'messages',
+                'url' => $this->generateUrl('list'),
+                'icon' => 'list',
+            ];
+        }
+
+        return $actions;
     }
 }
