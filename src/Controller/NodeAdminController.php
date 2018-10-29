@@ -855,10 +855,12 @@ class NodeAdminController extends CRUDController
         $request = $this->getRequest();
 
         $this->init($request);
+
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
         $this->admin->checkAccess('edit', $node);
         $preResponse = $this->preEdit($request, $node);
+
         if (null !== $preResponse) {
             return $preResponse;
         }
@@ -1043,7 +1045,7 @@ class NodeAdminController extends CRUDController
             QueuedNodeTranslationAction::class
         )->findOneBy(['nodeTranslation' => $nodeTranslation]);
 
-        return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit.html.twig', [
+        $params = [
             'page' => $page,
             'entityname' => ClassLookup::getClass($page),
             'nodeVersions' => $nodeVersions,
@@ -1058,7 +1060,9 @@ class NodeAdminController extends CRUDController
             'queuedNodeTranslationAction' => $queuedNodeTranslationAction,
             'nodeVersionLockCheck' => $this->container->getParameter('hgabka_node.lock_enabled'),
             'nodeVersionLockInterval' => $this->container->getParameter('hgabka_node.lock_check_interval'),
-        ]);
+        ];
+
+        return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit'.($request->isXmlHttpRequest() ? 'Ajax' : '').'.html.twig', $params);
     }
 
     /**
