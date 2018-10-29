@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Helper\Menu;
 
 use Doctrine\ORM\EntityManager;
+use Hgabka\NodeBundle\Admin\NodeAdmin;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Event\ConfigureActionMenuEvent;
@@ -11,12 +12,18 @@ use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Sonata\AdminBundle\Admin\Pool;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ActionsMenuBuilder
 {
+    /** @var Pool */
+    protected $adminPool;
+
+    /** @var NodeAdmin */
+    protected $nodeAdmin;
     /**
      * @var FactoryInterface
      */
@@ -71,7 +78,8 @@ class ActionsMenuBuilder
         RouterInterface $router,
         EventDispatcherInterface $dispatcher,
         AuthorizationCheckerInterface $authorizationChecker,
-        PagesConfiguration $pagesConfiguration
+        PagesConfiguration $pagesConfiguration,
+        Pool $adminPool
     ) {
         $this->factory = $factory;
         $this->em = $em;
@@ -79,6 +87,8 @@ class ActionsMenuBuilder
         $this->dispatcher = $dispatcher;
         $this->authorizationChecker = $authorizationChecker;
         $this->pagesConfiguration = $pagesConfiguration;
+        $this->adminPool = $adminPool;
+        $this->nodeAdmin = $adminPool->getAdminByAdminCode('hgabka_node.admin.node');
     }
 
     /**
@@ -124,9 +134,11 @@ class ActionsMenuBuilder
 
         $translations = $activeNodeVersion->getNodeTranslation()->getNode()->getNodeTranslations(true);
         $canRecopy = false;
-        foreach ($translations as $translation) {
-            if ($translation->getLang() !== $activeNodeVersion->getNodeTranslation()->getLang()) {
-                $canRecopy = true;
+        if ($this->nodeAdmin->hasAccess('copy')) {
+            foreach ($translations as $translation) {
+                if ($translation->getLang() !== $activeNodeVersion->getNodeTranslation()->getLang()) {
+                    $canRecopy = true;
+                }
             }
         }
 
@@ -160,8 +172,8 @@ class ActionsMenuBuilder
         )->findOneBy(['nodeTranslation' => $activeNodeTranslation]);
 
         $isFirst = true;
-        $canEdit = $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_EDIT, $node);
-        $canPublish = $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_PUBLISH, $node);
+        $canEdit = $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_EDIT, $node) && $this->nodeAdmin->hasAccess('edit');
+        $canPublish = $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_PUBLISH, $node) && $this->nodeAdmin->hasAccess('publish');
 
         if ($activeNodeVersion->isDraft() && $this->isEditableNode) {
             if ($canEdit) {
@@ -260,6 +272,7 @@ class ActionsMenuBuilder
                         PermissionMap::PERMISSION_UNPUBLISH,
                         $node
                     )
+                    && $this->nodeAdmin->hasAccess('unpublish')
                 ) {
                     $menu->addChild(
                         'action.unpublish',
@@ -322,6 +335,7 @@ class ActionsMenuBuilder
         if ($this->pagesConfiguration->getPossibleChildTypes(
             $node->getRefEntityName()
         )
+            && $this->nodeAdmin->hasAccess('create')
         ) {
             $menu->addChild(
                 'action.addsubpage',
@@ -338,7 +352,7 @@ class ActionsMenuBuilder
             );
         }
 
-        if (null !== $node->getParent() && $canEdit) {
+        if (null !== $node->getParent() && $canEdit && $this->nodeAdmin->hasAccess('duplicate')) {
             $menu->addChild(
                 'action.duplicate',
                 [
@@ -359,6 +373,8 @@ class ActionsMenuBuilder
                 PermissionMap::PERMISSION_DELETE,
                 $node
             )
+            && $this->nodeAdmin->hasAccess('delete')
+            && (empty($node->getInternalName()) || $this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN'))
         ) {
             $menu->addChild(
                 'action.delete',

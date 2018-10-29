@@ -59,7 +59,7 @@ services:
 
     Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder:
         public: true
-        arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration' ]
+        arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration', '@sonata.admin.pool' ]
 
     hgabka_node.menu.sub_actions:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
@@ -123,11 +123,14 @@ services:
             - [ setACLPermissionCreatorService, [ '@hgabka_node.acl_permission_creator_service' ] ]
             - [ setUserEntityClass, [ '%fos_user.model.user.class%' ] ]
 
-    hgabka_node.acl_permission_creator_service:
-        class: Hgabka\NodeBundle\Helper\Services\ACLPermissionCreatorService
+    Hgabka\NodeBundle\Helper\Services\ACLPermissionCreatorService:
+        public: true
         calls:
             - [ setAclProvider, [ '@security.acl.provider' ] ]
             - [ setObjectIdentityRetrievalStrategy, [ '@security.acl.object_identity_retrieval_strategy' ] ]
+
+    hgabka_node.acl_permission_creator_service:
+        alias: Hgabka\NodeBundle\Helper\Services\ACLPermissionCreatorService
 
     hgabka_node.doctrine_mapping.listener:
         class: Hgabka\NodeBundle\EventListener\MappingListener
@@ -210,3 +213,7 @@ services:
 
     hgabka_node.admin_node.publisher:
         alias: Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher
+
+    Hgabka\NodeBundle\Form\NodeMenuTabAdminType:
+        autowire: true
+        autoconfigure: true

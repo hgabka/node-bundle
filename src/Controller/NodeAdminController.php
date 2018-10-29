@@ -10,6 +10,7 @@ use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
+use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Event\AdaptFormEvent;
 use Hgabka\NodeBundle\Event\CopyPageTranslationNodeEvent;
 use Hgabka\NodeBundle\Event\Events;
@@ -21,6 +22,7 @@ use Hgabka\NodeBundle\Form\NodeMenuTabTranslationAdminType;
 use Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper;
+use Hgabka\NodeBundle\Helper\Services\ACLPermissionCreatorService;
 use Hgabka\NodeBundle\Repository\NodeVersionRepository;
 use Hgabka\UtilsBundle\AdminList\AdminListFactory;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
@@ -141,6 +143,7 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
+        $this->admin->checkAccess('copy');
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
@@ -193,19 +196,21 @@ class NodeAdminController extends CRUDController
     public function recopyFromOtherLanguageAction(Request $request, $id)
     {
         $this->init($request);
+
+        $this->admin->checkAccess('copy');
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
-        $otherLanguageNodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')->find($request->get('source'));
+        $otherLanguageNodeTranslation = $this->em->getRepository(NodeTranslation::class)->find($request->get('source'));
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
-        $myLanguagePage = $this->get('kunstmaan_admin.clone.helper')
+        $myLanguagePage = $this->get(CloneHelper::class)
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
             ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -246,7 +251,8 @@ class NodeAdminController extends CRUDController
     {
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $this->admin->checkAccess('create');
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -258,7 +264,7 @@ class NodeAdminController extends CRUDController
         $this->em->persist($myLanguagePage);
         $this->em->flush();
         // @var NodeTranslation $nodeTranslation
-        $nodeTranslation = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
+        $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -286,8 +292,9 @@ class NodeAdminController extends CRUDController
     public function publishAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('publish');
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->get('request_stack')->getCurrentRequest();
@@ -335,8 +342,9 @@ class NodeAdminController extends CRUDController
     public function unPublishAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('unpublish');
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->get('request_stack')->getCurrentRequest();
@@ -377,9 +385,10 @@ class NodeAdminController extends CRUDController
     public function unSchedulePublishAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('publish');
 
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $this->get(NodeAdminPublisher::class)->unSchedulePublish($nodeTranslation);
@@ -411,9 +420,11 @@ class NodeAdminController extends CRUDController
     public function deleteAction($id)
     {
         $request = $this->getRequest();
+        $this->admin->checkAccess('delete');
+
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_DELETE, $node);
 
@@ -463,7 +474,6 @@ class NodeAdminController extends CRUDController
      *      requirements={"id" = "\d+"},
      *      name="HgabkaNodeBundle_nodes_duplicate"
      * )
-     * @Template()
      * @Method("POST")
      *
      * @param Request $request
@@ -476,8 +486,10 @@ class NodeAdminController extends CRUDController
     public function duplicateAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('duplicate');
+
         // @var Node $parentNode
-        $originalNode = $this->em->getRepository('HgabkaNodeBundle:Node')
+        $originalNode = $this->em->getRepository(Node::class)
             ->find($id);
 
         // Check with Acl
@@ -487,7 +499,7 @@ class NodeAdminController extends CRUDController
 
         $originalNodeTranslations = $originalNode->getNodeTranslation($this->locale, true);
         $originalRef = $originalNodeTranslations->getPublicNodeVersion()->getRef($this->em);
-        $newPage = $this->get('kunstmaan_admin.clone.helper')
+        $newPage = $this->get(CloneHelper::class)
             ->deepCloneAndSave($originalRef);
 
         //set the title
@@ -506,7 +518,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')->createNodeFor(
+        $nodeNewPage = $this->em->getRepository(Node::class)->createNodeFor(
             $newPage,
             $this->locale,
             $this->user
@@ -552,8 +564,10 @@ class NodeAdminController extends CRUDController
     public function revertAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('revert');
+
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
@@ -564,7 +578,7 @@ class NodeAdminController extends CRUDController
         }
 
         // @var NodeVersionRepository $nodeVersionRepo
-        $nodeVersionRepo = $this->em->getRepository('HgabkaNodeBundle:NodeVersion');
+        $nodeVersionRepo = $this->em->getRepository(NodeVersion::class);
         // @var NodeVersion $nodeVersion
         $nodeVersion = $nodeVersionRepo->find($version);
 
@@ -576,7 +590,7 @@ class NodeAdminController extends CRUDController
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $page = $nodeVersion->getRef($this->em);
         // @var HasNodeInterface $clonedPage
-        $clonedPage = $this->get('kunstmaan_admin.clone.helper')
+        $clonedPage = $this->get(CloneHelper::class)
             ->deepCloneAndSave($page);
         $newNodeVersion = $nodeVersionRepo->createNodeVersionFor(
             $clonedPage,
@@ -624,7 +638,6 @@ class NodeAdminController extends CRUDController
      *      requirements={"id" = "\d+"},
      *      name="HgabkaNodeBundle_nodes_add"
      * )
-     * @Template()
      * @Method("POST")
      *
      * @param Request $request
@@ -638,8 +651,10 @@ class NodeAdminController extends CRUDController
     public function addAction(Request $request, $id)
     {
         $this->init($request);
+        $this->admin->checkAccess('create');
+
         // @var Node $parentNode
-        $parentNode = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $parentNode = $this->em->getRepository(Node::class)->find($id);
 
         // Check with Acl
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $parentNode);
@@ -653,13 +668,13 @@ class NodeAdminController extends CRUDController
         $newPage->setParent($parentPage);
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')
+        $nodeNewPage = $this->em->getRepository(Node::class)
             ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
         );
-        $weight = $this->em->getRepository('HgabkaNodeBundle:NodeTranslation')
+        $weight = $this->em->getRepository(NodeTranslation::class)
                 ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
         $nodeTranslation->setWeight($weight);
 
@@ -694,7 +709,6 @@ class NodeAdminController extends CRUDController
 
     /**
      * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage")
-     * @Template()
      * @Method("POST")
      *
      * @throws AccessDeniedException
@@ -714,7 +728,7 @@ class NodeAdminController extends CRUDController
         $newPage = $this->createNewPage($request, $type);
 
         // @var Node $nodeNewPage
-        $nodeNewPage = $this->em->getRepository('HgabkaNodeBundle:Node')
+        $nodeNewPage = $this->em->getRepository(Node::class)
             ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
@@ -723,7 +737,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         // Set default permissions
-        $this->get('kunstmaan_node.acl_permission_creator_service')
+        $this->get(ACLPermissionCreatorService::class)
             ->createPermission($nodeNewPage);
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
@@ -759,13 +773,14 @@ class NodeAdminController extends CRUDController
     public function reorderAction(Request $request)
     {
         $this->init($request);
+        $this->admin->checkAccess('reorder');
         $nodes = [];
         $nodeIds = $request->get('nodes');
         $changeParents = $request->get('parent');
 
         foreach ($nodeIds as $id) {
             // @var Node $node
-            $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+            $node = $this->em->getRepository(Node::class)->find($id);
             $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
             $nodes[] = $node;
         }
@@ -774,7 +789,7 @@ class NodeAdminController extends CRUDController
         foreach ($nodes as $node) {
             $newParentId = isset($changeParents[$node->getId()]) ? $changeParents[$node->getId()] : null;
             if ($newParentId) {
-                $parent = $this->em->getRepository('HgabkaNodeBundle:Node')->find($newParentId);
+                $parent = $this->em->getRepository(Node::class)->find($newParentId);
                 $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $parent);
                 $node->setParent($parent);
                 $this->em->persist($node);
@@ -841,7 +856,7 @@ class NodeAdminController extends CRUDController
 
         $this->init($request);
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
         $this->admin->checkAccess('edit', $node);
         $preResponse = $this->preEdit($request, $node);
         if (null !== $preResponse) {
@@ -1019,13 +1034,13 @@ class NodeAdminController extends CRUDController
         }
 
         $nodeVersions = $this->em->getRepository(
-            'HgabkaNodeBundle:NodeVersion'
+            NodeVersion::class
         )->findBy(
             ['nodeTranslation' => $nodeTranslation],
             ['updated' => 'ASC']
         );
         $queuedNodeTranslationAction = $this->em->getRepository(
-            'HgabkaNodeBundle:QueuedNodeTranslationAction'
+            QueuedNodeTranslationAction::class
         )->findOneBy(['nodeTranslation' => $nodeTranslation]);
 
         return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit.html.twig', [
@@ -1064,9 +1079,9 @@ class NodeAdminController extends CRUDController
         $nodeVersionIsLocked = false;
         $message = '';
         $this->init($request);
-
+        $this->admin->checkAccess('edit');
         // @var Node $node
-        $node = $this->em->getRepository('HgabkaNodeBundle:Node')->find($id);
+        $node = $this->em->getRepository(Node::class)->find($id);
 
         try {
             $this->checkPermission($node, PermissionMap::PERMISSION_EDIT);
@@ -1140,12 +1155,12 @@ class NodeAdminController extends CRUDController
         NodeTranslation $nodeTranslation,
         NodeVersion $nodeVersion
     ) {
-        $publicPage = $this->get('kunstmaan_admin.clone.helper')
+        $publicPage = $this->get(CloneHelper::class)
             ->deepCloneAndSave($page);
         // @var NodeVersion $publicNodeVersion
 
         $publicNodeVersion = $this->em->getRepository(
-            'HgabkaNodeBundle:NodeVersion'
+            NodeVersion::class
         )->createNodeVersionFor(
             $publicPage,
             $nodeTranslation,
@@ -1310,7 +1325,7 @@ class NodeAdminController extends CRUDController
 
             if ($parentNodeTranslation) {
                 $parentsAreOk = $this->em->getRepository(
-                    'HgabkaNodeBundle:NodeTranslation'
+                    NodeTranslation::class
                 )->hasParentNodeTranslationsForLanguage(
                     $node->getParent()->getNodeTranslation(
                         $this->locale,
@@ -1324,7 +1339,7 @@ class NodeAdminController extends CRUDController
         }
 
         return $this->render(
-            'HgabkaNodeBundle:NodeAdmin:pagenottranslated.html.twig',
+            '@HgabkaNode/NodeAdmin/pagenottranslated.html.twig',
             [
                 'node' => $node,
                 'nodeTranslations' => $node->getNodeTranslations(
