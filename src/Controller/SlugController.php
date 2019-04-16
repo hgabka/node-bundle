@@ -4,7 +4,6 @@ namespace Hgabka\NodeBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
@@ -14,7 +13,9 @@ use Hgabka\NodeBundle\Event\SlugSecurityEvent;
 use Hgabka\NodeBundle\Helper\NodeMenu;
 use Hgabka\NodeBundle\Helper\RenderContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,6 +26,23 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class SlugController extends AbstractController
 {
+    /** @var NodeMenu */
+    protected $nodeMenu;
+
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
+    /**
+     * SlugController constructor.
+     *
+     * @param NodeMenu $nodeMenu
+     */
+    public function __construct(NodeMenu $nodeMenu, EventDispatcherInterface $dispatcher)
+    {
+        $this->nodeMenu = $nodeMenu;
+        $this->eventDispatcher = $dispatcher;
+    }
+
     /**
      * Handle the page requests.
      *
@@ -66,12 +84,12 @@ class SlugController extends AbstractController
             ->setRequest($request)
             ->setNodeTranslation($nodeTranslation);
 
-        $nodeMenu = $this->container->get(NodeMenu::class);
+        $nodeMenu = $this->nodeMenu;
         $nodeMenu->setLocale($locale);
         $nodeMenu->setCurrentNode($node);
         $nodeMenu->setIncludeOffline($preview);
 
-        $eventDispatcher = $this->get('event_dispatcher');
+        $eventDispatcher = $this->eventDispatcher;
         $eventDispatcher->dispatch(Events::SLUG_SECURITY, $securityEvent);
 
         //render page

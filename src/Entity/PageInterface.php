@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\Entity;
 
 use Hgabka\NodeBundle\Helper\RenderContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,5 +20,5 @@ interface PageInterface extends HasNodeInterface
      *
      * @return RedirectResponse|void
      */
-    public function service(ContainerInterface $container, Request $request, RenderContext $context);
+    public function service(ServiceLocator $container, Request $request, RenderContext $context);
 }

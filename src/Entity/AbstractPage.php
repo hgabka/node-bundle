@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Hgabka\NodeBundle\Form\PageAdminType;
 use Hgabka\NodeBundle\Helper\RenderContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -159,7 +160,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return RedirectResponse|void
      */
-    public function service(ContainerInterface $container, Request $request, RenderContext $context)
+    public function service(ServiceLocator $container, Request $request, RenderContext $context)
     {
     }
 

@@ -217,3 +217,8 @@ services:
     Hgabka\NodeBundle\Form\NodeMenuTabAdminType:
         autowire: true
         autoconfigure: true
+
+    Hgabka\NodeBundle\Controller\SlugController:
+        autoconfigure: true
+        autowire: true
+        tags: ['controller.service_arguments']
