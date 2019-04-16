@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * This controller is for showing frontend pages based on slugs.
  */
-class SlugController extends Controller
+class SlugController extends AbstractController
 {
     /**
      * Handle the page requests.
