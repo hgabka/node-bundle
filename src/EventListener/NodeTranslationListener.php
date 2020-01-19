@@ -301,7 +301,7 @@ class NodeTranslationListener
         );
 
         if ($translation->getUrl() === $translation->getFullSlug()) {
-            $this->logger->0ug(
+            $this->logger->debug(
                 'Evaluating URL for NT '.$translation->getId().
                 ' getUrl: \''.$translation->getUrl().'\' getFullSlug: \''.
                 $translation->getFullSlug().'\''
