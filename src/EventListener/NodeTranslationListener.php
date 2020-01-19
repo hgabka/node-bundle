@@ -237,7 +237,7 @@ class NodeTranslationListener
             return $nodeTranslation;
         }
 
-        $this->logger->addInfo(
+        $this->logger->info(
             'Found NT '.$nodeTranslation->getId().' needed NO change'
         );
 
@@ -301,7 +301,7 @@ class NodeTranslationListener
         );
 
         if ($translation->getUrl() === $translation->getFullSlug()) {
-            $this->logger->addDebug(
+            $this->logger->0ug(
                 'Evaluating URL for NT '.$translation->getId().
                 ' getUrl: \''.$translation->getUrl().'\' getFullSlug: \''.
                 $translation->getFullSlug().'\''
@@ -322,7 +322,7 @@ class NodeTranslationListener
             null
         );
 
-        $this->logger->addDebug(
+        $this->logger->debug(
             'Found '.\count(
                 $translations
             ).' node(s) that match url \''.$translation->getUrl().'\''
@@ -347,7 +347,7 @@ class NodeTranslationListener
             $newUrl = $translation->getFullSlug();
 
             $message = 'The URL of the page has been changed from '.$oldUrl.' to '.$newUrl.' since another page already uses this URL.';
-            $this->logger->addInfo($message);
+            $this->logger->info($message);
             $flashes[] = $message;
 
             $this->ensureUniqueUrl($translation, $em, $flashes);
