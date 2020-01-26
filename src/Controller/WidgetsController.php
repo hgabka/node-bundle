@@ -2,6 +2,7 @@
 
 namespace Hgabka\NodeBundle\Controller;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\StructureNode;
@@ -12,6 +13,7 @@ use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,6 +21,48 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WidgetsController extends AbstractController
 {
+    /** @var ParameterBagInterface */
+    protected $params;
+
+    /** @var ManagerRegistry */
+    protected $doctrine;
+
+    /** @var AclNativeHelper */
+    protected $aclHelper;
+
+    /** @var HgabkaUtils */
+    protected $hgabkaUtils;
+    /**
+     * WidgetsController constructor.
+     *
+     * @param ParameterBagInterface $params
+     */
+    public function __construct(ParameterBagInterface $params, ManagerRegistry $doctrine, AclNativeHelper $aclHelper, HgabkaUtils $hgabkaUtils)
+    {
+        $this->params = $params;
+        $this->doctrine = $doctrine;
+        $this->aclHelper = $aclHelper;
+        $this->hgabkaUtils = $hgabkaUtils;
+    }
+
+    protected function getDoctrine()
+    {
+        return $this->doctrine;
+    }
+
+    /**
+     * @return AclNativeHelper
+     */
+    public function getAclHelper(): AclNativeHelper
+    {
+        return $this->aclHelper;
+    }
+
+    protected function getParameter(string $name)
+    {
+        return $this->params->get($name);
+    }
+
     /**
      * @Route("/ckselecturl", name="HgabkaNodeBundle_ckselecturl")
      *
@@ -30,7 +74,7 @@ class WidgetsController extends AbstractController
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = true;
-        $params['multilanguage'] = \count($this->get(HgabkaUtils::class)->getAvailableLocales()) > 0;
+        $params['multilanguage'] = \count($this->hgabkaUtils->getAvailableLocales()) > 0;
 
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
@@ -48,7 +92,7 @@ class WidgetsController extends AbstractController
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = false;
-        $params['multilanguage'] = \count($this->get(HgabkaUtils::class)->getAvailableLocales()) > 0;
+        $params['multilanguage'] = \count($this->hgabkaUtils->getAvailableLocales()) > 0;
 
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
@@ -76,7 +120,7 @@ class WidgetsController extends AbstractController
             ->getAllMenuNodes(
                 $locale,
                 PermissionMap::PERMISSION_VIEW,
-                $this->get(AclNativeHelper::class),
+                $this->getAclHelper(),
                 true,
                 null
             );

@@ -222,3 +222,8 @@ services:
         autoconfigure: true
         autowire: true
         tags: ['controller.service_arguments']
+
+    Hgabka\NodeBundle\Controller\WidgetsController:
+        autoconfigure: true
+        autowire: true
+        tags: ['controller.service_arguments']
