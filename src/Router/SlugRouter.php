@@ -165,8 +165,8 @@ class SlugRouter implements RouterInterface
             $this->routeCollection = new RouteCollection();
             $allLocales = $this->hgabkaUtils->getAvailableLocales();
             if (\count($allLocales) < 2 || !$prefixed) {
-                $this->addPreviewRoute();
-                $this->addSlugRoute();
+                $this->addPreviewRoute(current($allLocales), false);
+                $this->addSlugRoute(current($allLocales), false);
             } else {
                 foreach ($allLocales as $locale) {
                     if ($locale !== $this->hgabkaUtils->getDefaultLocale()) {
