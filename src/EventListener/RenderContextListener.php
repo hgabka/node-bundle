@@ -89,7 +89,11 @@ class RenderContextListener
 
             $template = new Template([]);
             $template->setTemplate($entity->getDefaultView());
-
+            
+            if (empty($template->getOwner())) {
+                $template->setOwner([null, null]);
+            }
+            
             $request->attributes->set('_template', $template);
         }
     }
