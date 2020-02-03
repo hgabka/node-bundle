@@ -18,8 +18,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $root = $treeBuilder->root('hgabka_node');
+        $treeBuilder = new TreeBuilder('hgabka_node');
+        $root = $treeBuilder->getRootNode();
 
         // @var ArrayNodeDefinition $pages
         $root
