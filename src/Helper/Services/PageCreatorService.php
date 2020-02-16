@@ -117,7 +117,7 @@ class PageCreatorService
             $seoRepo = null;
         }
 
-        $pagecreator = array_key_exists('creator', $options) ? $options['creator'] : 'pagecreator';
+        $pagecreator = \array_key_exists('creator', $options) ? $options['creator'] : 'pagecreator';
         $creator = $userRepo->findOneBy(['username' => $pagecreator]);
 
         $parent = isset($options['parent']) ? $options['parent'] : null;
@@ -149,7 +149,7 @@ class PageCreatorService
                 // This returns the rootnode.
                 $rootNode = $nodeRepo->createNodeFor($pageTypeInstance, $language, $creator, $pageInternalName);
 
-                if (array_key_exists('hidden_from_nav', $options)) {
+                if (\array_key_exists('hidden_from_nav', $options)) {
                     $rootNode->setHiddenFromNav($options['hidden_from_nav']);
                 }
 

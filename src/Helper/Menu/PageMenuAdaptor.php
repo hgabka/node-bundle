@@ -106,7 +106,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
             } elseif ('HgabkaNodeBundle_nodes_edit' === $parent->getRoute()) {
                 $parentRouteParams = $parent->getRouteparams();
                 $parent_id = $parentRouteParams['id'];
-                if (array_key_exists($parent_id, $treeNodes)) {
+                if (\array_key_exists($parent_id, $treeNodes)) {
                     $this->processNodes(
                         $menu,
                         $children,

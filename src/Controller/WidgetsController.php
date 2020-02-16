@@ -32,6 +32,7 @@ class WidgetsController extends AbstractController
 
     /** @var HgabkaUtils */
     protected $hgabkaUtils;
+
     /**
      * WidgetsController constructor.
      *
@@ -45,22 +46,12 @@ class WidgetsController extends AbstractController
         $this->hgabkaUtils = $hgabkaUtils;
     }
 
-    protected function getDoctrine()
-    {
-        return $this->doctrine;
-    }
-
     /**
      * @return AclNativeHelper
      */
     public function getAclHelper(): AclNativeHelper
     {
         return $this->aclHelper;
-    }
-
-    protected function getParameter(string $name)
-    {
-        return $this->params->get($name);
     }
 
     /**
@@ -95,6 +86,16 @@ class WidgetsController extends AbstractController
         $params['multilanguage'] = \count($this->hgabkaUtils->getAvailableLocales()) > 0;
 
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
+    }
+
+    protected function getDoctrine()
+    {
+        return $this->doctrine;
+    }
+
+    protected function getParameter(string $name)
+    {
+        return $this->params->get($name);
     }
 
     protected function getBaseTemplate()
@@ -137,7 +138,7 @@ class WidgetsController extends AbstractController
         $allBundles = $this->getParameter('kernel.bundles');
         $mediaChooserLink = null;
 
-        if (array_key_exists('HgabkaMediaBundle', $allBundles)) {
+        if (\array_key_exists('HgabkaMediaBundle', $allBundles)) {
             $params = ['linkChooser' => 1];
             $cKEditorFuncNum = $request->get('CKEditorFuncNum');
             if (!empty($cKEditorFuncNum)) {

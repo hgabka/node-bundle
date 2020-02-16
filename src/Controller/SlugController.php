@@ -48,11 +48,6 @@ class SlugController extends AbstractController
         $this->doctrine = $doctrine;
     }
 
-    protected function getDoctrine()
-    {
-        return $this->doctrine;
-    }
-
     /**
      * Handle the page requests.
      *
@@ -147,6 +142,11 @@ class SlugController extends AbstractController
         $request->attributes->set('_template', $template);
 
         return $renderContext->getArrayCopy();
+    }
+
+    protected function getDoctrine()
+    {
+        return $this->doctrine;
     }
 
     /**
