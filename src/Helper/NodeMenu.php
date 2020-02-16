@@ -170,7 +170,7 @@ class NodeMenu
             $this->topNodeMenuItems = [];
 
             // To be backwards compatible we need to create the top node MenuItems
-            if (array_key_exists(0, $this->childNodes)) {
+            if (\array_key_exists(0, $this->childNodes)) {
                 $topNodeMenuItems = $this->getTopNodeMenuItems();
 
                 $includeHiddenFromNav = $this->includeHiddenFromNav;
@@ -269,7 +269,7 @@ class NodeMenu
         $this->init();
         $children = [];
 
-        if (array_key_exists($node->getId(), $this->childNodes)) {
+        if (\array_key_exists($node->getId(), $this->childNodes)) {
             $nodes = $this->childNodes[$node->getId()];
             // @var Node $childNode
             foreach ($nodes as $childNode) {
@@ -366,7 +366,7 @@ class NodeMenu
 
             foreach ($siblings as $index => $child) {
                 if ($child->getNode() === $node && (($index + 1) < \count(
-                            $siblings
+                    $siblings
                         ))
                 ) {
                     return $siblings[$index + 1];
@@ -385,9 +385,9 @@ class NodeMenu
     public function getParent(Node $node)
     {
         $this->init();
-        if ($node->getParent() && array_key_exists(
-                $node->getParent()->getId(),
-                $this->allNodes
+        if ($node->getParent() && \array_key_exists(
+            $node->getParent()->getId(),
+            $this->allNodes
             )
         ) {
             return $this->allNodes[$node->getParent()->getId()];
@@ -430,7 +430,7 @@ class NodeMenu
             $includeOffline = $this->includeOffline;
         }
 
-        if (array_key_exists($internalName, $this->nodesByInternalName)) {
+        if (\array_key_exists($internalName, $this->nodesByInternalName)) {
             $nodes = $this->nodesByInternalName[$internalName];
             $nodes = array_filter(
                 $nodes,

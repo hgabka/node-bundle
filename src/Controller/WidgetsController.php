@@ -93,7 +93,7 @@ class WidgetsController extends Controller
         $allBundles = $this->getParameter('kernel.bundles');
         $mediaChooserLink = null;
 
-        if (array_key_exists('HgabkaMediaBundle', $allBundles)) {
+        if (\array_key_exists('HgabkaMediaBundle', $allBundles)) {
             $params = ['linkChooser' => 1];
             $cKEditorFuncNum = $request->get('CKEditorFuncNum');
             if (!empty($cKEditorFuncNum)) {

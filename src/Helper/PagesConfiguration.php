@@ -3,8 +3,7 @@
 namespace Hgabka\NodeBundle\Helper;
 
 use // @noinspection PhpDeprecationInspection
-    Hgabka\NodeBundle\Entity\HideFromNodeTreeInterface;// @noinspection PhpDeprecationInspection
-    
+    Hgabka\NodeBundle\Entity\HideFromNodeTreeInterface; // @noinspection PhpDeprecationInspection
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\HomePageInterface;
 use Hgabka\SearchBundle\Helper\IndexableInterface;
