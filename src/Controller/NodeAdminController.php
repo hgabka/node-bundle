@@ -427,6 +427,15 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_DELETE, $node);
+        
+        if (!empty($node->getInternalName()) && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $this->addFlash(
+                FlashTypes::ERROR,
+                $this->get('translator')->trans('hg_node.admin.delete.not_possible')
+            );
+
+            return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]);
+        }
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
