@@ -90,6 +90,7 @@ hg_node:
         delete:
             flash:
                 success: Az oldal sikeresen törölve!
+                not_possible: Az oldal nem törölhető
         duplicate:
             flash:
                 success: Az oldal duplikálva!
