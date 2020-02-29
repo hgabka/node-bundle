@@ -431,7 +431,7 @@ class NodeAdminController extends CRUDController
         if (!empty($node->getInternalName()) && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash(
                 FlashTypes::ERROR,
-                $this->get('translator')->trans('hg_node.admin.delete.not_possible')
+                $this->get('translator')->trans('hg_node.admin.delete.flash.not_possible')
             );
 
             return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]);
