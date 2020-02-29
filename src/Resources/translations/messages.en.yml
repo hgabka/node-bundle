@@ -88,6 +88,7 @@ hg_node:
         delete:
             flash:
                 success: The page is deleted!
+                not_possible: The page cannot be deleted
         duplicate:
             flash:
                 success: The page has been duplicated!
