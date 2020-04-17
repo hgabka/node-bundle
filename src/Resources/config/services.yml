@@ -116,13 +116,16 @@ services:
         tags:
             - { name: twig.extension }
 
-    hgabka_node.page_creator_service:
-        class: Hgabka\NodeBundle\Helper\Services\PageCreatorService
+    Hgabka\NodeBundle\Helper\Services\PageCreatorService:
+        autowire: true
         calls:
             - [ setEntityManager, [ '@doctrine.orm.entity_manager' ] ]
             - [ setACLPermissionCreatorService, [ '@hgabka_node.acl_permission_creator_service' ] ]
             - [ setUserEntityClass, [ '%fos_user.model.user.class%' ] ]
 
+    hgabka_node.page_creator_service:
+        alias: Hgabka\NodeBundle\Helper\Services\PageCreatorService
+  
     Hgabka\NodeBundle\Helper\Services\ACLPermissionCreatorService:
         public: true
         calls:
