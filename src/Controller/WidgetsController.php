@@ -141,7 +141,7 @@ class WidgetsController extends AbstractController
         if (\array_key_exists('HgabkaMediaBundle', $allBundles)) {
             $params = ['linkChooser' => 1];
             $cKEditorFuncNum = $request->get('CKEditorFuncNum');
-            if (!empty($cKEditorFuncNum)) {
+            if (null !== $cKEditorFuncNum) {
                 $params['CKEditorFuncNum'] = $cKEditorFuncNum;
             }
             $mediaChooserLink = $this->generateUrl(
