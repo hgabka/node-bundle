@@ -9,6 +9,7 @@ use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Event\ConfigureActionMenuEvent;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
@@ -100,6 +101,14 @@ class ActionsMenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'page-sub-actions');
 
+        $utils = $this->adminPool->getContainer()->get(HgabkaUtils::class);
+        if ($utils->getAvailableLocales() > 1) {
+            $menu->addChild(
+                'subaction.langversions',
+                [
+                ]
+            );
+        }
         if (null !== $activeNodeVersion && $this->isEditableNode) {
             $menu->addChild(
                 'subaction.versions',

@@ -35,9 +35,11 @@ pages:
     movingconfirmation: You are moving "%title%" to "%target%", are you sure?
 
 hg_node:
+    lang_version: Language version
     version:
         public: public
         draft: draft
+        lang: '%lang% version'
     title: Pages
     group: CMS
     form:

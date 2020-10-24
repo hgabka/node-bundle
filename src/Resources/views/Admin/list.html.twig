@@ -51,9 +51,13 @@
 
 
 {% block extra_actions_header %}
+    <div class="col-sm-6 col-md-4">
+        <div class="app__content__header__extra-actions">
+            {% include '@HgabkaNode/Admin/node_locale_switcher.html.twig' %}
+
     {% if adminlist.canAdd() or adminlist.canExport() or adminlist.hasListActions() %}
-        <div class="col-sm-6 col-md-4">
-            <div class="app__content__header__extra-actions">
+
+
                 <div class="btn-group">
                     {% if adminlist.canAdd() %}
                         {% if adminlist.getIndexUrl()['params'] is defined %}
@@ -124,13 +128,13 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-            </div>
-        </div>
     {% endif %}
-
+        </div>
+    </div>
 {% endblock %}
 
 {% block admin_content %}
+
     {% if adminlist.getIndexUrl()['params'] is defined %}
         {{ adminlist_widget(adminlist, adminlist.getIndexUrl()["path"], adminlist.getIndexUrl()['params']) }}
     {% else %}

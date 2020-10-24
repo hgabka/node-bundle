@@ -72,6 +72,9 @@
                         |raw
                     }}
                 {% endif %}
+                {% if get_locales()|length > 1 %}
+                    - {{ 'hg_node.version.lang'|trans({ '%lang%' : ('wt_kuma_extension.locales.'~app.request.attributes.get('nodeLocale'))|trans|capitalize}) }}
+                {% endif %}
             </small>
         {% endif %}
     </h1>

@@ -1,0 +1,21 @@
+{% if get_locales()|length > 1 %}
+    <div class="dropdown langversion-dropdown">
+        <span>{{ 'hg_node.lang_version'|trans }}:</span>
+        {% set locales = get_locales() %}
+    {% set route = app.request.attributes.get('_route') %}
+    {% set route_params = app.request.attributes.get('_route_params') %}
+    {% set route_params = route_params|merge(app.request.query.all) %}
+
+    <a href="#langversions" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+        {{ ('wt_kuma_extension.locales.'~app.request.attributes.get('nodeLocale'))|trans }}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" role="menu">
+        {% for locale in locales %}
+            <li class="{% if app.request.attributes.get('nodeLocale') == locale %} active{% endif %}{% if loop.first %} first{% endif %}{% if loop.last %} last{% endif %}">
+                <a href="{{ path(route, route_params | merge({'nodeLocale': locale})) }}">{{ ('wt_kuma_extension.locales.'~locale)|trans }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    </div>
+{% endif %}

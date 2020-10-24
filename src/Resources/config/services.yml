@@ -96,6 +96,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    hgabka_node.node_locale.subscriber:
+        class: Hgabka\NodeBundle\EventListener\NodeLocaleListener
+        arguments: ['@session']
+        tags:
+            - { name: kernel.event_subscriber }
+
     hgabka_node.slugrouter:
         class: '%hgabka_node.slugrouter.class%'
         arguments: ['@service_container', '@hgabka_utils.hgabka_utils']

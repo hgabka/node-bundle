@@ -37,9 +37,11 @@ pages:
 "This list contains all the pages, chronologically ordered by updated date.": "A lista az összes oldalt tartalmazza az utolsó frissítés idejének sorrendjében."
 
 hg_node:
+    lang_version: Nyelvi verzió
     version:
         public: publikus
         draft: piszkozat
+        lang: '%lang% verzió'
     title: Oldalak
     group: CMS
     form:

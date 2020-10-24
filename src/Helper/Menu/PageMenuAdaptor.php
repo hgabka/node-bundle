@@ -88,7 +88,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
             $children[] = $menuItem;
         } elseif (0 === stripos($request->attributes->get('_route'), 'HgabkaNodeBundle_nodes') || 'admin_hgabka_node_node_list' === $request->attributes->get('_route')) {
             $treeNodes = $this->getTreeNodes(
-                $request->getLocale(),
+                $request->attributes->get('nodeLocale'),
                 PermissionMap::PERMISSION_VIEW,
                 $this->aclNativeHelper,
                 true
@@ -149,6 +149,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
                 $includeHiddenFromNav,
                 $rootNode
             );
+
             /** @var Node $nodeInfo */
             foreach ($allNodes as $nodeInfo) {
                 $refEntityName = $nodeInfo['ref_entity_name'];

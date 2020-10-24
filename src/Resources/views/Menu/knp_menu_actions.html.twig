@@ -31,15 +31,20 @@
     {%- if classes is not empty %}
         {%- set attributes = attributes|merge({'class': classes|join(' ')}) %}
     {%- endif %}
+
 {# displaying the item #}
     {{ block('linkElement') }}
 {% endif %}
 {% endblock %}
 
 {% block linkElement %}
+    {% if item.name == 'subaction.langversions' %}
+      {% include '@HgabkaNode/Admin/node_locale_switcher.html.twig' %}
+    {% else %}
     {%- import 'knp_menu.html.twig' as macros -%}
     {%- set renderType = item.getExtra('renderType', 'a') -%}
     <{{ renderType }} {{ ('a' == renderType ? 'href="' ~ (item.uri | default('#')) ~ '"' : '') | raw }}{{ macros.attributes(item.linkAttributes) }}>{{ block('label') }}</{{ renderType }}>
+    {% endif %}
 {% endblock %}
 
 {% block label %}

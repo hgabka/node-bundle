@@ -118,7 +118,7 @@ class NodeAdminController extends CRUDController
         $adminlist = $this->get(AdminListFactory::class)->createList($nodeAdminListConfigurator);
         $adminlist->bindRequest($request);
 
-        return $this->renderWithExtraParams('HgabkaNodeBundle:Admin:list.html.twig', [
+        return $this->renderWithExtraParams('@HgabkaNode/Admin/list.html.twig', [
             'adminlist' => $adminlist,
         ]);
     }
@@ -427,7 +427,7 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_DELETE, $node);
-        
+
         if (!empty($node->getInternalName()) && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash(
                 FlashTypes::ERROR,
@@ -1131,7 +1131,9 @@ class NodeAdminController extends CRUDController
     protected function init(Request $request)
     {
         $this->em = $this->getDoctrine()->getManager();
-        $this->locale = $request->getLocale();
+        $nodeLocale = $request->attributes->get('nodeLocale');
+        $this->locale = $nodeLocale;
+
         $this->authorizationChecker = $this->get('security.authorization_checker');
         $this->user = $this->getUser();
         $this->aclHelper = $this->get(AclHelper::class);
