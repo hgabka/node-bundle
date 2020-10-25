@@ -15,11 +15,18 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Sonata\AdminBundle\Admin\Pool;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ActionsMenuBuilder
 {
+    /** @var HgabkaUtils */
+    protected $utils;
+
+    /** @var RequestStack */
+    protected $requestStack;
+
     /** @var Pool */
     protected $adminPool;
 
@@ -80,7 +87,9 @@ class ActionsMenuBuilder
         EventDispatcherInterface $dispatcher,
         AuthorizationCheckerInterface $authorizationChecker,
         PagesConfiguration $pagesConfiguration,
-        Pool $adminPool
+        Pool $adminPool,
+        HgabkaUtils $utils,
+        RequestStack $requestStack
     ) {
         $this->factory = $factory;
         $this->em = $em;
@@ -90,6 +99,8 @@ class ActionsMenuBuilder
         $this->pagesConfiguration = $pagesConfiguration;
         $this->adminPool = $adminPool;
         $this->nodeAdmin = $adminPool->getAdminByAdminCode('hgabka_node.admin.node');
+        $this->utils = $utils;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -101,7 +112,7 @@ class ActionsMenuBuilder
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'page-sub-actions');
 
-        $utils = $this->adminPool->getContainer()->get(HgabkaUtils::class);
+        $utils = $this->utils;
         if ($utils->getAvailableLocales() > 1) {
             $menu->addChild(
                 'subaction.langversions',
@@ -214,15 +225,21 @@ class ActionsMenuBuilder
                 $isFirst = false;
             }
 
+            $previewParams = [
+                'url' => $activeNodeTranslation->getUrl(),
+                'version' => $activeNodeVersion->getId(),
+            ];
+
+            if (count($this->utils->getAvailableLocales()) > 1) {
+                $previewParams['_locale'] = $activeNodeTranslation->getLang();
+            }
+
             $menu->addChild(
                 'action.preview',
                 [
                     'uri' => $this->router->generate(
                         '_slug_preview',
-                        [
-                            'url' => $activeNodeTranslation->getUrl(),
-                            'version' => $activeNodeVersion->getId(),
-                        ]
+                        $previewParams
                     ),
                     'linkAttributes' => [
                         'target' => '_blank',
@@ -261,12 +278,20 @@ class ActionsMenuBuilder
             }
 
             if ($this->isEditableNode) {
+                $previewParams = [
+                    'url' => $activeNodeTranslation->getUrl(),
+                ];
+
+                if (count($this->utils->getAvailableLocales()) > 1) {
+                    $previewParams['_locale'] = $activeNodeTranslation->getLang();
+                }
+
                 $menu->addChild(
                     'action.preview',
                     [
                         'uri' => $this->router->generate(
                             '_slug_preview',
-                            ['url' => $activeNodeTranslation->getUrl()]
+                            $previewParams
                         ),
                         'linkAttributes' => [
                             'target' => '_blank',

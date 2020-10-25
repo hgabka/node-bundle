@@ -59,7 +59,7 @@ services:
 
     Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder:
         public: true
-        arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration', '@sonata.admin.pool' ]
+        arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration', '@sonata.admin.pool', '@hgabka_utils.hgabka_utils', '@request_stack' ]
 
     hgabka_node.menu.sub_actions:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
