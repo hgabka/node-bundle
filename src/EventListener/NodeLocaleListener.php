@@ -30,21 +30,24 @@ class NodeLocaleListener implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if ($this->utils->getAvailableLocales() > 1) {
-            $request = $event->getRequest();
+        $request = $event->getRequest();
+        $availableLocales = $this->utils->getAvailableLocales();
+        $nodeLocale = $request->getLocale();
+        if (count($availableLocales) > 1) {
             if ($request->query->has('nodeLocale')) {
                 $nodeLocale = $request->query->get('nodeLocale');
-                $this->session->set('nodeLocale', $nodeLocale);
             } elseif ($this->session->has('nodeLocale')) {
                 $nodeLocale = $this->session->get('nodeLocale');
-            } else {
+            }
+
+            if (empty($nodeLocale) || !\in_array($nodeLocale, $availableLocales)) {
                 $nodeLocale = $request->getLocale();
             }
 
-            $request->attributes->set('nodeLocale', $nodeLocale);
-        } else {
-            $request->attributes->set('nodeLocale', $request->getLocale());
+            $this->session->set('nodeLocale', $nodeLocale);
         }
+
+        $request->attributes->set('nodeLocale', $nodeLocale);
     }
 
     public static function getSubscribedEvents()
