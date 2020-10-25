@@ -73,7 +73,7 @@
                     }}
                 {% endif %}
                 {% if get_locales()|length > 1 %}
-                    - {{ 'hg_node.version.lang'|trans({ '%lang%' : ('wt_kuma_extension.locales.'~app.request.attributes.get('nodeLocale'))|trans|capitalize}) }}
+                    - {{ 'hg_node.version.lang'|trans({ '%lang%' : locale_display_name(app.request.attributes.get('nodeLocale'))|capitalize }) }}
                 {% endif %}
             </small>
         {% endif %}
