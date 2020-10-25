@@ -142,7 +142,8 @@ class SlugRouter implements RouterInterface
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
         if (\in_array($name, ['_slug', '_slug_preview'], true) && $this->hgabkaUtils->getAvailableLocales() > 1 && $prefixed) {
-            $name .= '_'.$this->hgabkaUtils->getCurrentLocale();
+            $lang = isset($parameters['_locale']) ? $parameters['_locale'] : $this->hgabkaUtils->getCurrentLocale();
+            $name .= '_'.$lang;
         }
         $this->urlGenerator = new UrlGenerator(
             $this->getRouteCollection(),

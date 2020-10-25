@@ -90,7 +90,7 @@
 	</script>
 
     <!-- Main Content -->
-    <main role="main" id="app__main" class="container-fluid app__main url-chooser">
+    <main role="main" id="app__main" class="container-fluid app__main url-chooser" style="min-height: 300px;">
 
         <!-- Modal Sidebar -->
         <aside id="app__sidebar" class="app__sidebar app__sidebar--static url-chooser__tree">
@@ -112,6 +112,11 @@
                     {% endfor %}
                 </ul>
             </nav>
+            {% if get_locales()|length > 1 %}
+                <div style="float:right">
+                    {% include '@HgabkaNode/Admin/node_locale_switcher.html.twig' %}
+                </div>
+            {% endif %}
         </aside>
 
 

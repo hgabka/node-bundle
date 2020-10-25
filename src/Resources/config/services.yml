@@ -98,7 +98,7 @@ services:
 
     hgabka_node.node_locale.subscriber:
         class: Hgabka\NodeBundle\EventListener\NodeLocaleListener
-        arguments: ['@session']
+        arguments: ['@session', '@hgabka_utils.hgabka_utils']
         tags:
             - { name: kernel.event_subscriber }
 

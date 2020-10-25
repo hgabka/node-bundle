@@ -115,7 +115,7 @@ class WidgetsController extends AbstractController
     {
         // @var EntityManager $em
         $em = $this->getDoctrine()->getManager();
-        $locale = $request->getLocale();
+        $locale = $request->attributes->get('nodeLocale');
 
         $result = $em->getRepository(Node::class)
             ->getAllMenuNodes(
