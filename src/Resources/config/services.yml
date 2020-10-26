@@ -57,6 +57,10 @@ services:
         class: Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
 
+    Hgabka\NodeBundle\Search\NodeSearcher:
+        autowire: true
+        arguments: ['@doctrine.orm.entity_manager', '@hgabka_utils.hgabka_utils']
+
     Hgabka\NodeBundle\Helper\Menu\ActionsMenuBuilder:
         public: true
         arguments: ['@knp_menu.factory', '@doctrine.orm.entity_manager', '@router', '@event_dispatcher', '@security.authorization_checker', '@hgabka_node.pages_configuration', '@sonata.admin.pool', '@hgabka_utils.hgabka_utils', '@request_stack' ]

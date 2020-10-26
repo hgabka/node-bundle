@@ -230,7 +230,7 @@ class ActionsMenuBuilder
                 'version' => $activeNodeVersion->getId(),
             ];
 
-            if (count($this->utils->getAvailableLocales()) > 1) {
+            if (\count($this->utils->getAvailableLocales()) > 1) {
                 $previewParams['_locale'] = $activeNodeTranslation->getLang();
             }
 
@@ -282,7 +282,7 @@ class ActionsMenuBuilder
                     'url' => $activeNodeTranslation->getUrl(),
                 ];
 
-                if (count($this->utils->getAvailableLocales()) > 1) {
+                if (\count($this->utils->getAvailableLocales()) > 1) {
                     $previewParams['_locale'] = $activeNodeTranslation->getLang();
                 }
 

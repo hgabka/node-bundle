@@ -33,14 +33,14 @@ class NodeLocaleListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $availableLocales = $this->utils->getAvailableLocales();
         $nodeLocale = $request->getLocale();
-        if (count($availableLocales) > 1) {
+        if (\count($availableLocales) > 1) {
             if ($request->query->has('nodeLocale')) {
                 $nodeLocale = $request->query->get('nodeLocale');
             } elseif ($this->session->has('nodeLocale')) {
                 $nodeLocale = $this->session->get('nodeLocale');
             }
 
-            if (empty($nodeLocale) || !\in_array($nodeLocale, $availableLocales)) {
+            if (empty($nodeLocale) || !\in_array($nodeLocale, $availableLocales, true)) {
                 $nodeLocale = $request->getLocale();
             }
 
