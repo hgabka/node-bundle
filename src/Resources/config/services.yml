@@ -31,6 +31,7 @@ services:
         tags:
         -  { name: 'hgabka_utils.menu.adaptor' }
 
+
     hgabka_node.form.type.urlchooser:
         class: Hgabka\NodeBundle\Form\Type\URLChooserType
         tags:
@@ -240,3 +241,7 @@ services:
         autoconfigure: true
         autowire: true
         tags: ['controller.service_arguments']
+
+    Hgabka\NodeBundle\Helper\NodeManager:
+        autoconfigure: true
+        autowire: true
