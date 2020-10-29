@@ -5,6 +5,8 @@ namespace Hgabka\NodeBundle\Helper;
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Entity\PageInterface;
+use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -16,6 +18,9 @@ class NodeManager
     /** @var RequestStack */
     protected $requestStack;
 
+    /** @var HgabkaUtils */
+    protected $hgabkaUtils;
+
     /** @var UrlGeneratorInterface */
     protected $router;
 
@@ -25,11 +30,12 @@ class NodeManager
      * @param EntityManagerInterface $manager
      * @param RequestStack           $requestStack
      */
-    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router)
+    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router, HgabkaUtils $hgabkaUtils)
     {
         $this->manager = $manager;
         $this->requestStack = $requestStack;
         $this->router = $router;
+        $this->hgabkaUtils = $hgabkaUtils;
     }
 
     public function getNodeDataByInternalName($internalName, $locale = null)
@@ -68,9 +74,7 @@ class NodeManager
 
     public function getUrlByInternalName($internalName, $locale = null, $parameters = [], $schemeRelative = false)
     {
-        if (null === $locale) {
-            $locale = $this->requestStack->getCurrentRequest()->getLocale();
-        }
+        $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
 
@@ -79,6 +83,94 @@ class NodeManager
             $routeParameters,
             $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL
         );
+    }
+
+    /**
+     * @param string $internalName Internal name of the node
+     * @param string $locale       Locale
+     * @param array  $parameters   (optional) extra parameters
+     * @param bool   $relative     (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByInternalName($internalName, $locale = null, $parameters = [], $relative = false)
+    {
+        $locale = $this->hgabkaUtils->getCurrentLocale($locale);
+
+        $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
+
+        return $this->router->generate(
+            '_slug',
+            $routeParameters,
+            $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH
+        );
+    }
+
+    /**
+     * @param string $internalName
+     * @param string $locale
+     *
+     * @return null|Node
+     */
+    public function getNodeByInternalName($internalName, $locale = null)
+    {
+        $locale = $this->hgabkaUtils->getCurrentLocale($locale);
+
+        $nodes =
+            $this
+                ->manager
+                ->getRepository(Node::class)
+                ->getNodesByInternalName($internalName, $locale);
+        if (!empty($nodes)) {
+            return $nodes[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the node translation object based on node id and language.
+     *
+     * @param int    $nodeId
+     * @param string $lang
+     *
+     * @return NodeTranslation
+     */
+    public function getNodeTranslationByNodeId($nodeId, $lang)
+    {
+        $repo = $this->manager->getRepository(NodeTranslation::class);
+
+        return $repo->getNodeTranslationByNodeIdQueryBuilder($nodeId, $lang);
+    }
+
+    /**
+     * @param NodeTranslation $nodeTranslation
+     *
+     * @return null|object
+     */
+    public function getPageByNodeTranslation(NodeTranslation $nodeTranslation)
+    {
+        return $nodeTranslation->getRef($this->manager);
+    }
+
+    /**
+     * @param PageInterface $page
+     *
+     * @return Node
+     */
+    public function getNodeFor(PageInterface $page)
+    {
+        return $this->manager->getRepository(Node::class)->getNodeFor($page);
+    }
+
+    /**
+     * @param PageInterface $page
+     *
+     * @return NodeTranslation
+     */
+    public function getNodeTranslationFor(PageInterface $page)
+    {
+        return $this->manager->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
     }
 
     protected function getRouteParametersByInternalName($internalName, $locale, $parameters = [])

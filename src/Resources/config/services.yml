@@ -46,7 +46,7 @@ services:
     hgabka_node.form.type.nodechoice:
         class: Hgabka\NodeBundle\Form\NodeChoiceType
         arguments:
-            - "@request_stack"
+            - '@request_stack'
         tags:
             - { name: form.type }
 
@@ -121,9 +121,9 @@ services:
             - { name: twig.extension }
 
     hgabka_node.url_replace.twig.extension:
-        class: "%hgabka_node.url_replace.twig.class%"
+        class: '%hgabka_node.url_replace.twig.class%'
         arguments:
-            - "@hgabka_node.helper.url"
+            - '@hgabka_node.helper.url'
         tags:
             - { name: twig.extension }
 
@@ -179,23 +179,23 @@ services:
 
     hgabka_node.node.twig.extension:
         class: Hgabka\NodeBundle\Twig\NodeTwigExtension
-        arguments: ['@doctrine.orm.entity_manager', '@router', '@hgabka_node.node_menu', '@request_stack', '@hgabka_utils.acl.native.helper', '@hgabka_node.pages_configuration', '@hgabka_utils.hgabka_utils']
+        arguments: ['@hgabka_node.node_menu', '@request_stack', '@hgabka_utils.hgabka_utils', '@hgabka_node.node_manager']
         tags:
             - { name: twig.extension }
 
     hgabka_node.helper.url:
-        class: "%hgabka_node.helper.url.class%"
+        class: '%hgabka_node.helper.url.class%'
         arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@router"
-            - "@logger"
-            - "@request_stack"
-            - "@hgabka_utils.hgabka_utils"
+            - '@doctrine.orm.entity_manager'
+            - '@router'
+            - '@logger'
+            - '@request_stack'
+            - '@hgabka_utils.hgabka_utils'
 
     Hgabka\NodeBundle\Controller\UrlReplaceController:
         public: true
         arguments:
-            - "@hgabka_node.helper.url"
+            - '@hgabka_node.helper.url'
 
     hgabka_node.url_replace.controller:
         alias: Hgabka\NodeBundle\Controller\UrlReplaceController
@@ -241,6 +241,9 @@ services:
         autoconfigure: true
         autowire: true
         tags: ['controller.service_arguments']
+
+    hgabka_node.node_manager:
+        alias: Hgabka\NodeBundle\Helper\NodeManager
 
     Hgabka\NodeBundle\Helper\NodeManager:
         autoconfigure: true

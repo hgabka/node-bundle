@@ -2,17 +2,14 @@
 
 namespace Hgabka\NodeBundle\Twig;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\PageInterface;
 use Hgabka\NodeBundle\Entity\StructureNode;
+use Hgabka\NodeBundle\Helper\NodeManager;
 use Hgabka\NodeBundle\Helper\NodeMenu;
-use Hgabka\NodeBundle\Helper\PagesConfiguration;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Extension;
 
 /**
@@ -22,15 +19,6 @@ class NodeTwigExtension extends Twig_Extension
 {
     /** @var HgabkaUtils */
     protected $hgabkaUtils;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $generator;
 
     /**
      * @var NodeMenu
@@ -42,48 +30,23 @@ class NodeTwigExtension extends Twig_Extension
      */
     private $requestStack;
 
-    /**
-     * @var AclNativeHelper
-     */
-    private $aclNativeHelper;
+    /** @var NodeManager */
+    private $nodeManager;
 
     /**
-     * @var array
-     */
-    private $treeNodes;
-
-    /**
-     * @var array
-     */
-    private $activeNodeIds;
-
-    /**
-     * @var PagesConfiguration
-     */
-    private $pagesConfiguration;
-
-    /**
-     * @param \Doctrine\ORM\EntityManagerInterface                       $em
-     * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $generator
-     * @param \Hgabka\NodeBundle\Helper\NodeMenu                         $nodeMenu
-     * @param \Symfony\Component\HttpFoundation\RequestStack             $requestStack
+     * @param \Hgabka\NodeBundle\Helper\NodeMenu             $nodeMenu
+     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
      */
     public function __construct(
-        EntityManagerInterface $em,
-        UrlGeneratorInterface $generator,
         NodeMenu $nodeMenu,
         RequestStack $requestStack,
-        AclNativeHelper $aclNativeHelper,
-        PagesConfiguration $pagesConfiguration,
-        HgabkaUtils $hgabkaUtils
+        HgabkaUtils $hgabkaUtils,
+        NodeManager  $nodeManager
     ) {
-        $this->em = $em;
-        $this->generator = $generator;
         $this->nodeMenu = $nodeMenu;
         $this->requestStack = $requestStack;
-        $this->pagesConfiguration = $pagesConfiguration;
         $this->hgabkaUtils = $hgabkaUtils;
-        $this->aclNativeHelper = $aclNativeHelper;
+        $this->nodeManager = $nodeManager;
     }
 
     /**
@@ -147,9 +110,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeTranslationByNodeId($nodeId, $lang)
     {
-        $repo = $this->em->getRepository(NodeTranslation::class);
-
-        return $repo->getNodeTranslationByNodeIdQueryBuilder($nodeId, $lang);
+        return $this->nodeManager->getNodeTranslationByNodeId($nodeId, $lang);
     }
 
     /**
@@ -159,7 +120,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getPageByNodeTranslation(NodeTranslation $nodeTranslation)
     {
-        return $nodeTranslation->getRef($this->em);
+        return $this->nodeManager->getPageByNodeTranslation($nodeTranslation);
     }
 
     /**
@@ -169,7 +130,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeFor(PageInterface $page)
     {
-        return $this->em->getRepository(Node::class)->getNodeFor($page);
+        return $this->nodeManager->getNodeFor($page);
     }
 
     /**
@@ -179,7 +140,7 @@ class NodeTwigExtension extends Twig_Extension
      */
     public function getNodeTranslationFor(PageInterface $page)
     {
-        return $this->em->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
+        return $this->nodeManager->getNodeTranslationFor($page);
     }
 
     /**
@@ -188,15 +149,9 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return null|Node
      */
-    public function getNodeByInternalName($internalName, $locale)
+    public function getNodeByInternalName($internalName, $locale = null)
     {
-        $nodes = $this->em->getRepository(Node::class)
-            ->getNodesByInternalName($internalName, $locale);
-        if (!empty($nodes)) {
-            return $nodes[0];
-        }
-
-        return null;
+        return $this->nodeManager->getNodeByInternalName($internalName, $locale);
     }
 
     /**
@@ -207,15 +162,9 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getPathByInternalName($internalName, $locale, $parameters = [], $relative = false)
+    public function getPathByInternalName($internalName, $locale = null, $parameters = [], $relative = false)
     {
-        $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
-
-        return $this->generator->generate(
-            '_slug',
-            $routeParameters,
-            $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH
-        );
+        return $this->nodeManager->getPathByInternalName($internalName, $locale, $parameters, $relative);
     }
 
     /**
@@ -226,15 +175,9 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getUrlByInternalName($internalName, $locale, $parameters = [], $schemeRelative = false)
+    public function getUrlByInternalName($internalName, $locale = null, $parameters = [], $schemeRelative = false)
     {
-        $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
-
-        return $this->generator->generate(
-            '_slug',
-            $routeParameters,
-            $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        return $this->nodeManager->getUrlByInternalName($internalName, $locale, $parameters, $schemeRelative);
     }
 
     /**
@@ -267,31 +210,5 @@ class NodeTwigExtension extends Twig_Extension
     public function fileExists($filename)
     {
         return file_exists($filename);
-    }
-
-    /**
-     * @param string $internalName
-     * @param string $locale
-     * @param array  $parameters
-     *
-     * @return array
-     */
-    private function getRouteParametersByInternalName($internalName, $locale, $parameters = [])
-    {
-        $url = '';
-        $translation = $this->em->getRepository(NodeTranslation::class)
-            ->getNodeTranslationByLanguageAndInternalName($locale, $internalName);
-
-        if (null !== $translation) {
-            $url = $translation->getUrl();
-        }
-
-        return array_merge(
-            [
-                'url' => $url,
-                '_locale' => $locale,
-            ],
-            $parameters
-        );
     }
 }
