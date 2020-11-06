@@ -2,29 +2,22 @@
 {% block breadcrumb %}
     {% set breadcrumbitems = adminmenu.breadcrumb %}
     {% if breadcrumbitems | length > 0 %}
+        <li>
+            <a href="{{ path('sonata_admin_dashboard') }}">{{ 'link_breadcrumb_dashboard' | trans({}, 'SonataAdminBundle') | raw }}</a>
+        </li>
+        {% for breadcrumbitem in breadcrumbitems %}
+            {% if block('breadcrumb_between') is defined %}
+                {{ block('breadcrumb_between') }}
+            {% endif %}
             <li>
-                <a href="{{ path('sonata_admin_dashboard') }}">{{ 'link_breadcrumb_dashboard' | trans({}, 'SonataAdminBundle') | raw }}</a>
-            </li>
-            {% for breadcrumbitem in breadcrumbitems %}
-                {% if block('breadcrumb_between') is defined %}
-                    {{ block('breadcrumb_between') }}
-                {% endif %}
-                {% if loop.last %}
-                    <li class="active">
+                {% if  breadcrumbitem.route %}
+                    <a href="{{ path(breadcrumbitem.route, breadcrumbitem.routeparams) }}">
                         {{ breadcrumbitem.label | trans }}
-                    </li>
+                    </a>
                 {% else %}
-                    <li>
-                        {% if  breadcrumbitem.route %}
-                            <a href="{{ path(breadcrumbitem.route, breadcrumbitem.routeparams) }}">
-                                {{ breadcrumbitem.label | trans }}
-                            </a>
-                        {% else %}
-                            <span>{{ breadcrumbitem.label | trans }}</span>
-                        {% endif %}
-                    </li>
+                    <span>{{ breadcrumbitem.label | trans }}</span>
                 {% endif %}
-            {% endfor %}
+            </li>
+        {% endfor %}
     {% endif %}
 {% endblock %}
-
