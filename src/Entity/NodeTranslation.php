@@ -299,8 +299,6 @@ class NodeTranslation implements EntityInterface
     }
 
     /**
-     * @param NodeVersion $publicNodeVersion
-     *
      * @return NodeTranslation
      */
     public function setPublicNodeVersion(NodeVersion $publicNodeVersion)
@@ -335,8 +333,6 @@ class NodeTranslation implements EntityInterface
     }
 
     /**
-     * @param ArrayCollection $nodeVersions
-     *
      * @return NodeTranslation
      */
     public function setNodeVersions(ArrayCollection $nodeVersions)
@@ -374,8 +370,6 @@ class NodeTranslation implements EntityInterface
 
     /**
      * Add nodeVersion.
-     *
-     * @param NodeVersion $nodeVersion
      *
      * @return NodeTranslation
      */

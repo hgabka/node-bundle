@@ -27,11 +27,6 @@ class SlugSecurityListener
      */
     protected $nodeMenu;
 
-    /**
-     * @param EntityManager                 $entityManager
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param NodeMenu                      $nodeMenu
-     */
     public function __construct(
         EntityManager $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
@@ -45,8 +40,6 @@ class SlugSecurityListener
     /**
      * Perform basic security checks.
      *
-     * @param SlugSecurityEvent $event
-     *
      * @throws AccessDeniedException
      * @throws NotFoundHttpException
      */
@@ -57,9 +50,7 @@ class SlugSecurityListener
         $request = $event->getRequest();
 
         if (false === $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_VIEW, $node)) {
-            throw new AccessDeniedException(
-                'You do not have sufficient rights to access this page.'
-            );
+            throw new AccessDeniedException('You do not have sufficient rights to access this page.');
         }
 
         $isPreview = $request->attributes->get('preview');

@@ -10,9 +10,6 @@ class PagesConfigurationTwigExtension extends \Twig_Extension
     /** @var PagesConfiguration */
     private $pagesConfiguration;
 
-    /**
-     * @param PagesConfiguration $pagesConfiguration
-     */
     public function __construct(PagesConfiguration $pagesConfiguration)
     {
         $this->pagesConfiguration = $pagesConfiguration;

@@ -58,9 +58,6 @@ class TestEntity extends AbstractEntity implements HasNodeInterface
     {
     }
 
-    /**
-     * @param HasNodeInterface $hasNode
-     */
     public function setParent(HasNodeInterface $hasNode)
     {
     }

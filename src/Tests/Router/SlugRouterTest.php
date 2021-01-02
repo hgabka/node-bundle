@@ -129,7 +129,7 @@ class SlugRouterTest extends \PHPUnit_Framework_TestCase
 
         $container
             ->method('get')
-            ->will($this->returnValueMap($serviceMap));
+            ->willReturnMap($serviceMap);
 
         return $container;
     }

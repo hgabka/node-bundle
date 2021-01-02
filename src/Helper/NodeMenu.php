@@ -259,7 +259,6 @@ class NodeMenu
     }
 
     /**
-     * @param Node $node
      * @param bool $includeHiddenFromNav
      *
      * @return NodeMenuItem[]
@@ -305,7 +304,6 @@ class NodeMenu
     }
 
     /**
-     * @param Node $node
      * @param bool $includeHiddenFromNav
      *
      * @return array|NodeMenuItem[]
@@ -329,7 +327,6 @@ class NodeMenu
     }
 
     /**
-     * @param Node $node
      * @param bool $includeHiddenFromNav
      *
      * @return NodeMenuItem
@@ -352,7 +349,6 @@ class NodeMenu
     }
 
     /**
-     * @param Node $node
      * @param bool $includeHiddenFromNav
      *
      * @return bool|NodeMenuItem
@@ -367,7 +363,7 @@ class NodeMenu
             foreach ($siblings as $index => $child) {
                 if ($child->getNode() === $node && (($index + 1) < \count(
                     $siblings
-                        ))
+                ))
                 ) {
                     return $siblings[$index + 1];
                 }
@@ -378,8 +374,6 @@ class NodeMenu
     }
 
     /**
-     * @param Node $node
-     *
      * @return NodeMenuItem
      */
     public function getParent(Node $node)
@@ -388,7 +382,7 @@ class NodeMenu
         if ($node->getParent() && \array_key_exists(
             $node->getParent()->getId(),
             $this->allNodes
-            )
+        )
         ) {
             return $this->allNodes[$node->getParent()->getId()];
         }

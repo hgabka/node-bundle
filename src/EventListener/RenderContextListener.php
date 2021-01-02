@@ -21,19 +21,12 @@ class RenderContextListener
      */
     protected $em;
 
-    /**
-     * @param EngineInterface        $templating
-     * @param EntityManagerInterface $em
-     */
     public function __construct(EngineInterface $templating, EntityManagerInterface $em)
     {
         $this->templating = $templating;
         $this->em = $em;
     }
 
-    /**
-     * @param GetResponseForControllerResultEvent $event
-     */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         $response = $event->getControllerResult();

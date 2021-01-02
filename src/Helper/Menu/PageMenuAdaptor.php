@@ -47,7 +47,6 @@ class PageMenuAdaptor implements MenuAdaptorInterface
     /**
      * @param EntityManagerInterface       $em                  The entity manager
      * @param AclNativeHelper              $aclNativeHelper     The acl helper
-     * @param PagesConfiguration           $pagesConfiguration
      * @param DomainConfigurationInterface $domainConfiguration
      */
     public function __construct(
@@ -122,10 +121,9 @@ class PageMenuAdaptor implements MenuAdaptorInterface
     /**
      * Get the list of nodes that is used in the admin menu.
      *
-     * @param string          $lang
-     * @param string          $permission
-     * @param AclNativeHelper $aclNativeHelper
-     * @param bool            $includeHiddenFromNav
+     * @param string $lang
+     * @param string $permission
+     * @param bool   $includeHiddenFromNav
      *
      * @return array
      */

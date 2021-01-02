@@ -64,9 +64,6 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig('twig', $twigConfig);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container)
     {
         $container->setAlias('router', 'cmf_routing.router');

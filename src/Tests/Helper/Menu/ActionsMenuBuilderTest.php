@@ -45,7 +45,7 @@ class ActionsMenuBuilderTest extends \PHPUnit_Framework_TestCase
         $authorizationChecker = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $authorizationChecker->expects($this->any())
             ->method('isGranted')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->builder = new ActionsMenuBuilder($factory, $em, $router, $dispatcher, $authorizationChecker, new PagesConfiguration([]));
     }
@@ -279,16 +279,16 @@ class ActionsMenuBuilderTest extends \PHPUnit_Framework_TestCase
         );
         $emMock->expects($this->any())
             ->method('getRepository')
-            ->will($this->returnValue(new TestRepository()));
+            ->willReturn(new TestRepository());
         $emMock->expects($this->any())
             ->method('getClassMetadata')
-            ->will($this->returnValue((object) ['name' => 'aClass']));
+            ->willReturn((object) ['name' => 'aClass']);
         $emMock->expects($this->any())
             ->method('persist')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $emMock->expects($this->any())
             ->method('flush')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         return $emMock;  // it tooks 13 lines to achieve mock!
     }

@@ -49,11 +49,8 @@ class NodeTranslationListener
     private $pagesConfiguration;
 
     /**
-     * @param Session            $session            The session
-     * @param Logger             $logger             The logger
-     * @param SlugifierInterface $slugifier
-     * @param HgabkaUtils        $hgabkaUtils
-     * @param PagesConfiguration $pagesConfiguration
+     * @param Session $session The session
+     * @param Logger  $logger  The logger
      */
     public function __construct(
         Session $session,
@@ -75,9 +72,6 @@ class NodeTranslationListener
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * @param LifecycleEventArgs $args
-     */
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -88,9 +82,6 @@ class NodeTranslationListener
         }
     }
 
-    /**
-     * @param LifecycleEventArgs $args
-     */
     public function preUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -124,8 +115,6 @@ class NodeTranslationListener
 
     /**
      * PostUpdate doctrine event - updates the nodetranslation urls if needed.
-     *
-     * @param PostFlushEventArgs $args
      */
     public function postFlush(PostFlushEventArgs $args)
     {

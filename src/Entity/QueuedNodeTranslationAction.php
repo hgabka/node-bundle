@@ -76,8 +76,6 @@ class QueuedNodeTranslationAction implements EntityInterface
     /**
      * Set nodeTranslation.
      *
-     * @param NodeTranslation $nodeTranslation
-     *
      * @return QueuedNodeTranslationAction
      */
     public function setNodeTranslation(NodeTranslation $nodeTranslation)
@@ -147,8 +145,6 @@ class QueuedNodeTranslationAction implements EntityInterface
 
     /**
      * Set date.
-     *
-     * @param \DateTime $date
      *
      * @return QueuedNodeTranslationAction
      */

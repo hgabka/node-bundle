@@ -11,9 +11,6 @@ class UrlReplaceTwigExtension extends \Twig_Extension
      */
     private $urlHelper;
 
-    /**
-     * @param URLHelper $urlHelper
-     */
     public function __construct(URLHelper $urlHelper)
     {
         $this->urlHelper = $urlHelper;

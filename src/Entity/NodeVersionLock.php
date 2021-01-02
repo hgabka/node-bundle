@@ -141,7 +141,7 @@ class NodeVersionLock implements EntityInterface
      *
      * @return NodeVersionLock
      */
-    public function setNodeTranslation(\Hgabka\NodeBundle\Entity\NodeTranslation $nodeTranslation = null)
+    public function setNodeTranslation(NodeTranslation $nodeTranslation = null)
     {
         $this->nodeTranslation = $nodeTranslation;
 

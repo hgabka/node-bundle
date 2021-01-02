@@ -35,8 +35,6 @@ class WidgetsController extends AbstractController
 
     /**
      * WidgetsController constructor.
-     *
-     * @param ParameterBagInterface $params
      */
     public function __construct(ParameterBagInterface $params, ManagerRegistry $doctrine, AclNativeHelper $aclHelper, HgabkaUtils $hgabkaUtils)
     {
@@ -46,9 +44,6 @@ class WidgetsController extends AbstractController
         $this->hgabkaUtils = $hgabkaUtils;
     }
 
-    /**
-     * @return AclNativeHelper
-     */
     public function getAclHelper(): AclNativeHelper
     {
         return $this->aclHelper;
@@ -56,8 +51,6 @@ class WidgetsController extends AbstractController
 
     /**
      * @Route("/ckselecturl", name="HgabkaNodeBundle_ckselecturl")
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return array
      */
@@ -74,8 +67,6 @@ class WidgetsController extends AbstractController
      * Select a link.
      *
      * @Route   ("/selecturl", name="HgabkaNodeBundle_selecturl")
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return array
      */
@@ -106,8 +97,6 @@ class WidgetsController extends AbstractController
     /**
      * Get the parameters needed in the template. This is common for the
      * default link chooser and the cke link chooser.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return array
      */

@@ -83,9 +83,7 @@ class SlugRouter implements RouterInterface
             /** @var NodeTranslation $nodeTranslation */
             $nodeTranslation = $this->getNodeTranslation($result);
             if (null === $nodeTranslation) {
-                throw new ResourceNotFoundException(
-                    'No page found for slug '.$pathinfo
-                );
+                throw new ResourceNotFoundException('No page found for slug '.$pathinfo);
             }
             $result['_nodeTranslation'] = $nodeTranslation;
             if (!isset($result['_locale']) || $result['_locale'] !== $nodeTranslation->getLang()) {
@@ -337,7 +335,6 @@ class SlugRouter implements RouterInterface
 
     /**
      * @param string $name
-     * @param array  $parameters
      */
     protected function addRoute($name, array $parameters = [])
     {

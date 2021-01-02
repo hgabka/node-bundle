@@ -51,13 +51,6 @@ class URLHelper
      */
     private $hgabkaUtils;
 
-    /**
-     * @param EntityManager   $em
-     * @param RouterInterface $router
-     * @param LoggerInterface $logger
-     * @param HgabkaUtils     $hgabkaUtils
-     * @param RequestStack    $requestStack
-     */
     public function __construct(EntityManager $em, RouterInterface $router, LoggerInterface $logger, RequestStack $requestStack, HgabkaUtils $hgabkaUtils)
     {
         $this->em = $em;

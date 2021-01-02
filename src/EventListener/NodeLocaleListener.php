@@ -18,9 +18,8 @@ class NodeLocaleListener implements EventSubscriberInterface
     private $utils;
 
     /**
-     * @param string           $defaultLocale The default locale
-     * @param RouterInterface  $router        The router
-     * @param SessionInterface $session
+     * @param string          $defaultLocale The default locale
+     * @param RouterInterface $router        The router
      */
     public function __construct(SessionInterface $session, HgabkaUtils $hgabkaUtils)
     {

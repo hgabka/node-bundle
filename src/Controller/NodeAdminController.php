@@ -132,8 +132,7 @@ class NodeAdminController extends CRUDController
      * @Method("GET")
      * @Template()
      *
-     * @param Request $request
-     * @param int     $id      The node id
+     * @param int $id The node id
      *
      * @throws AccessDeniedException
      *
@@ -186,8 +185,7 @@ class NodeAdminController extends CRUDController
      * @Method("POST")
      * @Template()
      *
-     * @param Request $request
-     * @param int     $id      The node id
+     * @param int $id The node id
      *
      * @throws AccessDeniedException
      *
@@ -240,8 +238,7 @@ class NodeAdminController extends CRUDController
      * @Method("GET")
      * @Template()
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      *
@@ -282,8 +279,7 @@ class NodeAdminController extends CRUDController
      *                         name="HgabkaNodeBundle_nodes_publish")
      * @Method({"GET", "POST"})
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      *
@@ -332,8 +328,7 @@ class NodeAdminController extends CRUDController
      * )
      * @Method({"GET", "POST"})
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      *
@@ -375,8 +370,7 @@ class NodeAdminController extends CRUDController
      * )
      * @Method({"GET", "POST"})
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      *
@@ -485,8 +479,7 @@ class NodeAdminController extends CRUDController
      * )
      * @Method("POST")
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      *
@@ -562,8 +555,7 @@ class NodeAdminController extends CRUDController
      * @Template()
      * @Method("GET")
      *
-     * @param Request $request
-     * @param int     $id      The node id
+     * @param int $id The node id
      *
      * @throws AccessDeniedException
      * @throws InvalidArgumentException
@@ -649,8 +641,7 @@ class NodeAdminController extends CRUDController
      * )
      * @Method("POST")
      *
-     * @param Request $request
-     * @param int     $id
+     * @param int $id
      *
      * @throws AccessDeniedException
      * @throws InvalidArgumentException
@@ -772,8 +763,6 @@ class NodeAdminController extends CRUDController
     /**
      * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder")
      * @Method("POST")
-     *
-     * @param Request $request
      *
      * @throws AccessDeniedException
      *
@@ -1081,7 +1070,6 @@ class NodeAdminController extends CRUDController
      *      name="HgabkaNodeBundle_nodes_versionlock_check"
      * )
      *
-     * @param Request $request
      * @param $id
      * @param mixed $public
      *
@@ -1125,8 +1113,6 @@ class NodeAdminController extends CRUDController
 
     /**
      * init.
-     *
-     * @param Request $request
      */
     protected function init(Request $request)
     {
@@ -1140,8 +1126,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @param NodeTranslation $nodeTranslation
-     * @param bool            $isPublic
+     * @param bool $isPublic
      *
      * @return bool
      */
@@ -1280,8 +1265,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @param Request $request
-     * @param string  $type
+     * @param string $type
      *
      * @return HasNodeInterface
      */
@@ -1313,17 +1297,13 @@ class NodeAdminController extends CRUDController
         $type = $request->get('type');
 
         if (empty($type)) {
-            throw new InvalidArgumentException(
-                'Please specify a type of page you want to create'
-            );
+            throw new InvalidArgumentException('Please specify a type of page you want to create');
         }
 
         return $type;
     }
 
     /**
-     * @param Node $node
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function renderNodeNotTranslatedPage(Node $node)

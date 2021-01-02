@@ -19,9 +19,6 @@ class UrlReplaceController
      */
     private $urlHelper;
 
-    /**
-     * @param URLHelper $urlHelper
-     */
     public function __construct(URLHelper $urlHelper)
     {
         $this->urlHelper = $urlHelper;

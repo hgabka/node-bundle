@@ -12,10 +12,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class NodeMenuTabTranslationAdminType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['slugable']) {

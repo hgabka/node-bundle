@@ -19,8 +19,6 @@ class NodeSearcher
 
     /**
      * NodeSearcher constructor.
-     *
-     * @param EntityManagerInterface $doctrine
      */
     public function __construct(EntityManagerInterface $doctrine, HgabkaUtils $hgabkaUtils)
     {

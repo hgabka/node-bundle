@@ -120,8 +120,6 @@ class NodeVersion implements EntityInterface
     /**
      * Set nodeTranslation.
      *
-     * @param NodeTranslation $nodeTranslation
-     *
      * @return NodeVersion
      */
     public function setNodeTranslation(NodeTranslation $nodeTranslation)
@@ -202,8 +200,6 @@ class NodeVersion implements EntityInterface
     /**
      * Set created.
      *
-     * @param DateTime $created
-     *
      * @return NodeVersion
      */
     public function setCreated(DateTime $created)
@@ -225,8 +221,6 @@ class NodeVersion implements EntityInterface
 
     /**
      * Set updated.
-     *
-     * @param DateTime $updated
      *
      * @return NodeVersion
      */
@@ -273,8 +267,6 @@ class NodeVersion implements EntityInterface
     }
 
     /**
-     * @param HasNodeInterface $entity
-     *
      * @return NodeVersion
      */
     public function setRef(HasNodeInterface $entity)
@@ -286,8 +278,6 @@ class NodeVersion implements EntityInterface
     }
 
     /**
-     * @param EntityManager $em
-     *
      * @return HasNodeInterface
      */
     public function getRef(EntityManager $em)

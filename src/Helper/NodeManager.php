@@ -7,6 +7,8 @@ use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\PageInterface;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
+use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -24,18 +26,19 @@ class NodeManager
     /** @var UrlGeneratorInterface */
     protected $router;
 
+    /** @var AclHelper */
+    protected $aclHelper;
+
     /**
      * NodeManager constructor.
-     *
-     * @param EntityManagerInterface $manager
-     * @param RequestStack           $requestStack
      */
-    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router, HgabkaUtils $hgabkaUtils)
+    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router, HgabkaUtils $hgabkaUtils, AclHelper $aclHelper)
     {
         $this->manager = $manager;
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->hgabkaUtils = $hgabkaUtils;
+        $this->aclHelper = $aclHelper;
     }
 
     public function getNodeDataByInternalName($internalName, $locale = null)
@@ -144,8 +147,6 @@ class NodeManager
     }
 
     /**
-     * @param NodeTranslation $nodeTranslation
-     *
      * @return null|object
      */
     public function getPageByNodeTranslation(NodeTranslation $nodeTranslation)
@@ -154,8 +155,6 @@ class NodeManager
     }
 
     /**
-     * @param PageInterface $page
-     *
      * @return Node
      */
     public function getNodeFor(PageInterface $page)
@@ -164,13 +163,29 @@ class NodeManager
     }
 
     /**
-     * @param PageInterface $page
-     *
      * @return NodeTranslation
      */
     public function getNodeTranslationFor(PageInterface $page)
     {
         return $this->manager->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
+    }
+
+    public function getChildrenByNodeId($nodeId, $lang)
+    {
+        return $this
+            ->manager
+            ->getRepository(Node::class)
+            ->getChildNodes($nodeId, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper)
+        ;
+    }
+
+    public function getChildrenByRootNode($rootNode, $lang)
+    {
+        return $this
+            ->manager
+            ->getRepository(Node::class)
+            ->getChildNodes(false, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, $rootNode)
+        ;
     }
 
     protected function getRouteParametersByInternalName($internalName, $locale, $parameters = [])

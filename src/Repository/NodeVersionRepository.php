@@ -15,8 +15,6 @@ use Hgabka\UtilsBundle\Helper\ClassLookup;
 class NodeVersionRepository extends EntityRepository
 {
     /**
-     * @param HasNodeInterface $hasNode
-     *
      * @return NodeVersion
      */
     public function getNodeVersionFor(HasNodeInterface $hasNode)

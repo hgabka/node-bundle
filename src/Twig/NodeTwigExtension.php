@@ -33,15 +33,11 @@ class NodeTwigExtension extends Twig_Extension
     /** @var NodeManager */
     private $nodeManager;
 
-    /**
-     * @param \Hgabka\NodeBundle\Helper\NodeMenu             $nodeMenu
-     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-     */
     public function __construct(
         NodeMenu $nodeMenu,
         RequestStack $requestStack,
         HgabkaUtils $hgabkaUtils,
-        NodeManager  $nodeManager
+        NodeManager $nodeManager
     ) {
         $this->nodeMenu = $nodeMenu;
         $this->requestStack = $requestStack;
@@ -97,6 +93,14 @@ class NodeTwigExtension extends Twig_Extension
                 'get_node_trans_by_node_id',
                 [$this, 'getNodeTranslationByNodeId']
             ),
+            new \Twig_SimpleFunction(
+                'get_children_by_node_id',
+                [$this, 'getChildrenByNodeId']
+            ),
+            new \Twig_SimpleFunction(
+                'get_children_by_root_node',
+                [$this, 'getChildrenByRootNode']
+            ),
         ];
     }
 
@@ -114,8 +118,6 @@ class NodeTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param NodeTranslation $nodeTranslation
-     *
      * @return null|object
      */
     public function getPageByNodeTranslation(NodeTranslation $nodeTranslation)
@@ -124,8 +126,6 @@ class NodeTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param PageInterface $page
-     *
      * @return Node
      */
     public function getNodeFor(PageInterface $page)
@@ -134,8 +134,6 @@ class NodeTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param PageInterface $page
-     *
      * @return NodeTranslation
      */
     public function getNodeTranslationFor(PageInterface $page)
@@ -210,5 +208,23 @@ class NodeTwigExtension extends Twig_Extension
     public function fileExists($filename)
     {
         return file_exists($filename);
+    }
+
+    public function getChildrenByNodeId($nodeId, $lang)
+    {
+        return
+            $this
+                ->nodeManager
+                ->getChildrenByNodeId($nodeId, $lang)
+        ;
+    }
+
+    public function getChildrenByRootNode($rootNode, $lang)
+    {
+        return
+            $this
+                ->nodeManager
+                ->getChildrenByRootNode($rootNode, $lang)
+        ;
     }
 }

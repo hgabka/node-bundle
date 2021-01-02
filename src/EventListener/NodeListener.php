@@ -38,9 +38,6 @@ class NodeListener
         $this->permissionMap = $permissionMap;
     }
 
-    /**
-     * @param AdaptFormEvent $event
-     */
     public function adaptForm(AdaptFormEvent $event)
     {
         if ($event->getPage() instanceof HasNodeInterface && !$event->getPage()->isStructureNode()) {

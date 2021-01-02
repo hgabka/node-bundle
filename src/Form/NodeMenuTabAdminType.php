@@ -17,18 +17,12 @@ class NodeMenuTabAdminType extends AbstractType
 
     /**
      * NodeMenuTabAdminType constructor.
-     *
-     * @param AuthorizationCheckerInterface $authChecker
      */
     public function __construct(AuthorizationCheckerInterface $authChecker)
     {
         $this->authChecker = $authChecker;
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['available_in_nav']) {

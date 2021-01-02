@@ -91,8 +91,6 @@ abstract class AbstractControllerAction implements HasNodeInterface
     }
 
     /**
-     * @param HasNodeInterface $parent
-     *
      * @return AbstractControllerAction
      */
     public function setParent(HasNodeInterface $parent)

@@ -12,12 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeChoiceType extends AbstractType
 {
-    /** @var $requestStack RequestStack */
+    /** @var RequestStack */
     private $requestStack;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -52,7 +49,7 @@ class NodeChoiceType extends AbstractType
                     ->andWhere('nt.lang = :lang')
                     ->andWhere('n.deleted != 1')
                     ->andWhere('n.refEntityName IN(:refEntityName)')
-                    ->setParameter('lang', $options['locale'] ? $options['locale'] : $this->getCurrentLocale())
+                    ->setParameter('lang', $options['locale'] ?: $this->getCurrentLocale())
                     ->setParameter('refEntityName', $options['page_class'])
                     ->setParameter('online', $options['online']);
             }

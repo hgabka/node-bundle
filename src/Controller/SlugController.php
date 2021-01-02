@@ -38,8 +38,6 @@ class SlugController extends AbstractController
 
     /**
      * SlugController constructor.
-     *
-     * @param NodeMenu $nodeMenu
      */
     public function __construct(NodeMenu $nodeMenu, EventDispatcherInterface $dispatcher, ManagerRegistry $doctrine)
     {
@@ -150,10 +148,7 @@ class SlugController extends AbstractController
     }
 
     /**
-     * @param Request                $request
-     * @param bool                   $preview
-     * @param EntityManagerInterface $em
-     * @param NodeTranslation        $nodeTranslation
+     * @param bool $preview
      *
      * @return HasNodeInterface
      */

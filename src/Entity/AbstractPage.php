@@ -132,8 +132,6 @@ abstract class AbstractPage implements PageInterface
     }
 
     /**
-     * @param HasNodeInterface $parent
-     *
      * @return AbstractPage
      */
     public function setParent(HasNodeInterface $parent)

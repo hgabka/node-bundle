@@ -68,8 +68,7 @@ class NodeAdminPublisher
     /**
      * If there is a draft version it'll try to publish the draft first. Makse snese because if you want to publish the public version you don't publish but you save.
      *
-     * @param NodeTranslation $nodeTranslation
-     * @param null|mixed      $user
+     * @param null|mixed $user
      *
      * @throws AccessDeniedException
      */
@@ -145,8 +144,6 @@ class NodeAdminPublisher
     }
 
     /**
-     * @param NodeTranslation $nodeTranslation
-     *
      * @throws AccessDeniedException
      */
     public function unPublish(NodeTranslation $nodeTranslation)
@@ -202,9 +199,6 @@ class NodeAdminPublisher
         $this->em->flush();
     }
 
-    /**
-     * @param NodeTranslation $nodeTranslation
-     */
     public function unSchedulePublish(NodeTranslation $nodeTranslation)
     {
         // @var Node $node

@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Node as GedmoNode;
@@ -195,6 +196,16 @@ class Node implements GedmoNode, EntityInterface
     }
 
     /**
+     * @param mixed $sortFields
+     *
+     * @return ArrayCollection
+     */
+    public function getChildrenSorted($sortFields = ['lft' => 'ASC'])
+    {
+        return $this->getChildren()->matching(Criteria::create()->orderBy($sortFields));
+    }
+
+    /**
      * @param ArrayCollection $children
      *
      * @return Node
@@ -241,8 +252,6 @@ class Node implements GedmoNode, EntityInterface
     }
 
     /**
-     * @param ArrayCollection $nodeTranslations
-     *
      * @return Node
      */
     public function setNodeTranslations(ArrayCollection $nodeTranslations)
@@ -273,8 +282,6 @@ class Node implements GedmoNode, EntityInterface
 
     /**
      * Add nodeTranslation.
-     *
-     * @param NodeTranslation $nodeTranslation
      *
      * @return Node
      */
@@ -347,8 +354,6 @@ class Node implements GedmoNode, EntityInterface
 
     /**
      * Set referenced entity.
-     *
-     * @param HasNodeInterface $entity
      *
      * @return Node
      */
