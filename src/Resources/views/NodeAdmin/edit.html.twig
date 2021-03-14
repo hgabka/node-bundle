@@ -1,9 +1,10 @@
 {% extends '@HgabkaNode/Default/layout.html.twig' %}
-{% set form = tabPane.getFormView() %}
 
+{% set form = tabPane.getFormView() %}
 
 {% block extrabodyclasses %}{{ parent() }} js-check-if-edited{% if nodeVersionLockCheck %} js-node-version-lock{% endif %}{% endblock %}
 
+{% block title %}{{ 'hg_node.title_edit'|trans({'%title%': nodeTranslation.title}, 'HgabkaNodeBundle') }}{% endblock %}
 
 {% block messages %}
     {% if queuedNodeTranslationAction %}
