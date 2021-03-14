@@ -1,2 +1,3 @@
 hg_node:
     group: CMS
+    title_edit: '"%title%" oldal szerkesztése'
