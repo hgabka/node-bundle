@@ -2,7 +2,6 @@
 
 namespace Hgabka\NodeBundle\Router;
 
-use function count;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
@@ -140,7 +139,7 @@ class SlugRouter implements RouterInterface
     {
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
-        if (\in_array($name, ['_slug', '_slug_preview'], true) && count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
+        if (\in_array($name, ['_slug', '_slug_preview'], true) && \count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
             $lang = isset($parameters['_locale']) ? $parameters['_locale'] : $this->hgabkaUtils->getCurrentLocale();
             $name .= '_'.$lang;
         }
@@ -164,7 +163,7 @@ class SlugRouter implements RouterInterface
             $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
             $this->routeCollection = new RouteCollection();
             $allLocales = $this->hgabkaUtils->getAvailableLocales();
-            if (count($allLocales) < 2 || !$prefixed) {
+            if (\count($allLocales) < 2 || !$prefixed) {
                 $this->addPreviewRoute(current($allLocales), false);
                 $this->addSlugRoute(current($allLocales), false);
             } else {
@@ -312,7 +311,7 @@ class SlugRouter implements RouterInterface
             $slugPattern = $pattern['default'];
         }
 
-        return count($this->hgabkaUtils->getAvailableLocales()) < 2
+        return \count($this->hgabkaUtils->getAvailableLocales()) < 2
             ? str_replace('/{_locale}', '', $slugPattern)
             : $slugPattern
             ;
