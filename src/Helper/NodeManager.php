@@ -110,6 +110,42 @@ class NodeManager
     }
 
     /**
+     * @param NodeTranslation $nodeTranslation Nodetranslation
+     * @param array           $parameters      (optional) extra parameters
+     * @param bool            $relative        (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    {
+        $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
+
+        return $this->router->generate(
+            '_slug',
+            $routeParameters,
+            $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH
+        );
+    }
+
+    /**
+     * @param NodeTranslation $nodeTranslation Nodetranslation
+     * @param array           $parameters      (optional) extra parameters
+     * @param bool            $relative        (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    {
+        $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
+
+        return $this->router->generate(
+            '_slug',
+            $routeParameters,
+            $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL
+        );
+    }
+
+    /**
      * @param string $internalName
      * @param string $locale
      *
@@ -201,6 +237,19 @@ class NodeManager
         if (null !== $translation) {
             $url = $translation->getUrl();
         }
+
+        return array_merge(
+            [
+                'url' => $url,
+                '_locale' => $locale,
+            ],
+            $parameters
+        );
+    }
+
+    protected function getRouteParametersByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [])
+    {
+        $url = $nodeTranslation->getUrl();
 
         return array_merge(
             [

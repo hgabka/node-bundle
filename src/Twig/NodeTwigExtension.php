@@ -74,6 +74,14 @@ class NodeTwigExtension extends Twig_Extension
                 [$this, 'getPathByInternalName']
             ),
             new \Twig_SimpleFunction(
+                'get_url_by_node_translation',
+                [$this, 'getUrlByNodeTranslation']
+            ),
+            new \Twig_SimpleFunction(
+                'get_path_by_node_translation',
+                [$this, 'getPathByNodeTranslation']
+            ),
+            new \Twig_SimpleFunction(
                 'get_page_by_node_translation',
                 [$this, 'getPageByNodeTranslation']
             ),
@@ -176,6 +184,31 @@ class NodeTwigExtension extends Twig_Extension
     public function getUrlByInternalName($internalName, $locale = null, $parameters = [], $schemeRelative = false)
     {
         return $this->nodeManager->getUrlByInternalName($internalName, $locale, $parameters, $schemeRelative);
+    }
+
+    /**
+     * @param NodeTranslation $nodeTranslation Nodetranslation
+     * @param string          $locale          Locale
+     * @param array           $parameters      (optional) extra parameters
+     * @param bool            $relative        (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    {
+        return $this->nodeManager->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    /**
+     * @param NodeTranslation $nodeTranslation Nodetranslation
+     * @param array           $parameters      (optional) extra parameters
+     * @param bool            $relative        (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    {
+        return $this->nodeManager->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
     /**
