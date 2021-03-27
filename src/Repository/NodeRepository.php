@@ -45,42 +45,35 @@ class NodeRepository extends NestedTreeRepository
     }
 
     /**
-     * @param null|int   $parentId                      The parent node id
-     * @param string     $lang                          The locale
-     * @param string     $permission                    The permission (read, write, ...)
-     * @param AclHelper  $aclHelper                     The acl helper
-     * @param bool       $includeHiddenFromNav          Include nodes hidden from
-     *                                                  navigation or not
-     * @param Node       $rootNode                      Root node of the current tree
-     * @param mixed      $includeHiddenWithInternalName
-     * @param null|mixed $refEntityName
+     * @param null|int    $parentId                      The parent node id
+     * @param string      $lang                          The locale
+     * @param bool        $includeHiddenFromNav          Include nodes hidden from navigation or not
+     * @param bool        $includeHiddenWithInternalName
+     * @param null|Node   $rootNode                      Root node of the current tree
+     * @param null|string $refEntityName
      *
      * @return Node[]
      */
-    public function getChildNodes(
+    public function getChildNodesQueryBuilder(
         $parentId,
         $lang,
-        $permission,
-        AclHelper $aclHelper,
         $includeHiddenFromNav = false,
         $includeHiddenWithInternalName = false,
         $rootNode = null,
         $refEntityName = null
     ) {
         $qb = $this->createQueryBuilder('b')
-            ->select('b', 't', 'v')
-            ->leftJoin('b.nodeTranslations', 't', 'WITH', 't.lang = :lang')
-            ->leftJoin(
-                't.publicNodeVersion',
-                'v',
-                'WITH',
-                't.publicNodeVersion = v.id'
-            )
-            ->where('b.deleted = 0')
-            ->setParameter('lang', $lang)
-            ->addOrderBy('t.weight', 'ASC')
-            ->addOrderBy('t.title', 'ASC');
-
+                   ->select('b', 't', 'v')
+                   ->leftJoin('b.nodeTranslations', 't', 'WITH', 't.lang = :lang')
+                   ->leftJoin(
+                       't.publicNodeVersion',
+                       'v',
+                       'WITH',
+                       't.publicNodeVersion = v.id'
+                   )
+                   ->where('b.deleted = 0')
+                   ->setParameter('lang', $lang)
+        ;
         if (!$includeHiddenFromNav) {
             if ($includeHiddenWithInternalName) {
                 $qb->andWhere(
@@ -95,13 +88,13 @@ class NodeRepository extends NestedTreeRepository
             $qb->andWhere('b.parent is NULL');
         } elseif (false !== $parentId) {
             $qb->andWhere('b.parent = :parent')
-                ->setParameter('parent', $parentId);
+               ->setParameter('parent', $parentId);
         }
         if ($rootNode) {
             $qb->andWhere('b.lft >= :left')
-                ->andWhere('b.rgt <= :right')
-                ->setParameter('left', $rootNode->getLeft())
-                ->setParameter('right', $rootNode->getRight());
+               ->andWhere('b.rgt <= :right')
+               ->setParameter('left', $rootNode->getLeft())
+               ->setParameter('right', $rootNode->getRight());
         }
 
         if (null !== $refEntityName) {
@@ -109,6 +102,36 @@ class NodeRepository extends NestedTreeRepository
                 ->andWhere('v.refEntityName = :refEntityName')
                 ->setParameter('refEntityName', $refEntityName);
         }
+
+        return $qb;
+    }
+
+    /**
+     * @param null|int    $parentId                      The parent node id
+     * @param string      $lang                          The locale
+     * @param string      $permission                    The permission (read, write, ...)
+     * @param AclHelper   $aclHelper                     The acl helper
+     * @param bool        $includeHiddenFromNav          Include nodes hidden from navigation or not
+     * @param bool        $includeHiddenWithInternalName
+     * @param null|Node   $rootNode                      Root node of the current tree
+     * @param null|string $refEntityName
+     *
+     * @return Node[]
+     */
+    public function getChildNodes(
+        $parentId,
+        $lang,
+        $permission,
+        AclHelper $aclHelper,
+        $includeHiddenFromNav = false,
+        $includeHiddenWithInternalName = false,
+        $rootNode = null,
+        $refEntityName = null
+    ) {
+        $qb = $this->getChildNodesQueryBuilder($parentId, $lang, $includeHiddenFromNav, $includeHiddenWithInternalName, $rootNode, $refEntityName);
+        $qb
+            ->addOrderBy('t.weight', 'ASC')
+            ->addOrderBy('t.title', 'ASC');
 
         $query = $aclHelper->apply(
             $qb,

@@ -224,6 +224,15 @@ class NodeManager
         ;
     }
 
+    public function getChildrenByRootNodeQueryBuilder($rootNode, $lang, $refEntityName = null)
+    {
+        return $this
+            ->manager
+            ->getRepository(Node::class)
+            ->getChildNodesQueryBuilder(false, $lang, false, false, $rootNode, $refEntityName)
+        ;
+    }
+
     protected function getRouteParametersByInternalName($internalName, $locale, $parameters = [])
     {
         $url = '';
