@@ -45,7 +45,7 @@ class LinkPageAdminType extends PageAdminType
             ])
         ;
     }
-    
+
     /**
      * Sets the default options for this type.
      *
@@ -67,5 +67,4 @@ class LinkPageAdminType extends PageAdminType
     {
         return 'link_page';
     }
-    
 }

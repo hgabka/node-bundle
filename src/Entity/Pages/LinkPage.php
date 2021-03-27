@@ -2,10 +2,10 @@
 
 namespace Hgabka\NodeBundle\Entity\Pages;
 
-use Hgabka\NodeBundle\Entity\AbstractPage;
-use Hgabka\NodeBundle\Form\PageAdminType;
-
 use Doctrine\ORM\Mapping as ORM;
+use Hgabka\NodeBundle\Controller\LinkPageController;
+use Hgabka\NodeBundle\Controller\SlugActionInterface;
+use Hgabka\NodeBundle\Entity\AbstractPage;
 use Hgabka\NodeBundle\Form\Pages\LinkPageAdminType;
 
 /**
@@ -14,15 +14,8 @@ use Hgabka\NodeBundle\Form\Pages\LinkPageAdminType;
  * @ORM\Entity()
  * @ORM\Table(name="hg_node_link_pages")
  */
-class LinkPage extends AbstractPage
+class LinkPage extends AbstractPage implements SlugActionInterface
 {
-
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $remoteUrl;
-
     /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
@@ -30,37 +23,29 @@ class LinkPage extends AbstractPage
     protected $opensInNewWindow = false;
 
     /**
-     * @return string|null
+     * @var null|string
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $remoteUrl;
+
     public function getRemoteUrl(): ?string
     {
         return $this->remoteUrl;
     }
 
-    /**
-     * @param string|null $remoteUrl
-     * @return LinkPage
-     */
-    public function setRemoteUrl(?string $remoteUrl): LinkPage
+    public function setRemoteUrl(?string $remoteUrl): self
     {
         $this->remoteUrl = $remoteUrl;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isOpensInNewWindow(): bool
     {
         return $this->opensInNewWindow;
     }
 
-    /**
-     * @param bool $opensInNewWindow
-     * @return LinkPage
-     */
-    public function setOpensInNewWindow(bool $opensInNewWindow): LinkPage
+    public function setOpensInNewWindow(bool $opensInNewWindow): self
     {
         $this->opensInNewWindow = $opensInNewWindow;
 
@@ -83,5 +68,13 @@ class LinkPage extends AbstractPage
     public function getPossibleChildTypes()
     {
         return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getControllerAction()
+    {
+        return LinkPageController::class.':service';
     }
 }

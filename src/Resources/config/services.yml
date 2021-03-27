@@ -198,6 +198,11 @@ services:
         arguments:
             - '@hgabka_node.helper.url'
 
+    Hgabka\NodeBundle\Controller\LinkPageController:
+        public: true
+        arguments:
+            - '@hgabka_node.helper.url'
+
     hgabka_node.url_replace.controller:
         alias: Hgabka\NodeBundle\Controller\UrlReplaceController
 

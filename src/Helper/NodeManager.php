@@ -86,7 +86,7 @@ class NodeManager
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
 
-        if (!empty($routeParameters) && !is_array($routeParameters)) {
+        if (!empty($routeParameters) && !\is_array($routeParameters)) {
             return $routeParameters;
         }
 
@@ -111,7 +111,7 @@ class NodeManager
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
         dump($routeParameters);
-        if (!empty($routeParameters) && !is_array($routeParameters)) {
+        if (!empty($routeParameters) && !\is_array($routeParameters)) {
             return $routeParameters;
         }
 
@@ -132,7 +132,7 @@ class NodeManager
     public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
-        if (!empty($routeParameters) && !is_array($routeParameters)) {
+        if (!empty($routeParameters) && !\is_array($routeParameters)) {
             return $routeParameters;
         }
 
@@ -153,7 +153,7 @@ class NodeManager
     public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
-        if (!empty($routeParameters) && !is_array($routeParameters)) {
+        if (!empty($routeParameters) && !\is_array($routeParameters)) {
             return $routeParameters;
         }
 
