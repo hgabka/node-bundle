@@ -184,7 +184,7 @@ services:
         tags:
             - { name: twig.extension }
 
-    hgabka_node.helper.url:
+    Hgabka\NodeBundle\Helper\URLHelper:
         class: '%hgabka_node.helper.url.class%'
         arguments:
             - '@doctrine.orm.entity_manager'
@@ -245,6 +245,9 @@ services:
 
     hgabka_node.node_manager:
         alias: Hgabka\NodeBundle\Helper\NodeManager
+
+    hgabka_node.helper.url:
+        alias: Hgabka\NodeBundle\Helper\URLHelper
 
     Hgabka\NodeBundle\Helper\NodeManager:
         autoconfigure: true

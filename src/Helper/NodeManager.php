@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\PageInterface;
+use Hgabka\NodeBundle\Entity\Pages\LinkPage;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
@@ -26,19 +27,23 @@ class NodeManager
     /** @var UrlGeneratorInterface */
     protected $router;
 
+    /** @var URLHelper */
+    protected $urlHelper;
+
     /** @var AclHelper */
     protected $aclHelper;
 
     /**
      * NodeManager constructor.
      */
-    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router, HgabkaUtils $hgabkaUtils, AclHelper $aclHelper)
+    public function __construct(EntityManagerInterface $manager, RequestStack $requestStack, UrlGeneratorInterface $router, HgabkaUtils $hgabkaUtils, AclHelper $aclHelper, URLHelper $urlHelper)
     {
         $this->manager = $manager;
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->hgabkaUtils = $hgabkaUtils;
         $this->aclHelper = $aclHelper;
+        $this->urlHelper = $urlHelper;
     }
 
     public function getNodeDataByInternalName($internalName, $locale = null)
@@ -81,6 +86,10 @@ class NodeManager
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
 
+        if (!empty($routeParameters) && !is_array($routeParameters)) {
+            return $routeParameters;
+        }
+
         return $this->router->generate(
             '_slug',
             $routeParameters,
@@ -101,6 +110,10 @@ class NodeManager
         $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
+        dump($routeParameters);
+        if (!empty($routeParameters) && !is_array($routeParameters)) {
+            return $routeParameters;
+        }
 
         return $this->router->generate(
             '_slug',
@@ -119,6 +132,9 @@ class NodeManager
     public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
+        if (!empty($routeParameters) && !is_array($routeParameters)) {
+            return $routeParameters;
+        }
 
         return $this->router->generate(
             '_slug',
@@ -137,6 +153,9 @@ class NodeManager
     public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
+        if (!empty($routeParameters) && !is_array($routeParameters)) {
+            return $routeParameters;
+        }
 
         return $this->router->generate(
             '_slug',
@@ -236,6 +255,7 @@ class NodeManager
     protected function getRouteParametersByInternalName($internalName, $locale, $parameters = [])
     {
         $url = '';
+        /** @var NodeTranslation $translation */
         $translation =
             $this
                 ->manager
@@ -244,6 +264,11 @@ class NodeManager
         ;
 
         if (null !== $translation) {
+            $remoteUrl = $this->getRemoteUrl($translation);
+            if (!empty($remoteUrl)) {
+                return $remoteUrl;
+            }
+
             $url = $translation->getUrl();
         }
 
@@ -256,14 +281,34 @@ class NodeManager
         );
     }
 
+    protected function getRemoteUrl(NodeTranslation $translation)
+    {
+        $version = $translation->getNodeVersion('public');
+        if ($version && LinkPage::class === $version->getRefEntityName()) {
+            /** @var LinkPage $ref */
+            $ref = $translation->getRef($this->manager);
+            if (!empty($ref->getRemoteUrl())) {
+                return $this->urlHelper->replaceUrl($ref->getRemoteUrl());
+            }
+        }
+
+        return null;
+    }
+
     protected function getRouteParametersByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [])
     {
+        $remoteUrl = $this->getRemoteUrl($nodeTranslation);
+
+        if (!empty($remoteUrl)) {
+            return $remoteUrl;
+        }
+
         $url = $nodeTranslation->getUrl();
 
         return array_merge(
             [
                 'url' => $url,
-                '_locale' => $locale,
+                '_locale' => $nodeTranslation->getLang(),
             ],
             $parameters
         );
