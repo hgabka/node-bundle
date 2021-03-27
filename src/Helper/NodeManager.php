@@ -263,7 +263,7 @@ class NodeManager
         return array_merge(
             [
                 'url' => $url,
-                '_locale' => $locale,
+                '_locale' => $nodeTranslation->getLang(),
             ],
             $parameters
         );
