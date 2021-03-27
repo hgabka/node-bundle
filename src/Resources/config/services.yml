@@ -47,6 +47,7 @@ services:
         class: Hgabka\NodeBundle\Form\NodeChoiceType
         arguments:
             - '@request_stack'
+            - '@hgabka_node.node_manager'
         tags:
             - { name: form.type }
 

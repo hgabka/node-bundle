@@ -3,6 +3,7 @@
 namespace Hgabka\NodeBundle\Form;
 
 use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Helper\NodeManager;
 use Hgabka\NodeBundle\Repository\NodeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -15,9 +16,13 @@ class NodeChoiceType extends AbstractType
     /** @var RequestStack */
     private $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    /** @var NodeManager */
+    private $nodeManager;
+
+    public function __construct(RequestStack $requestStack, NodeManager $nodeManager)
     {
         $this->requestStack = $requestStack;
+        $this->nodeManager = $nodeManager;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -32,6 +37,7 @@ class NodeChoiceType extends AbstractType
                 'query_builder' => function (NodeRepository $er) {
                     return $er->createQueryBuilder('n');
                 },
+                'root_node' => null,
             ]
         );
 
@@ -54,11 +60,24 @@ class NodeChoiceType extends AbstractType
                     ->setParameter('online', $options['online']);
             }
 
+            if (!empty($options['root_node'])) {
+                $node = $options['root_node'] instanceof Node ? $options['root_node'] : $this->nodeManager->getNodeByInternalName($options['root_node']);
+                $alias = current($queryBuilder->getRootAliases());
+
+                $queryBuilder
+                    ->andWhere($alias.'.lft >= :left')
+                    ->andWhere($alias.'.rgt <= :right')
+                    ->setParameter('left', $node->getLeft())
+                    ->setParameter('right', $node->getRight())
+                ;
+            }
+
             return $queryBuilder;
         };
 
         $resolver->setNormalizer('query_builder', $queryBuilderNormalizer);
         $resolver->setAllowedTypes('query_builder', ['null', 'callable', 'Doctrine\ORM\QueryBuilder']);
+        $resolver->setAllowedTypes('root_node', ['null', 'string', Node::class]);
     }
 
     public function getParent()
