@@ -252,12 +252,12 @@ class NodeTwigExtension extends Twig_Extension
         ;
     }
 
-    public function getChildrenByRootNode($rootNode, $lang)
+    public function getChildrenByRootNode($rootNode, $lang, $refEntityName = null)
     {
         return
             $this
                 ->nodeManager
-                ->getChildrenByRootNode($rootNode, $lang)
+                ->getChildrenByRootNode($rootNode, $lang, $refEntityName)
         ;
     }
 }

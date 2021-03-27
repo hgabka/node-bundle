@@ -45,14 +45,15 @@ class NodeRepository extends NestedTreeRepository
     }
 
     /**
-     * @param null|int  $parentId                      The parent node id
-     * @param string    $lang                          The locale
-     * @param string    $permission                    The permission (read, write, ...)
-     * @param AclHelper $aclHelper                     The acl helper
-     * @param bool      $includeHiddenFromNav          Include nodes hidden from
-     *                                                 navigation or not
-     * @param Node      $rootNode                      Root node of the current tree
-     * @param mixed     $includeHiddenWithInternalName
+     * @param null|int   $parentId                      The parent node id
+     * @param string     $lang                          The locale
+     * @param string     $permission                    The permission (read, write, ...)
+     * @param AclHelper  $aclHelper                     The acl helper
+     * @param bool       $includeHiddenFromNav          Include nodes hidden from
+     *                                                  navigation or not
+     * @param Node       $rootNode                      Root node of the current tree
+     * @param mixed      $includeHiddenWithInternalName
+     * @param null|mixed $refEntityName
      *
      * @return Node[]
      */
@@ -63,7 +64,8 @@ class NodeRepository extends NestedTreeRepository
         AclHelper $aclHelper,
         $includeHiddenFromNav = false,
         $includeHiddenWithInternalName = false,
-        $rootNode = null
+        $rootNode = null,
+        $refEntityName = null
     ) {
         $qb = $this->createQueryBuilder('b')
             ->select('b', 't', 'v')
@@ -100,6 +102,12 @@ class NodeRepository extends NestedTreeRepository
                 ->andWhere('b.rgt <= :right')
                 ->setParameter('left', $rootNode->getLeft())
                 ->setParameter('right', $rootNode->getRight());
+        }
+
+        if (null !== $refEntityName) {
+            $qb
+                ->andWhere('v.refEntityName = :refEntityName')
+                ->setParameter('refEntityName', $refEntityName);
         }
 
         $query = $aclHelper->apply(

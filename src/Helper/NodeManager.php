@@ -215,12 +215,12 @@ class NodeManager
         ;
     }
 
-    public function getChildrenByRootNode($rootNode, $lang)
+    public function getChildrenByRootNode($rootNode, $lang, $refEntityName = null)
     {
         return $this
             ->manager
             ->getRepository(Node::class)
-            ->getChildNodes(false, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, $rootNode)
+            ->getChildNodes(false, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, $rootNode, $refEntityName)
         ;
     }
 
