@@ -225,12 +225,12 @@ class NodeManager
         return $this->manager->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
     }
 
-    public function getChildrenByNodeId($nodeId, $lang)
+    public function getChildrenByNodeId($nodeId, $lang, $refEntityName = null)
     {
         return $this
             ->manager
             ->getRepository(Node::class)
-            ->getChildNodes($nodeId, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper)
+            ->getChildNodes($nodeId, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, null, $refEntityName)
         ;
     }
 
