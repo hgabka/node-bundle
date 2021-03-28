@@ -110,7 +110,7 @@ class NodeManager
         $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
         $routeParameters = $this->getRouteParametersByInternalName($internalName, $locale, $parameters);
-        dump($routeParameters);
+        
         if (!empty($routeParameters) && !\is_array($routeParameters)) {
             return $routeParameters;
         }
