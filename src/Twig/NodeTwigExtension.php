@@ -2,6 +2,7 @@
 
 namespace Hgabka\NodeBundle\Twig;
 
+use Hgabka\NodeBundle\Entity\AbstractPage;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\PageInterface;
@@ -108,6 +109,10 @@ class NodeTwigExtension extends Twig_Extension
             new \Twig_SimpleFunction(
                 'get_children_by_root_node',
                 [$this, 'getChildrenByRootNode']
+            ),
+            new \Twig_SimpleFunction(
+                'get_page_title',
+                [$this, 'getPageTitle']
             ),
         ];
     }
@@ -259,5 +264,12 @@ class NodeTwigExtension extends Twig_Extension
                 ->nodeManager
                 ->getChildrenByRootNode($rootNode, $lang, $refEntityName)
         ;
+    }
+
+    public function getPageTitle(AbstractPage $page)
+    {
+        $pageTitle = $page->getPageTitle();
+
+        return empty($pageTitle) ? $page->getTitle() : $pageTitle;
     }
 }
