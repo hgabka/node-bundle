@@ -83,6 +83,22 @@ class NodeTwigExtension extends Twig_Extension
                 [$this, 'getPathByNodeTranslation']
             ),
             new \Twig_SimpleFunction(
+                'get_url_by_node',
+                [$this, 'getUrlByNode']
+            ),
+            new \Twig_SimpleFunction(
+                'get_path_by_node',
+                [$this, 'getPathByNode']
+            ),
+            new \Twig_SimpleFunction(
+                'get_url_by_page',
+                [$this, 'getUrlByPage']
+            ),
+            new \Twig_SimpleFunction(
+                'get_path_by_page',
+                [$this, 'getPathByPage']
+            ),
+            new \Twig_SimpleFunction(
                 'get_page_by_node_translation',
                 [$this, 'getPageByNodeTranslation']
             ),
@@ -120,12 +136,9 @@ class NodeTwigExtension extends Twig_Extension
     /**
      * Get the node translation object based on node id and language.
      *
-     * @param int    $nodeId
-     * @param string $lang
-     *
      * @return NodeTranslation
      */
-    public function getNodeTranslationByNodeId($nodeId, $lang)
+    public function getNodeTranslationByNodeId(int $nodeId, string $lang)
     {
         return $this->nodeManager->getNodeTranslationByNodeId($nodeId, $lang);
     }
@@ -155,12 +168,11 @@ class NodeTwigExtension extends Twig_Extension
     }
 
     /**
-     * @param string $internalName
      * @param string $locale
      *
      * @return null|Node
      */
-    public function getNodeByInternalName($internalName, $locale = null)
+    public function getNodeByInternalName(string $internalName, ?string $locale = null)
     {
         return $this->nodeManager->getNodeByInternalName($internalName, $locale);
     }
@@ -173,7 +185,7 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getPathByInternalName($internalName, $locale = null, $parameters = [], $relative = false)
+    public function getPathByInternalName(string $internalName, ?string $locale = null, array $parameters = [], bool $relative = false)
     {
         return $this->nodeManager->getPathByInternalName($internalName, $locale, $parameters, $relative);
     }
@@ -186,7 +198,7 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getUrlByInternalName($internalName, $locale = null, $parameters = [], $schemeRelative = false)
+    public function getUrlByInternalName(string $internalName, ?string $locale = null, array $parameters = [], bool $schemeRelative = false)
     {
         return $this->nodeManager->getUrlByInternalName($internalName, $locale, $parameters, $schemeRelative);
     }
@@ -199,7 +211,7 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, array $parameters = [], bool $relative = false)
     {
         return $this->nodeManager->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
@@ -211,9 +223,59 @@ class NodeTwigExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, array $parameters = [], bool $relative = false)
     {
-        return $this->nodeManager->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
+        return $this->nodeManager->getUrlByNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    /**
+     * @param Node        $node       Node
+     * @param null|string $locale     Locale
+     * @param array       $parameters (optional) extra parameters
+     * @param bool        $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
+    {
+        return $this->nodeManager->getPathByNode($node, $locale, $parameters, $relative);
+    }
+
+    /**
+     * @param Node        $node       Node
+     * @param null|string $locale     Locale
+     * @param array       $parameters (optional) extra parameters
+     * @param bool        $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
+    {
+        return $this->nodeManager->getUrlByNode($node, $locale, $parameters, $relative);
+    }
+
+    /**
+     * @param PageInterface $page       Page
+     * @param array         $parameters (optional) extra parameters
+     * @param bool          $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    {
+        return $this->nodeManager->getPathByPage($page, $parameters, $relative);
+    }
+
+    /**
+     * @param PageInterface $page       Page
+     * @param array         $parameters (optional) extra parameters
+     * @param bool          $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    {
+        return $this->nodeManager->getUrlByPage($page, $parameters, $relative);
     }
 
     /**

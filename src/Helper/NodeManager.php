@@ -46,7 +46,7 @@ class NodeManager
         $this->urlHelper = $urlHelper;
     }
 
-    public function getNodeDataByInternalName($internalName, $locale = null)
+    public function getNodeDataByInternalName(string $internalName, ?string $locale = null)
     {
         if (null === $locale) {
             $locale = $this->requestStack->getCurrentRequest()->getLocale();
@@ -80,7 +80,7 @@ class NodeManager
         ];
     }
 
-    public function getUrlByInternalName($internalName, $locale = null, $parameters = [], $schemeRelative = false)
+    public function getUrlByInternalName(string $internalName, ?string $locale = null, array $parameters = [], bool $schemeRelative = false)
     {
         $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
@@ -105,7 +105,7 @@ class NodeManager
      *
      * @return string
      */
-    public function getPathByInternalName($internalName, $locale = null, $parameters = [], $relative = false)
+    public function getPathByInternalName(string $internalName, ?string $locale = null, array $parameters = [], bool $relative = false)
     {
         $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
@@ -129,7 +129,7 @@ class NodeManager
      *
      * @return string
      */
-    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    public function getPathByNodeTranslation(NodeTranslation $nodeTranslation, array $parameters = [], bool $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
         if (!empty($routeParameters) && !\is_array($routeParameters)) {
@@ -150,7 +150,7 @@ class NodeManager
      *
      * @return string
      */
-    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [], $relative = false)
+    public function getUrlByNodeTranslation(NodeTranslation $nodeTranslation, array $parameters = [], bool $relative = false)
     {
         $routeParameters = $this->getRouteParametersByNodeTranslation($nodeTranslation, $parameters);
         if (!empty($routeParameters) && !\is_array($routeParameters)) {
@@ -165,12 +165,11 @@ class NodeManager
     }
 
     /**
-     * @param string $internalName
      * @param string $locale
      *
      * @return null|Node
      */
-    public function getNodeByInternalName($internalName, $locale = null)
+    public function getNodeByInternalName(string $internalName, ?string $locale = null)
     {
         $locale = $this->hgabkaUtils->getCurrentLocale($locale);
 
@@ -189,12 +188,9 @@ class NodeManager
     /**
      * Get the node translation object based on node id and language.
      *
-     * @param int    $nodeId
-     * @param string $lang
-     *
      * @return NodeTranslation
      */
-    public function getNodeTranslationByNodeId($nodeId, $lang)
+    public function getNodeTranslationByNodeId(int $nodeId, string $lang)
     {
         $repo = $this->manager->getRepository(NodeTranslation::class);
 
@@ -225,7 +221,10 @@ class NodeManager
         return $this->manager->getRepository(NodeTranslation::class)->getNodeTranslationFor($page);
     }
 
-    public function getChildrenByNodeId($nodeId, $lang, $refEntityName = null)
+    /**
+     * @return Node[]
+     */
+    public function getChildrenByNodeId(int $nodeId, string $lang, ?string $refEntityName = null)
     {
         return $this
             ->manager
@@ -234,7 +233,7 @@ class NodeManager
         ;
     }
 
-    public function getChildrenByRootNode($rootNode, $lang, $refEntityName = null)
+    public function getChildrenByRootNode(Node $rootNode, string $lang, ?string $refEntityName = null)
     {
         return $this
             ->manager
@@ -243,7 +242,7 @@ class NodeManager
         ;
     }
 
-    public function getChildrenByRootNodeQueryBuilder($rootNode, $lang, $refEntityName = null)
+    public function getChildrenByRootNodeQueryBuilder(Node $rootNode, string $lang, ?string $refEntityName = null)
     {
         return $this
             ->manager
@@ -252,7 +251,65 @@ class NodeManager
         ;
     }
 
-    protected function getRouteParametersByInternalName($internalName, $locale, $parameters = [])
+    /**
+     * @param Node        $node       Node
+     * @param null|string $locale     Locale
+     * @param array       $parameters (optional) extra parameters
+     * @param bool        $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
+    {
+        $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
+
+        return $this->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    /**
+     * @param Node        $node       Node
+     * @param null|string $locale     Locale
+     * @param array       $parameters (optional) extra parameters
+     * @param bool        $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
+    {
+        $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
+
+        return $this->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    /**
+     * @param PageInterface $page       Page
+     * @param array         $parameters (optional) extra parameters
+     * @param bool          $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getPathByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    {
+        $nodeTranslation = $this->getNodeTranslationFor($page);
+
+        return $this->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    /**
+     * @param PageInterface $page       Page
+     * @param array         $parameters (optional) extra parameters
+     * @param bool          $relative   (optional) return relative path?
+     *
+     * @return string
+     */
+    public function getUrlByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    {
+        $nodeTranslation = $this->getNodeTranslationFor($page);
+
+        return $this->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
+    }
+
+    protected function getRouteParametersByInternalName(string $internalName, string $locale, array $parameters = [])
     {
         $url = '';
         /** @var NodeTranslation $translation */
@@ -295,7 +352,7 @@ class NodeManager
         return null;
     }
 
-    protected function getRouteParametersByNodeTranslation(NodeTranslation $nodeTranslation, $parameters = [])
+    protected function getRouteParametersByNodeTranslation(NodeTranslation $nodeTranslation, array $parameters = [])
     {
         $remoteUrl = $this->getRemoteUrl($nodeTranslation);
 
