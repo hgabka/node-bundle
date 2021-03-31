@@ -160,7 +160,7 @@ class NodeManager
         return $this->router->generate(
             '_slug',
             $routeParameters,
-            $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL
+            $relative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
 
@@ -306,7 +306,7 @@ class NodeManager
     {
         $nodeTranslation = $this->getNodeTranslationFor($page);
 
-        return $this->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
+        return $this->getUrlByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
     protected function getRouteParametersByInternalName(string $internalName, string $locale, array $parameters = [])
