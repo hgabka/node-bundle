@@ -63,7 +63,12 @@ class NodeManager
         } else {
             $node = null;
         }
-
+        
+        return $this->getNodeDataByNode($node);
+    }
+    
+    public function getNodeDataByNode(?Node $node)
+    {
         if (empty($node)) {
             return [
                 'node' => $node,
