@@ -64,11 +64,15 @@ class NodeManager
             $node = null;
         }
         
-        return $this->getNodeDataByNode($node);
+        return $this->getNodeDataByNode($node, $locale);
     }
     
-    public function getNodeDataByNode(?Node $node)
+    public function getNodeDataByNode(?Node $node, ?string $locale = null)
     {
+        if (null === $locale) {
+            $locale = $this->requestStack->getCurrentRequest()->getLocale();
+        }
+        
         if (empty($node)) {
             return [
                 'node' => $node,
