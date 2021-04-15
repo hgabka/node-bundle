@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Router;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
+use Symfony\Cmf\Component\Routing\VersatileGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,7 +22,7 @@ use Symfony\Component\Routing\RouterInterface;
  * lowest priority as it's a catch-all router that routes (almost) all requests
  * to the SlugController.
  */
-class SlugRouter implements RouterInterface
+class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 {
     const STRATEGY_PREFIX = 'prefix';
     const STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
@@ -395,5 +396,15 @@ class SlugRouter implements RouterInterface
         }
 
         return implode('|', $escapedLocales);
+    }
+    
+    public function supports($name)
+    {
+        return 0 === strpos($name, '_slug');
+    }
+
+    public function getRouteDebugMessage($name, array $parameters = [])
+    {
+        return 'Node bundle rote';
     }
 }
