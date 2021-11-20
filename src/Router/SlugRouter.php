@@ -140,6 +140,13 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
     {
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
+        if (self::STRATEGY_PREFIX_EXCEPT_DEFAULT === $strategy
+            && ((isset($parameters['_locale']) && $parameters['_locale'] === $this->hgabkaUtils->getDefaultLocale())
+            || !isset($parameters['_locale']) && $this->hgabkaUtils->getCurrentLocale() === $this->hgabkaUtils->getDefaultLocale())
+            ) {
+            $prefixed = false;
+        }
+
         if (\in_array($name, ['_slug', '_slug_preview'], true) && \count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
             $lang = isset($parameters['_locale']) ? $parameters['_locale'] : $this->hgabkaUtils->getCurrentLocale();
             $name .= '_'.$lang;
@@ -151,7 +158,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 
         return $this->urlGenerator->generate($name, $parameters, $referenceType);
     }
-
+    
     /**
      * Getter for routeCollection.
      *
