@@ -105,5 +105,7 @@ class InitAclCommand extends Command
             $aclProvider->updateAcl($acl);
         }
         $output->writeln("{$count} nodes processed.");
+        
+        return Command::SUCCESS;
     }
 }
