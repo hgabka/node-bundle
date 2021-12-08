@@ -2,15 +2,37 @@
 
 namespace Hgabka\NodeBundle\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CronUpdateNodeCommand extends ContainerAwareCommand
 {
+    protected static $defaultName = 'hgabka:nodes:cron';
+    
+    /** @var EntityManagerInterface */
+    protected $entityManager;
+    
+    /** @var TokenStorageInterface */
+    protected $tokenStorage;
+    
+    /** @var NodeAdminPublisher */
+    protected $publisher;
+
+    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, NodeAdminPublisher $publisher)
+    {
+        parent::__construct();
+
+        $this->entityManager = $entityManager;
+        $this->tokenStorage = $tokenStorage;
+        $this->publisher = $publisher;
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -18,7 +40,7 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('hgabka:nodes:cron')
+        $this->setName(static::$defaultName)
             ->setDescription('Do everything that needs to be run in a cron job.')
             ->setHelp('The <info>hgabka:nodes:cron</info> will loop over all queued node translation action entries and update the nodetranslations if needed.');
     }
@@ -28,7 +50,7 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->entityManager;
 
         $queuedNodeTranslationActions = $em->getRepository(QueuedNodeTranslationAction::class)->findAll();
 
@@ -41,17 +63,17 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
                     // Set user security context
                     $user = $queuedNodeTranslationAction->getUser();
                     $runAsToken = new UsernamePasswordToken($user, null, 'foo', $user->getRoles());
-                    $this->getContainer()->get('security.token_storage')->setToken($runAsToken);
+                    $this->tokenStorage->setToken($runAsToken);
 
                     $nodeTranslation = $queuedNodeTranslationAction->getNodeTranslation();
                     switch ($action) {
                         case QueuedNodeTranslationAction::ACTION_PUBLISH:
-                            $this->getContainer()->get(NodeAdminPublisher::class)->publish($nodeTranslation, $user);
+                            $this->publisher->publish($nodeTranslation, $user);
                             $output->writeln('Published the page '.$nodeTranslation->getTitle());
 
                             break;
                         case QueuedNodeTranslationAction::ACTION_UNPUBLISH:
-                            $this->getContainer()->get(NodeAdminPublisher::class)->unPublish($nodeTranslation);
+                            $this->publisher->unPublish($nodeTranslation);
                             $output->writeln('Unpublished the page '.$nodeTranslation->getTitle());
 
                             break;
