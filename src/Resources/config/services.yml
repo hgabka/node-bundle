@@ -213,7 +213,8 @@ services:
         autowire: true
         autoconfigure: true
         calls:
-            -  [ setOiaStrategy, [ '@security.acl.object_identity_retrieval_strategy' ] ]
+            - [ setAclProvider, [ '@security.acl.provider' ] ]
+            - [ setOiaStrategy, [ '@security.acl.object_identity_retrieval_strategy' ] ]
         
     Hgabka\NodeBundle\Command\ConvertSequenceNumberToWeightCommand:
         autowire: true
