@@ -29,8 +29,6 @@ class ConvertSequenceNumberToWeightCommand extends Command
      */
     protected function configure()
     {
-        parent::configure();
-
         $this->setName(static::$defaultName)
             ->setDescription('Set all the nodetranslations weights based on the nodes sequencenumber')
             ->setHelp('The <info>Node:nodetranslations:updateweights</info> will loop over all nodetranslation and set their weight based on the nodes sequencenumber.');
