@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class CronUpdateNodeCommand extends ContainerAwareCommand
+class CronUpdateNodeCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:cron';
     
