@@ -4,8 +4,10 @@ namespace Hgabka\NodeBundle\Twig;
 
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Helper\PagesConfiguration;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class PagesConfigurationTwigExtension extends \Twig_Extension
+class PagesConfigurationTwigExtension extends AbstractExtension
 {
     /** @var PagesConfiguration */
     private $pagesConfiguration;
@@ -23,11 +25,11 @@ class PagesConfigurationTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'get_possible_child_types' => new \Twig_SimpleFunction(
+            'get_possible_child_types' => new TwigFunction(
                 'get_possible_child_types',
                 [$this, 'getPossibleChildTypes']
             ),
-            'get_homepage_types' => new \Twig_SimpleFunction(
+            'get_homepage_types' => new TwigFunction(
                 'get_homepage_types',
                 [$this, 'getHomepageTypes']
             ),
