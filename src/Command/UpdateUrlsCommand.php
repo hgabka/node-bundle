@@ -52,5 +52,7 @@ class UpdateUrlsCommand extends Command
         }
 
         $output->writeln('Updated all nodes');
+        
+        return Command::SUCCESS;
     }
 }
