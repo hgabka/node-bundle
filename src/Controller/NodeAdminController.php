@@ -41,6 +41,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -80,9 +81,8 @@ class NodeAdminController extends CRUDController
      *
      * @return array
      */
-    public function listAction()
+    public function listAction(Request $request): Response
     {
-        $request = $this->getRequest();
         $this->admin->checkAccess('list');
         $preResponse = $this->preList($request);
         if (null !== $preResponse) {
@@ -411,9 +411,11 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function deleteAction($id)
+    public function deleteAction(Request $request): Response
     {
-        $request = $this->getRequest();
+        $this->assertObjectExists($request, true);
+
+        $id = $request->get($this->admin->getIdParameter());
         $this->admin->checkAccess('delete');
 
         $this->init($request);
@@ -826,7 +828,7 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    public function editAction($id = null)
+    public function editAction(Request $request): Response
     {
         return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $id]);
     }
