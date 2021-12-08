@@ -150,7 +150,7 @@ services:
 
     hgabka_node.doctrine_mapping.listener:
         class: Hgabka\NodeBundle\EventListener\MappingListener
-        arguments: ['%fos_user.model.user.class%']
+        arguments: ['%hgabka_utils.backend_user_class%']
         tags:
             - { name: doctrine.event_listener, event: loadClassMetadata }
 
