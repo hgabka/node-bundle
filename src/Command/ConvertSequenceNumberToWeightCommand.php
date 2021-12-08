@@ -2,17 +2,27 @@
 
 namespace Hgabka\NodeBundle\Command;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * ConvertSequenceNumberToWeightCommand.
  */
-class ConvertSequenceNumberToWeightCommand extends ContainerAwareCommand
+class ConvertSequenceNumberToWeightCommand extends Command
 {
+    protected static $defaultName = 'hgabka:nodes:convertsequencenumbertoweight';
+    
+    /** @var EntityManagerInterface */
+    protected $entityManager;
+    
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -20,7 +30,7 @@ class ConvertSequenceNumberToWeightCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('hgabka:nodes:convertsequencenumbertoweight')
+        $this->setName(static::$defaultName)
             ->setDescription('Set all the nodetranslations weights based on the nodes sequencenumber')
             ->setHelp('The <info>Node:nodetranslations:updateweights</info> will loop over all nodetranslation and set their weight based on the nodes sequencenumber.');
     }
@@ -30,9 +40,8 @@ class ConvertSequenceNumberToWeightCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // @var EntityManager $em
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-
+        $em = $this->entityManager;
+        
         $batchSize = 20;
         $i = 0;
         $class = NodeTranslation::class;
