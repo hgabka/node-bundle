@@ -3,20 +3,33 @@
 namespace Hgabka\NodeBundle\Command;
 
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FixTimestampsCommand extends ContainerAwareCommand
 {
+    protected static $defaultName = 'hgabka:nodes:fix-timestamps';
+    
+    /** @var EntityManagerInterface */
+    protected $entityManager;
+
+    /** @var EntityManagerInterface */
+    private $manager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        parent::__construct();
+        $this->entityManager = $entityManager;
+    }
+    
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        parent::configure();
-
-        $this->setName('hgabka:nodes:fix-timestamps')
+        $this->setName(static::$defaultName)
             ->setDescription('Update timestamps for all node translations.')
             ->setHelp('The <info>hgabka:nodes:fix-timestamps</info> will loop over all node translation entries and update the timestamps for the entries.');
     }
@@ -26,7 +39,7 @@ class FixTimestampsCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->entityManager;
 
         $db = $em->getConnection();
         $db->beginTransaction();
