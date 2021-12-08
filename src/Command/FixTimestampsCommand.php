@@ -59,5 +59,7 @@ SQL;
             $output->writeln('<error>An error occured while updating the node translation timestamps</error>');
             $output->writeln('<error>'.$e->getMessage().'</error>');
         }
+        
+        return Command::SUCCESS;
     }
 }
