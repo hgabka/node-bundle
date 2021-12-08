@@ -4,11 +4,11 @@ namespace Hgabka\NodeBundle\Command;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FixTimestampsCommand extends ContainerAwareCommand
+class FixTimestampsCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:fix-timestamps';
     
