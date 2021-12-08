@@ -46,7 +46,7 @@ class NodeAdmin extends AbstractAdmin
         $query = new ProxyQuery($queryBuilder);
         // Apply ACL restrictions (if applicable)
         if (null !== $permissionDef && null !== $aclHelper) {
-            $query = $aclHelper->apply($queryBuilder, $permissionDef);
+            $query = $aclHelper->applyToProxyQuery($query, $permissionDef);
         }
 
         return $query;
@@ -62,7 +62,7 @@ class NodeAdmin extends AbstractAdmin
      *
      * @return array
      */
-    public function getDashboardActions()
+    protected function configureDashboardActions(array $actions): array
     {
         $actions = [];
 
