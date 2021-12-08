@@ -3,14 +3,14 @@
 namespace Hgabka\NodeBundle\Command;
 
 use Hgabka\NodeBundle\Entity\NodeTranslation;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * UpdateUrlsCommand.
  */
-class UpdateUrlsCommand extends ContainerAwareCommand
+class UpdateUrlsCommand extends Command
 {
     /**
      * {@inheritdoc}
