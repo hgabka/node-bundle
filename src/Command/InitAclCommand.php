@@ -2,25 +2,46 @@
 
 namespace Hgabka\NodeBundle\Command;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\MaskBuilder;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentityRetrievalStrategy;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
+use Symfony\Component\Security\Acl\Model\AclProviderInterface;
 use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterface;
+
 
 /**
  * Basic initialization of ACL entries for all nodes.
  */
-class InitAclCommand extends ContainerAwareCommand
+class InitAclCommand extends Command
 {
+    protected static $defaultName = 'hgabka:init:acl';
+    
     /** @var ObjectIdentityRetrievalStrategy */
     protected $oiaStrategy;
+    
+    /** @var EntityManagerInterface */
+    private $entityManager;
+    
+    /** @var AclProviderInterface */
+    private $aclProvider;
+    
+    public function __construct(EntityManagerInterface $manager)
+    {
+        parent::__construct();
+
+        $this->entityManager = $manager;
+    }
+    
+    public function setAclProvider(AclProviderInterface $provider)
+    {
+        $this->aclProvider = $provider;
+    }
 
     /**
      * @param ObjectIdentityRetrievalStrategy $oiaStrategy
@@ -41,7 +62,7 @@ class InitAclCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('hgabka:init:acl')
+        $this->setName(static::$defaultName)
             ->setDescription('Basic initialization of ACL for projects')
             ->setHelp('The <info>hgabka:init:acl</info> will create basic ACL entries for the nodes of the current project');
     }
@@ -52,9 +73,9 @@ class InitAclCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // @var EntityManager $em
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->entityManager;
         // @var MutableAclProviderInterface $aclProvider
-        $aclProvider = $this->getContainer()->get('security.acl.provider');
+        $aclProvider = $this->aclProvider;
         // @var ObjectIdentityRetrievalStrategyInterface $oidStrategy
         $oidStrategy = $this->oiaStrategy;
 
