@@ -38,8 +38,6 @@ class CronUpdateNodeCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        parent::configure();
-
         $this->setName(static::$defaultName)
             ->setDescription('Do everything that needs to be run in a cron job.')
             ->setHelp('The <info>hgabka:nodes:cron</info> will loop over all queued node translation action entries and update the nodetranslations if needed.');
