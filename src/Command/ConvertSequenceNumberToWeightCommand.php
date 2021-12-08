@@ -70,5 +70,7 @@ class ConvertSequenceNumberToWeightCommand extends Command
         $em->clear();
 
         $output->writeln('Updated all nodes');
+        
+        return Command::SUCCESS;
     }
 }
