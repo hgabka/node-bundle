@@ -20,6 +20,7 @@ class ConvertSequenceNumberToWeightCommand extends Command
     
     public function __construct(EntityManagerInterface $entityManager)
     {
+        parent::__construct();
         $this->entityManager = $entityManager;
     }
     
