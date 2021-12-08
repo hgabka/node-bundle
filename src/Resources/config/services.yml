@@ -53,6 +53,7 @@ services:
 
     Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher:
         public: true
+        autowire: true
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage', '@security.authorization_checker', '@event_dispatcher', '@hgabka_utils.clone.helper']
 
     hgabka_node.admin_node.node_version_lock_helper:
