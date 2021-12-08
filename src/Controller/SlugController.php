@@ -142,11 +142,6 @@ class SlugController extends AbstractController
         return $renderContext->getArrayCopy();
     }
 
-    protected function getDoctrine()
-    {
-        return $this->doctrine;
-    }
-
     /**
      * @param bool $preview
      *
