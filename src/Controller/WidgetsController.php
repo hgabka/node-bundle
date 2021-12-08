@@ -79,11 +79,6 @@ class WidgetsController extends AbstractController
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
 
-    protected function getDoctrine()
-    {
-        return $this->doctrine;
-    }
-
     protected function getParameter(string $name)
     {
         return $this->params->get($name);
