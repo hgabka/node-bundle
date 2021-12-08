@@ -60,8 +60,6 @@ class InitAclCommand extends Command
      */
     protected function configure()
     {
-        parent::configure();
-
         $this->setName(static::$defaultName)
             ->setDescription('Basic initialization of ACL for projects')
             ->setHelp('The <info>hgabka:init:acl</info> will create basic ACL entries for the nodes of the current project');
