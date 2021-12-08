@@ -9,7 +9,9 @@ use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 class NodeAdmin extends AbstractAdmin
 {
@@ -24,7 +26,7 @@ class NodeAdmin extends AbstractAdmin
         'reorder' => 'REORDER',
     ];
 
-    public function createQuery($context = 'list')
+    protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getConfigurationPool()->getContainer()->get('doctrine')->getRepository(NodeTranslation::class)->createQueryBuilder('b');
@@ -41,17 +43,16 @@ class NodeAdmin extends AbstractAdmin
         $permission = PermissionMap::PERMISSION_VIEW;
         $permissionDef = new PermissionDefinition([$permission], Node::class, 'n');
 
+        $query = new ProxyQuery($queryBuilder);
         // Apply ACL restrictions (if applicable)
         if (null !== $permissionDef && null !== $aclHelper) {
             $query = $aclHelper->apply($queryBuilder, $permissionDef);
-        } else {
-            $query = $queryBuilder->getQuery();
         }
 
         return $query;
     }
 
-    public function configureRoutes(RouteCollection $collection)
+    public function configureRoutes(RouteCollectionInterface $collection)
     {
         $collection->add('edit_custom', $this->getRouterIdParameter().'/editCustom');
     }
