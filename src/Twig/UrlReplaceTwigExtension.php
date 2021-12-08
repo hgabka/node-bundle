@@ -3,8 +3,10 @@
 namespace Hgabka\NodeBundle\Twig;
 
 use Hgabka\NodeBundle\Helper\URLHelper;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-class UrlReplaceTwigExtension extends \Twig_Extension
+class UrlReplaceTwigExtension extends AbstractExtension
 {
     /**
      * @var URLHelper
@@ -22,7 +24,7 @@ class UrlReplaceTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('replace_url', [$this, 'replaceUrl']),
+            new TwigFilter('replace_url', [$this, 'replaceUrl']),
         ];
     }
 
