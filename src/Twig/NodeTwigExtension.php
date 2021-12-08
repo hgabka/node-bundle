@@ -11,12 +11,13 @@ use Hgabka\NodeBundle\Helper\NodeManager;
 use Hgabka\NodeBundle\Helper\NodeMenu;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Twig_Extension;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Extension to fetch node / translation by page in Twig templates.
  */
-class NodeTwigExtension extends Twig_Extension
+class NodeTwigExtension extends AbstractExtension
 {
     /** @var HgabkaUtils */
     protected $hgabkaUtils;
@@ -54,79 +55,79 @@ class NodeTwigExtension extends Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_node_for',
                 [$this, 'getNodeFor']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_node_translation_for',
                 [$this, 'getNodeTranslationFor']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_node_by_internal_name',
                 [$this, 'getNodeByInternalName']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_url_by_internal_name',
                 [$this, 'getUrlByInternalName']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_path_by_internal_name',
                 [$this, 'getPathByInternalName']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_url_by_node_translation',
                 [$this, 'getUrlByNodeTranslation']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_path_by_node_translation',
                 [$this, 'getPathByNodeTranslation']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_url_by_node',
                 [$this, 'getUrlByNode']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_path_by_node',
                 [$this, 'getPathByNode']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_url_by_page',
                 [$this, 'getUrlByPage']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_path_by_page',
                 [$this, 'getPathByPage']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_page_by_node_translation',
                 [$this, 'getPageByNodeTranslation']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_node_menu',
                 [$this, 'getNodeMenu']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'is_structure_node',
                 [$this, 'isStructureNode']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'file_exists',
                 [$this, 'fileExists']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_node_trans_by_node_id',
                 [$this, 'getNodeTranslationByNodeId']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_children_by_node_id',
                 [$this, 'getChildrenByNodeId']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_children_by_root_node',
                 [$this, 'getChildrenByRootNode']
             ),
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'get_page_title',
                 [$this, 'getPageTitle']
             ),
