@@ -61,6 +61,9 @@ class NodeAdminController extends CRUDController
     
     /** @var Security */
     protected $security;
+    
+    /** @var AdminListFactory */
+    protected $adminListFactory;
 
     /**
      * @var string
@@ -72,10 +75,11 @@ class NodeAdminController extends CRUDController
      */
     protected $user;
 
-    public function __construct(AclHelper $aclHelper, Security $security)
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
+        $this->adminListFactory = $adminListFactory;
     }
     
     /**
@@ -117,7 +121,7 @@ class NodeAdminController extends CRUDController
         $nodeAdminListConfigurator->setShowAddHomepage($this->getParameter('hgabka_node.show_add_homepage') && $this->isGranted('ROLE_SUPER_ADMIN'));
 
         /** @var AdminList $adminlist */
-        $adminlist = $this->get(AdminListFactory::class)->createList($nodeAdminListConfigurator);
+        $adminlist = $this->adminListFactory->createList($nodeAdminListConfigurator);
         $adminlist->bindRequest($request);
 
         return $this->renderWithExtraParams('@HgabkaNode/Admin/list.html.twig', [
