@@ -34,6 +34,7 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
+use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -43,8 +44,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * NodeAdminController.
@@ -55,16 +56,17 @@ class NodeAdminController extends CRUDController
      * @var EntityManager
      */
     protected $em;
+    
+    /** @var AclHelper */
+    protected $aclHelper;
+    
+    /** @var Security */
+    protected $security;
 
     /**
      * @var string
      */
     protected $locale;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    protected $authorizationChecker;
 
     /**
      * @var BaseUser
@@ -76,6 +78,12 @@ class NodeAdminController extends CRUDController
      */
     protected $aclHelper;
 
+    public function __construct(AclHelper $aclHelper, Security $security)
+    {
+        $this->aclHelper = $aclHelper;
+        $this->security = $security;
+    }
+    
     /**
      * @param Request $request
      *
@@ -96,12 +104,12 @@ class NodeAdminController extends CRUDController
             $this->aclHelper,
             $this->locale,
             PermissionMap::PERMISSION_VIEW,
-            $this->authorizationChecker,
+            $this->security,
             $this->admin
         );
 
         $locale = $this->locale;
-        $acl = $this->authorizationChecker;
+        $acl = $this->security;
         $itemRoute = function (EntityInterface $item) use ($locale, $acl) {
             if ($acl->isGranted(PermissionMap::PERMISSION_VIEW, $item->getNode())) {
                 return [
@@ -424,7 +432,7 @@ class NodeAdminController extends CRUDController
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_DELETE, $node);
 
-        if (!empty($node->getInternalName()) && !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!empty($node->getInternalName()) && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash(
                 FlashTypes::ERROR,
                 $this->get('translator')->trans('hg_node.admin.delete.flash.not_possible')
@@ -1122,9 +1130,7 @@ class NodeAdminController extends CRUDController
         $nodeLocale = $request->attributes->get('nodeLocale');
         $this->locale = $nodeLocale;
 
-        $this->authorizationChecker = $this->get('security.authorization_checker');
         $this->user = $this->getUser();
-        $this->aclHelper = $this->get(AclHelper::class);
     }
 
     /**
@@ -1202,7 +1208,7 @@ class NodeAdminController extends CRUDController
      */
     private function checkPermission(Node $node, $permission)
     {
-        if (false === $this->authorizationChecker->isGranted($permission, $node)) {
+        if (false === $this->security->isGranted($permission, $node)) {
             throw new AccessDeniedException();
         }
     }
