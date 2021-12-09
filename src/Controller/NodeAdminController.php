@@ -72,11 +72,6 @@ class NodeAdminController extends CRUDController
      */
     protected $user;
 
-    /**
-     * @var AclHelper
-     */
-    protected $aclHelper;
-
     public function __construct(AclHelper $aclHelper, Security $security)
     {
         $this->aclHelper = $aclHelper;
