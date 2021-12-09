@@ -5,7 +5,7 @@ namespace Hgabka\NodeBundle\EventListener;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -27,7 +27,7 @@ class NodeLocaleListener implements EventSubscriberInterface
         $this->utils = $hgabkaUtils;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         $request = $event->getRequest();
         $availableLocales = $this->utils->getAvailableLocales();
