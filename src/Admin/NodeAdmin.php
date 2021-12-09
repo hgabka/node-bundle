@@ -71,7 +71,7 @@ class NodeAdmin extends AbstractAdmin
                 'label' => 'hg_node.admin.node.list',
                 'translation_domain' => 'messages',
                 'url' => $this->generateUrl('list'),
-                'icon' => 'list',
+                'icon' => 'fas fa-list',
             ];
         }
 
