@@ -34,7 +34,6 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\Tab;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
