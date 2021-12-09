@@ -364,9 +364,9 @@ SQL;
             $stmt->bindValue(':left', $rootNode->getLeft());
             $stmt->bindValue(':right', $rootNode->getRight());
         }
-        $stmt->execute();
+        $result = $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $result->fetchAllAssociative();
     }
 
     /**
