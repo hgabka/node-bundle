@@ -7,7 +7,7 @@ use Hgabka\NodeBundle\Entity\NodeVersion;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 class RenderContextListener
 {
@@ -21,7 +21,7 @@ class RenderContextListener
      */
     protected $em;
 
-    public function __construct(EngineInterface $templating, EntityManagerInterface $em)
+    public function __construct(Environment $templating, EntityManagerInterface $em)
     {
         $this->templating = $templating;
         $this->em = $em;
