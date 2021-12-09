@@ -262,7 +262,7 @@ services:
         autoconfigure: true
         autowire: true
         
-    Hgabka\NodeBundle\NodeAdminController:
+    Hgabka\NodeBundle\Controller\NodeAdminController:
         autoconfigure: true
         autowire: true
 
