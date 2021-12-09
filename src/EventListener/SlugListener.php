@@ -9,7 +9,7 @@ use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Event\SlugSecurityEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 class SlugListener
 {
@@ -41,7 +41,7 @@ class SlugListener
     /**
      * @throws \Exception
      */
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(ControllerEvent $event)
     {
         $request = $event->getRequest();
 
