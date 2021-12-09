@@ -198,11 +198,13 @@ services:
         public: true
         arguments:
             - '@hgabka_node.helper.url'
+        tags: ['controller.service_arguments']
 
     Hgabka\NodeBundle\Controller\LinkPageController:
         public: true
         arguments:
             - '@hgabka_node.helper.url'
+        tags: ['controller.service_arguments']
 
     hgabka_node.url_replace.controller:
         alias: Hgabka\NodeBundle\Controller\UrlReplaceController
@@ -263,4 +265,5 @@ services:
     Hgabka\NodeBundle\NodeAdminController:
         autoconfigure: true
         autowire: true
-    
+        tags: ['controller.service_arguments']
+  
