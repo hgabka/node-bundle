@@ -30,7 +30,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
 
         $container->setParameter('twig.form.resources', array_merge(
             $container->getParameter('twig.form.resources'),
-            ['HgabkaNodeBundle:Form:formWidgets.html.twig']
+            ['@HgabkaNode/Form/formWidgets.html.twig']
         ));
 
         $container->setDefinition('hgabka_node.pages_configuration', new Definition(
