@@ -16,6 +16,7 @@ use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\Security\Core\Security;
+use Hgabka\NodeBundle\Controller\NodeAdminController;
 
 /**
  * NodeAdminListConfigurator.
@@ -114,7 +115,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
                 $addHomepageRoute,
                 'hg_node.modal.add_homepage.h',
                 null,
-                'HgabkaNodeBundle:Admin:list_action_button.html.twig'
+                '@HgabkaNode/Admin/list_action_button.html.twig'
             )
         );
     }
@@ -137,10 +138,10 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     public function buildFields()
     {
         $this
-            ->addField('title', 'hg_node.admin.list.header.title', true, 'HgabkaNodeBundle:Admin:title.html.twig')
+            ->addField('title', 'hg_node.admin.list.header.title', true, '@HgabkaNode/Admin/title.html.twig')
             ->addField('created', 'hg_node.admin.list.header.created_at', true)
             ->addField('updated', 'hg_node.admin.list.header.updated_at', true)
-            ->addField('online', 'hg_node.admin.list.header.online', true, 'HgabkaNodeBundle:Admin:online.html.twig');
+            ->addField('online', 'hg_node.admin.list.header.online', true, '@HgabkaNode/dmin/online.html.twig');
     }
 
     /**
@@ -234,7 +235,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
      */
     public function getControllerPath()
     {
-        return 'HgabkaNodeBundle:NodeAdmin';
+        return NodeAdminController::class;
     }
 
     /**
