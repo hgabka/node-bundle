@@ -2,8 +2,7 @@
 
 namespace Hgabka\NodeBundle\EventListener;
 
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * Fixes bug with date vs Date headers.
@@ -15,7 +14,7 @@ class FixDateListener
      *
      * @param FilterResponseEvent|GetResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(ResponseEvent $event)
     {
         $response = $event->getResponse();
         if ($response) {
