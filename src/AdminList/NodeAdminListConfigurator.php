@@ -15,7 +15,7 @@ use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * NodeAdminListConfigurator.
@@ -43,9 +43,9 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     protected $showAddHomepage;
 
     /**
-     * @var AuthorizationCheckerInterface
+     * @var Security
      */
-    protected $authorizationChecker;
+    protected $security;
 
     /** @var NodeAdmin */
     protected $nodeAdmin;
@@ -58,12 +58,12 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
      *                                  locale
      * @param string        $permission The permission
      */
-    public function __construct(EntityManager $em, AclHelper $aclHelper, $locale, $permission, AuthorizationCheckerInterface $authorizationChecker, NodeAdmin $admin)
+    public function __construct(EntityManager $em, AclHelper $aclHelper, $locale, $permission, Security $security, NodeAdmin $admin)
     {
         parent::__construct($em, $aclHelper);
         $this->nodeAdmin = $admin;
         $this->locale = $locale;
-        $this->authorizationChecker = $authorizationChecker;
+        $this->security = $security;
         $this->setPermissionDefinition(
             new PermissionDefinition(
                 [$permission],
@@ -169,7 +169,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
 
     public function canEdit($item)
     {
-        return $this->authorizationChecker->isGranted(PermissionMap::PERMISSION_EDIT, $item->getNode());
+        return $this->security->isGranted(PermissionMap::PERMISSION_EDIT, $item->getNode());
     }
 
     /**
