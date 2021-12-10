@@ -134,7 +134,7 @@ services:
         calls:
             - [ setEntityManager, [ '@doctrine.orm.entity_manager' ] ]
             - [ setACLPermissionCreatorService, [ '@hgabka_node.acl_permission_creator_service' ] ]
-            - [ setUserEntityClass, [ '%fos_user.model.user.class%' ] ]
+            - [ setUserEntityClass, [ '%hgabka_utils.backend_user_class%' ] ]
 
     hgabka_node.page_creator_service:
         alias: Hgabka\NodeBundle\Helper\Services\PageCreatorService
