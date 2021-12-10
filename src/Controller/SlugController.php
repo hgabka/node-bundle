@@ -117,7 +117,7 @@ class SlugController extends AbstractController
         $response = $entity->service($this->container, $request, $renderContext);
 
         $postEvent = new SlugEvent($response, $renderContext);
-        $eventDispatcher->dispatch($postEvent. Events::POST_SLUG_ACTION);
+        $eventDispatcher->dispatch($postEvent, Events::POST_SLUG_ACTION);
 
         $response = $postEvent->getResponse();
         $renderContext = $postEvent->getRenderContext();
