@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
 
 class RenderContextListener
@@ -27,7 +27,7 @@ class RenderContextListener
         $this->em = $em;
     }
 
-    public function onKernelView(GetResponseForControllerResultEvent $event)
+    public function onKernelView(ViewEvent $event)
     {
         $response = $event->getControllerResult();
         if ($response instanceof Response) {
