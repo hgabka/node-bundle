@@ -3,7 +3,7 @@
 namespace Hgabka\NodeBundle\Event;
 
 use Hgabka\NodeBundle\Helper\RenderContext;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
