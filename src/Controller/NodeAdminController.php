@@ -166,7 +166,6 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::COPY_PAGE_TRANSLATION,
             new CopyPageTranslationNodeEvent(
                 $node,
                 $nodeTranslation,
@@ -176,7 +175,7 @@ class NodeAdminController extends CRUDController
                 $otherLanguageNodeNodeVersion,
                 $otherLanguagePage,
                 $originalLanguage
-            )
+            ),  Events::COPY_PAGE_TRANSLATION
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -219,7 +218,6 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::RECOPY_PAGE_TRANSLATION,
             new RecopyPageTranslationNodeEvent(
                 $node,
                 $nodeTranslation,
@@ -229,7 +227,7 @@ class NodeAdminController extends CRUDController
                 $otherLanguageNodeNodeVersion,
                 $otherLanguagePage,
                 $otherLanguageNodeTranslation->getLang()
-            )
+            ), Events::RECOPY_PAGE_TRANSLATION
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id, 'subaction' => NodeVersion::DRAFT_VERSION]));
@@ -272,8 +270,8 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::ADD_EMPTY_PAGE_TRANSLATION,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage), 
+            Events::ADD_EMPTY_PAGE_TRANSLATION
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -444,8 +442,8 @@ class NodeAdminController extends CRUDController
         $page = $nodeVersion->getRef($this->em);
 
         $this->get('event_dispatcher')->dispatch(
-            Events::PRE_DELETE,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+            Events::PRE_DELETE
         );
 
         $node->setDeleted(true);
@@ -456,7 +454,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         $event = new NodeEvent($node, $nodeTranslation, $nodeVersion, $page);
-        $this->get('event_dispatcher')->dispatch(Events::POST_DELETE, $event);
+        $this->get('event_dispatcher')->dispatch($event, Events::POST_DELETE);
         if (null === $response = $event->getResponse()) {
             $nodeParent = $node->getParent();
             // Check if we have a parent. Otherwise redirect to pages overview.
@@ -614,7 +612,6 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::REVERT,
             new RevertNodeAction(
                 $node,
                 $nodeTranslation,
@@ -622,7 +619,7 @@ class NodeAdminController extends CRUDController
                 $clonedPage,
                 $nodeVersion,
                 $page
-            )
+            ), Events::REVERT
         );
 
         $this->addFlash(
@@ -698,13 +695,12 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::ADD_NODE,
             new NodeEvent(
                 $nodeNewPage,
                 $nodeTranslation,
                 $nodeVersion,
                 $newPage
-            )
+            ), Events::ADD_NODE
         );
 
         return $this->redirect(
@@ -751,13 +747,12 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::ADD_NODE,
             new NodeEvent(
                 $nodeNewPage,
                 $nodeTranslation,
                 $nodeVersion,
                 $newPage
-            )
+            ), Events::ADD_NODE
         );
 
         return $this->redirect(
@@ -810,8 +805,8 @@ class NodeAdminController extends CRUDController
                 $page = $nodeVersion->getRef($this->em);
 
                 $this->get('event_dispatcher')->dispatch(
-                    Events::PRE_PERSIST,
-                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+                    Events::PRE_PERSIST
                 );
 
                 $nodeTranslation->setWeight($weight);
@@ -819,8 +814,8 @@ class NodeAdminController extends CRUDController
                 $this->em->flush($nodeTranslation);
 
                 $this->get('event_dispatcher')->dispatch(
-                    Events::POST_PERSIST,
-                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+                    Events::POST_PERSIST
                 );
 
                 ++$weight;
@@ -969,7 +964,6 @@ class NodeAdminController extends CRUDController
         $tabPane->addTab(new Tab('hg_node.tab.menu.title', $menuWidget));
 
         $this->get('event_dispatcher')->dispatch(
-            Events::ADAPT_FORM,
             new AdaptFormEvent(
                 $request,
                 $tabPane,
@@ -977,7 +971,7 @@ class NodeAdminController extends CRUDController
                 $node,
                 $nodeTranslation,
                 $nodeVersion
-            )
+            ), Events::ADAPT_FORM
         );
 
         $tabPane->buildForm();
@@ -988,8 +982,8 @@ class NodeAdminController extends CRUDController
             // Don't redirect to listing when coming from ajax request, needed for url chooser.
             if ($tabPane->isValid() && !$request->isXmlHttpRequest()) {
                 $this->get('event_dispatcher')->dispatch(
-                    Events::PRE_PERSIST,
-                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+                    Events::PRE_PERSIST
                 );
 
                 $nodeTranslation->setTitle($page->getTitle());
@@ -1006,8 +1000,8 @@ class NodeAdminController extends CRUDController
                 $this->em->flush();
 
                 $this->get('event_dispatcher')->dispatch(
-                    Events::POST_PERSIST,
-                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+                    new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+                    Events::POST_PERSIST
                 );
 
                 if ($nodeVersionIsLocked) {
@@ -1186,13 +1180,12 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         $this->get('event_dispatcher')->dispatch(
-            Events::CREATE_DRAFT_VERSION,
             new NodeEvent(
                 $nodeTranslation->getNode(),
                 $nodeTranslation,
                 $nodeVersion,
                 $page
-            )
+            ), Events::CREATE_DRAFT_VERSION
         );
 
         return $nodeVersion;
@@ -1234,13 +1227,12 @@ class NodeAdminController extends CRUDController
             $childNodePage = $childNodeVersion->getRef($this->em);
 
             $this->get('event_dispatcher')->dispatch(
-                Events::PRE_DELETE,
                 new NodeEvent(
                     $childNode,
                     $childNodeTranslation,
                     $childNodeVersion,
                     $childNodePage
-                )
+                ), Events::PRE_DELETE
             );
 
             $childNode->setDeleted(true);
@@ -1250,13 +1242,12 @@ class NodeAdminController extends CRUDController
             $this->deleteNodeChildren($em, $user, $locale, $children2);
 
             $this->get('event_dispatcher')->dispatch(
-                Events::POST_DELETE,
                 new NodeEvent(
                     $childNode,
                     $childNodeTranslation,
                     $childNodeVersion,
                     $childNodePage
-                )
+                ), Events::POST_DELETE
             );
         }
     }
