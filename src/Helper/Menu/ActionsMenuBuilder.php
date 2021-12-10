@@ -133,12 +133,11 @@ class ActionsMenuBuilder
         }
 
         $this->dispatcher->dispatch(
-            Events::CONFIGURE_SUB_ACTION_MENU,
             new ConfigureActionMenuEvent(
                 $this->factory,
                 $menu,
                 $activeNodeVersion
-            )
+            ), Events::CONFIGURE_SUB_ACTION_MENU
         );
 
         return $menu;
@@ -173,12 +172,11 @@ class ActionsMenuBuilder
 
         if (null === $activeNodeVersion) {
             $this->dispatcher->dispatch(
-                Events::CONFIGURE_ACTION_MENU,
                 new ConfigureActionMenuEvent(
                     $this->factory,
                     $menu,
                     $activeNodeVersion
-                )
+                ), Events::CONFIGURE_ACTION_MENU
             );
 
             return $menu;
@@ -426,12 +424,11 @@ class ActionsMenuBuilder
         }
 
         $this->dispatcher->dispatch(
-            Events::CONFIGURE_ACTION_MENU,
             new ConfigureActionMenuEvent(
                 $this->factory,
                 $menu,
                 $activeNodeVersion
-            )
+            ), Events::CONFIGURE_ACTION_MENU
         );
 
         return $menu;
