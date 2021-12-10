@@ -2,6 +2,7 @@
 
 namespace Hgabka\NodeBundle\Router;
 
+use Hgabka\NodeBundle\Controller\SlugController;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
@@ -247,7 +248,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         }
 
         $previewDefaults = [
-            '_controller' => 'HgabkaNodeBundle:Slug:slug',
+            '_controller' => SlugController::class.'::slug',
             'preview' => true,
             'url' => '',
             '_locale' => $locale ?: $this->getDefaultLocale(),
@@ -284,7 +285,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         }
 
         $slugDefaults = [
-            '_controller' => 'HgabkaNodeBundle:Slug:slug',
+            '_controller' => SlugController::class.'::slug',
             'preview' => false,
             'url' => '',
             '_locale' => $locale ?: $this->getDefaultLocale(),
