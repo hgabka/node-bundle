@@ -68,7 +68,7 @@ class SlugListener
                 ->setRequest($request)
                 ->setNodeTranslation($nodeTranslation);
 
-            $this->eventDispatcher->dispatch(Events::SLUG_SECURITY, $securityEvent);
+            $this->eventDispatcher->dispatch($securityEvent, Events::SLUG_SECURITY);
 
             // Set the right controller
             $request->attributes->set('_controller', $entity->getControllerAction());
