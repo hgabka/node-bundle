@@ -7,7 +7,7 @@ use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
