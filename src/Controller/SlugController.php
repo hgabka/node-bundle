@@ -2,7 +2,7 @@
 
 namespace Hgabka\NodeBundle\Controller;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
@@ -39,7 +39,7 @@ class SlugController extends AbstractController
     /**
      * SlugController constructor.
      */
-    public function __construct(NodeMenu $nodeMenu, EventDispatcherInterface $dispatcher, Registry $doctrine)
+    public function __construct(NodeMenu $nodeMenu, EventDispatcherInterface $dispatcher, ManagerRegistry $doctrine)
     {
         $this->nodeMenu = $nodeMenu;
         $this->eventDispatcher = $dispatcher;
