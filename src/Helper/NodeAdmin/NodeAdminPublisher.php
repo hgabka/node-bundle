@@ -97,8 +97,8 @@ class NodeAdminPublisher
         $page = $nodeVersion->getRef($this->em);
 
         $this->eventDispatcher->dispatch(
-            Events::PRE_PUBLISH,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+            Events::PRE_PUBLISH
         );
         $nodeTranslation
             ->setOnline(true)
@@ -111,8 +111,8 @@ class NodeAdminPublisher
         $this->unSchedulePublish($nodeTranslation);
 
         $this->eventDispatcher->dispatch(
-            Events::POST_PUBLISH,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+            Events::POST_PUBLISH
         );
     }
 
@@ -157,8 +157,8 @@ class NodeAdminPublisher
         $page = $nodeVersion->getRef($this->em);
 
         $this->eventDispatcher->dispatch(
-            Events::PRE_UNPUBLISH,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+            Events::PRE_UNPUBLISH
         );
         $nodeTranslation->setOnline(false);
         $this->em->persist($nodeTranslation);
@@ -168,8 +168,8 @@ class NodeAdminPublisher
         $this->unSchedulePublish($nodeTranslation);
 
         $this->eventDispatcher->dispatch(
-            Events::POST_UNPUBLISH,
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page)
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
+            Events::POST_UNPUBLISH
         );
     }
 
@@ -250,8 +250,8 @@ class NodeAdminPublisher
         $this->em->persist($nodeTranslation);
         $this->em->flush();
         $this->eventDispatcher->dispatch(
-            Events::CREATE_PUBLIC_VERSION,
-            new NodeEvent($nodeTranslation->getNode(), $nodeTranslation, $nodeVersion, $newPublicPage)
+            new NodeEvent($nodeTranslation->getNode(), $nodeTranslation, $nodeVersion, $newPublicPage),
+            Events::CREATE_PUBLIC_VERSION
         );
 
         return $newNodeVersion;
