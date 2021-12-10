@@ -58,7 +58,7 @@ class SlugController extends AbstractController
      *
      * @return array|Response
      */
-    public function slugAction(Request $request, $url = null, $preview = false)
+    public function slug(Request $request, $url = null, $preview = false)
     {
         // @var EntityManager $em
         $em = $this->getDoctrine()->getManager();
