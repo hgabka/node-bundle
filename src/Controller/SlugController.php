@@ -93,7 +93,7 @@ class SlugController extends AbstractController
         $nodeMenu->setIncludeOffline($preview);
 
         $eventDispatcher = $this->eventDispatcher;
-        $eventDispatcher->dispatch(Events::SLUG_SECURITY, $securityEvent);
+        $eventDispatcher->dispatch($securityEvent, Events::SLUG_SECURITY);
 
         //render page
         $renderContext = new RenderContext(
@@ -110,14 +110,14 @@ class SlugController extends AbstractController
             $renderContext->setView($entity->getDefaultView());
         }
         $preEvent = new SlugEvent(null, $renderContext);
-        $eventDispatcher->dispatch(Events::PRE_SLUG_ACTION, $preEvent);
+        $eventDispatcher->dispatch($preEvent, Events::PRE_SLUG_ACTION);
         $renderContext = $preEvent->getRenderContext();
 
         /** @noinspection PhpUndefinedMethodInspection */
         $response = $entity->service($this->container, $request, $renderContext);
 
         $postEvent = new SlugEvent($response, $renderContext);
-        $eventDispatcher->dispatch(Events::POST_SLUG_ACTION, $postEvent);
+        $eventDispatcher->dispatch($postEvent. Events::POST_SLUG_ACTION);
 
         $response = $postEvent->getResponse();
         $renderContext = $postEvent->getRenderContext();
