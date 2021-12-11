@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * NodeAdminController.
@@ -65,6 +66,9 @@ class NodeAdminController extends CRUDController
     /** @var AdminListFactory */
     protected $adminListFactory;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * @var string
      */
@@ -75,11 +79,12 @@ class NodeAdminController extends CRUDController
      */
     protected $user;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory)
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
         $this->adminListFactory = $adminListFactory;
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     /**
@@ -165,7 +170,7 @@ class NodeAdminController extends CRUDController
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new CopyPageTranslationNodeEvent(
                 $node,
                 $nodeTranslation,
@@ -217,7 +222,7 @@ class NodeAdminController extends CRUDController
             ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new RecopyPageTranslationNodeEvent(
                 $node,
                 $nodeTranslation,
@@ -269,7 +274,7 @@ class NodeAdminController extends CRUDController
             ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage), 
             Events::ADD_EMPTY_PAGE_TRANSLATION
         );
@@ -441,7 +446,7 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
         $page = $nodeVersion->getRef($this->em);
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
             Events::PRE_DELETE
         );
@@ -454,7 +459,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         $event = new NodeEvent($node, $nodeTranslation, $nodeVersion, $page);
-        $this->get('event_dispatcher')->dispatch($event, Events::POST_DELETE);
+        $this->eventDispatcher->dispatch($event, Events::POST_DELETE);
         if (null === $response = $event->getResponse()) {
             $nodeParent = $node->getParent();
             // Check if we have a parent. Otherwise redirect to pages overview.
@@ -611,7 +616,7 @@ class NodeAdminController extends CRUDController
         $this->em->persist($nodeTranslation);
         $this->em->flush();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new RevertNodeAction(
                 $node,
                 $nodeTranslation,
@@ -694,7 +699,7 @@ class NodeAdminController extends CRUDController
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new NodeEvent(
                 $nodeNewPage,
                 $nodeTranslation,
@@ -746,7 +751,7 @@ class NodeAdminController extends CRUDController
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new NodeEvent(
                 $nodeNewPage,
                 $nodeTranslation,
@@ -804,7 +809,7 @@ class NodeAdminController extends CRUDController
                 $nodeVersion = $nodeTranslation->getPublicNodeVersion();
                 $page = $nodeVersion->getRef($this->em);
 
-                $this->get('event_dispatcher')->dispatch(
+                $this->eventDispatcher->dispatch(
                     new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
                     Events::PRE_PERSIST
                 );
@@ -813,7 +818,7 @@ class NodeAdminController extends CRUDController
                 $this->em->persist($nodeTranslation);
                 $this->em->flush($nodeTranslation);
 
-                $this->get('event_dispatcher')->dispatch(
+                $this->eventDispatcher->dispatch(
                     new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
                     Events::POST_PERSIST
                 );
@@ -963,7 +968,7 @@ class NodeAdminController extends CRUDController
         $menuWidget->addType('menunode', NodeMenuTabAdminType::class, $node, ['available_in_nav' => !$isStructureNode]);
         $tabPane->addTab(new Tab('hg_node.tab.menu.title', $menuWidget));
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new AdaptFormEvent(
                 $request,
                 $tabPane,
@@ -981,7 +986,7 @@ class NodeAdminController extends CRUDController
 
             // Don't redirect to listing when coming from ajax request, needed for url chooser.
             if ($tabPane->isValid() && !$request->isXmlHttpRequest()) {
-                $this->get('event_dispatcher')->dispatch(
+                $this->eventDispatcher->dispatch(
                     new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
                     Events::PRE_PERSIST
                 );
@@ -999,7 +1004,7 @@ class NodeAdminController extends CRUDController
                 $tabPane->persist($this->em);
                 $this->em->flush();
 
-                $this->get('event_dispatcher')->dispatch(
+                $this->eventDispatcher->dispatch(
                     new NodeEvent($node, $nodeTranslation, $nodeVersion, $page),
                     Events::POST_PERSIST
                 );
@@ -1179,7 +1184,7 @@ class NodeAdminController extends CRUDController
         $this->em->persist($nodeVersion);
         $this->em->flush();
 
-        $this->get('event_dispatcher')->dispatch(
+        $this->eventDispatcher->dispatch(
             new NodeEvent(
                 $nodeTranslation->getNode(),
                 $nodeTranslation,
@@ -1226,7 +1231,7 @@ class NodeAdminController extends CRUDController
             $childNodeVersion = $childNodeTranslation->getPublicNodeVersion();
             $childNodePage = $childNodeVersion->getRef($this->em);
 
-            $this->get('event_dispatcher')->dispatch(
+            $this->eventDispatcher->dispatch(
                 new NodeEvent(
                     $childNode,
                     $childNodeTranslation,
@@ -1241,7 +1246,7 @@ class NodeAdminController extends CRUDController
             $children2 = $childNode->getChildren();
             $this->deleteNodeChildren($em, $user, $locale, $children2);
 
-            $this->get('event_dispatcher')->dispatch(
+            $this->eventDispatcher->dispatch(
                 new NodeEvent(
                     $childNode,
                     $childNodeTranslation,
