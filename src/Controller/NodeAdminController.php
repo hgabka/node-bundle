@@ -1065,8 +1065,8 @@ class NodeAdminController extends CRUDController
             'tabPane' => $tabPane,
             'editmode' => true,
             'queuedNodeTranslationAction' => $queuedNodeTranslationAction,
-            'nodeVersionLockCheck' => $this->container->getParameter('hgabka_node.lock_enabled'),
-            'nodeVersionLockInterval' => $this->container->getParameter('hgabka_node.lock_check_interval'),
+            'nodeVersionLockCheck' => $this->getParameter('hgabka_node.lock_enabled'),
+            'nodeVersionLockInterval' => $this->getParameter('hgabka_node.lock_check_interval'),
         ];
 
         return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit'.($request->isXmlHttpRequest() ? 'Ajax' : '').'.html.twig', $params);
