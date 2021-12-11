@@ -68,6 +68,9 @@ class NodeAdminController extends CRUDController
 
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
+    
+    /** @var ActionsMenuBuilder */
+    protected $actionsMenuBuilder;
 
     /**
      * @var string
@@ -79,12 +82,13 @@ class NodeAdminController extends CRUDController
      */
     protected $user;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
         $this->adminListFactory = $adminListFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->actionsMenuBuilder = $actionsMenuBuilder;
     }
     
     /**
@@ -943,7 +947,7 @@ class NodeAdminController extends CRUDController
         }
         $isStructureNode = $page->isStructureNode();
 
-        $menubuilder = $this->get(ActionsMenuBuilder::class);
+        $menubuilder = $this->actionsMenuBuilder;
         $menubuilder->setActiveNodeVersion($nodeVersion);
         $menubuilder->setEditableNode(!$isStructureNode);
 
