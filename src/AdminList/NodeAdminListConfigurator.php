@@ -141,7 +141,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
             ->addField('title', 'hg_node.admin.list.header.title', true, '@HgabkaNode/Admin/title.html.twig')
             ->addField('created', 'hg_node.admin.list.header.created_at', true)
             ->addField('updated', 'hg_node.admin.list.header.updated_at', true)
-            ->addField('online', 'hg_node.admin.list.header.online', true, '@HgabkaNode/dmin/online.html.twig');
+            ->addField('online', 'hg_node.admin.list.header.online', true, '@HgabkaNode/Admin/online.html.twig');
     }
 
     /**
