@@ -16,7 +16,6 @@ class AdminControllerListener implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-        dump(1000);
         $controller = $event->getController();
 
         if (\is_array($controller)) {
