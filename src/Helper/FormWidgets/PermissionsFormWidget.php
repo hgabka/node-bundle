@@ -86,7 +86,7 @@ class PermissionsFormWidget extends FormWidget
      */
     public function getTemplate()
     {
-        return 'HgabkaNodeBundle:FormWidgets\PermissionsFormWidget:widget.html.twig';
+        return '@HgabkaNode/FormWidgets/PermissionsFormWidget/widget.html.twig';
     }
 
     /**
