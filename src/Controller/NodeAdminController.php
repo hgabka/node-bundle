@@ -856,10 +856,8 @@ class NodeAdminController extends CRUDController
      *
      * @return array|RedirectResponse
      */
-    public function editCustomAction($id, $subaction)
+    public function editCustomAction(Request $request, $id, $subaction)
     {
-        $request = $this->getRequest();
-
         $this->init($request);
 
         // @var Node $node
