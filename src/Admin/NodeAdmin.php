@@ -52,6 +52,11 @@ class NodeAdmin extends AbstractAdmin
         return $query;
     }
 
+    protected function getAccessMapping(): array
+    {
+        return $this->accessMapping;
+    }
+    
     public function configureRoutes(RouteCollectionInterface $collection): void
     {
         $collection->add('edit_custom', $this->getRouterIdParameter().'/editCustom');
