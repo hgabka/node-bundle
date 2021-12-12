@@ -201,7 +201,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
             return null;
         }
 
-        return $requestStack->getMasterRequest();
+        return $requestStack->getMainRequest();
     }
 
     /**
