@@ -15,6 +15,10 @@ use Hgabka\UtilsBundle\Helper\ClassLookup;
  */
 class NodeTranslationRepository extends EntityRepository
 {
+    protected $nodeTranslationsByNode = [];
+    protected $nodeTranslationsByLanguageAndInternalName = [];
+    protected $nodeTranslationsByRefEntityName = [];
+
     /**
      * Get the QueryBuilder based on node id and language.
      *
@@ -25,19 +29,23 @@ class NodeTranslationRepository extends EntityRepository
      */
     public function getNodeTranslationByNodeIdQueryBuilder($nodeId, $lang)
     {
-        $qb = $this->createQueryBuilder('nt')
-            ->select('nt')
-            ->innerJoin('nt.node', 'n', 'WITH', 'nt.node = n.id')
-            ->where('n.deleted != 1')
-            ->andWhere('nt.online = 1')
-            ->andWhere('nt.lang = :lang')
-            ->setParameter('lang', $lang)
-            ->andWhere('n.id = :node_id')
-            ->setParameter('node_id', $nodeId)
-            ->setFirstResult(0)
-            ->setMaxResults(1);
+        if (!array_key_exists($nodeId, $this->nodeTranslationsByNode) || !array_key_exists($lang, $this->nodeTranslationsByNode[$nodeId])) {
+            $qb = $this->createQueryBuilder('nt')
+                       ->select('nt')
+                       ->innerJoin('nt.node', 'n', 'WITH', 'nt.node = n.id')
+                       ->where('n.deleted != 1')
+                       ->andWhere('nt.online = 1')
+                       ->andWhere('nt.lang = :lang')
+                       ->setParameter('lang', $lang)
+                       ->andWhere('n.id = :node_id')
+                       ->setParameter('node_id', $nodeId)
+                       ->setFirstResult(0)
+                       ->setMaxResults(1);
 
-        return $qb->getQuery()->getOneOrNullResult();
+            $this->nodeTranslationsByNode[$nodeId][$lang] = $qb->getQuery()->getOneOrNullResult();
+        }
+
+        return $this->nodeTranslationsByNode[$nodeId][$lang];
     }
 
     /**
@@ -486,39 +494,51 @@ class NodeTranslationRepository extends EntityRepository
         $language,
         $internalName
     ) {
-        $qb = $this->createQueryBuilder('nt')
-            ->select('nt', 'v')
-            ->innerJoin('nt.node', 'n', 'WITH', 'nt.node = n.id')
-            ->leftJoin(
-                'nt.publicNodeVersion',
-                'v',
-                'WITH',
-                'nt.publicNodeVersion = v.id'
-            )
-            ->where('n.deleted != 1')
-            ->andWhere('nt.online = 1')
-            ->setFirstResult(0)
-            ->setMaxResults(1);
+        if (!array_key_exists($internalName, $this->nodeTranslationsByLanguageAndInternalName)
+            || !array_key_exists($lang, $this->nodeTranslationsByLanguageAndInternalName[$internalName])
+        ) {
+            $qb = $this->createQueryBuilder('nt')
+                       ->select('nt', 'v')
+                       ->innerJoin('nt.node', 'n', 'WITH', 'nt.node = n.id')
+                       ->leftJoin(
+                           'nt.publicNodeVersion',
+                           'v',
+                           'WITH',
+                           'nt.publicNodeVersion = v.id'
+                       )
+                       ->where('n.deleted != 1')
+                       ->andWhere('nt.online = 1')
+                       ->setFirstResult(0)
+                       ->setMaxResults(1);
 
-        $qb->andWhere('nt.lang = :lang')
-            ->setParameter('lang', $language);
+            $qb->andWhere('nt.lang = :lang')
+               ->setParameter('lang', $language)
+            ;
 
-        $qb->andWhere('n.internalName = :internal_name')
-            ->setParameter('internal_name', $internalName);
+            $qb->andWhere('n.internalName = :internal_name')
+               ->setParameter('internal_name', $internalName)
+            ;
 
-        return $qb->getQuery()->getOneOrNullResult();
+            $this->nodeTranslationsByLanguageAndInternalName[$internalName][$lang] = $qb->getQuery()->getOneOrNullResult();
+        }
+
+        return $this->nodeTranslationsByLanguageAndInternalName[$internalName][$lang];
     }
 
     public function getAllNodeTranslationsByRefEntityName($refEntityName)
     {
-        $qb = $this->createQueryBuilder('nt')
-            ->select('nt,n')
-            ->innerJoin('nt.publicNodeVersion', 'nv')
-            ->innerJoin('nt.node', 'n')
-            ->where('nv.refEntityName = :refEntityName')
-            ->setParameter('refEntityName', $refEntityName);
+        if (!array_key_exists($refEntityName, $this->nodeTranslationsByRefEntityName)) {
+            $qb = $this->createQueryBuilder('nt')
+                       ->select('nt,n')
+                       ->innerJoin('nt.publicNodeVersion', 'nv')
+                       ->innerJoin('nt.node', 'n')
+                       ->where('nv.refEntityName = :refEntityName')
+                       ->setParameter('refEntityName', $refEntityName);
 
-        return $qb->getQuery()->getResult();
+            $this->nodeTranslationsByRefEntityName[$refEntityName] = $qb->getQuery()->getResult();
+        }
+
+        return $this->nodeTranslationsByRefEntityName[$refEntityName];
     }
 
     public function getParentNodeTranslation(NodeTranslation $nodeTranslation)
