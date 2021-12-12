@@ -291,7 +291,7 @@ class NodeTwigExtension extends AbstractExtension
         if (null === $locale) {
             $locale = $this->hgabkaUtils->getAdminLocale();
         }
-        $request = $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getMainRequest();
         $isPreview = $request->attributes->has('preview') && true === $request->attributes->get('preview');
         $this->nodeMenu->setLocale($locale);
         $this->nodeMenu->setCurrentNode($node);
