@@ -25,9 +25,9 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 {
-    const STRATEGY_PREFIX = 'prefix';
-    const STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
-    const STRATEGY_CUSTOM = 'custom';
+    public const STRATEGY_PREFIX = 'prefix';
+    public const STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
+    public const STRATEGY_CUSTOM = 'custom';
 
     public static $SLUG = '_slug';
     public static $SLUG_PREVIEW = '_slug_preview';
@@ -85,7 +85,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
             /** @var NodeTranslation $nodeTranslation */
             $nodeTranslation = $this->getNodeTranslation($result);
             if (null === $nodeTranslation) {
-                throw new ResourceNotFoundException('No page found for slug '.$pathinfo);
+                throw new ResourceNotFoundException('No page found for slug ' . $pathinfo);
             }
             $result['_nodeTranslation'] = $nodeTranslation;
             if (!isset($result['_locale']) || $result['_locale'] !== $nodeTranslation->getLang()) {
@@ -149,8 +149,8 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         }
 
         if (\in_array($name, ['_slug', '_slug_preview'], true) && \count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
-            $lang = isset($parameters['_locale']) ? $parameters['_locale'] : $this->hgabkaUtils->getCurrentLocale();
-            $name .= '_'.$lang;
+            $lang = $parameters['_locale'] ?? $this->hgabkaUtils->getCurrentLocale();
+            $name .= '_' . $lang;
         }
         $this->urlGenerator = new UrlGenerator(
             $this->getRouteCollection(),
@@ -159,7 +159,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 
         return $this->urlGenerator->generate($name, $parameters, $referenceType);
     }
-    
+
     /**
      * Getter for routeCollection.
      *
@@ -190,6 +190,16 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $this->routeCollection;
     }
 
+    public function supports($name)
+    {
+        return 0 === strpos($name, '_slug');
+    }
+
+    public function getRouteDebugMessage($name, array $parameters = [])
+    {
+        return 'Node bundle rote';
+    }
+
     /**
      * @return null|\Symfony\Component\HttpFoundation\Request
      */
@@ -213,7 +223,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
     protected function addPreviewRoute($locale = null, $addLocale = true)
     {
         $routeParameters = $this->getPreviewRouteParameters($locale, $addLocale);
-        $this->addRoute(self::$SLUG_PREVIEW.($addLocale && $locale ? '_'.$locale : ''), $routeParameters);
+        $this->addRoute(self::$SLUG_PREVIEW . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
     }
 
     /**
@@ -225,7 +235,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
     protected function addSlugRoute($locale = null, $addLocale = true)
     {
         $routeParameters = $this->getSlugRouteParameters($locale, $addLocale);
-        $this->addRoute(self::$SLUG.($addLocale && $locale ? '_'.$locale : ''), $routeParameters);
+        $this->addRoute(self::$SLUG . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
     }
 
     /**
@@ -238,17 +248,17 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      */
     protected function getPreviewRouteParameters($locale = null, $addLocale = false)
     {
-        $previewPath = '/preview'.$this->adjustPath($this->getRoutePattern());
+        $previewPath = '/preview' . $this->adjustPath($this->getRoutePattern());
         if ($locale) {
             if ($addLocale) {
-                $previewPath = '/'.$locale.str_replace('/{_locale}', '', $previewPath);
+                $previewPath = '/' . $locale . str_replace('/{_locale}', '', $previewPath);
             } else {
                 $previewPath = str_replace('/{_locale}', '', $previewPath);
             }
         }
 
         $previewDefaults = [
-            '_controller' => SlugController::class.'::slug',
+            '_controller' => SlugController::class . '::slug',
             'preview' => true,
             'url' => '',
             '_locale' => $locale ?: $this->getDefaultLocale(),
@@ -278,14 +288,14 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 
         if ($locale) {
             if ($addLocale) {
-                $slugPath = '/'.$locale.str_replace('/{_locale}', '', $slugPath);
+                $slugPath = '/' . $locale . str_replace('/{_locale}', '', $slugPath);
             } else {
                 $slugPath = str_replace('/{_locale}', '', $slugPath);
             }
         }
 
         $slugDefaults = [
-            '_controller' => SlugController::class.'::slug',
+            '_controller' => SlugController::class . '::slug',
             'preview' => false,
             'url' => '',
             '_locale' => $locale ?: $this->getDefaultLocale(),
@@ -303,7 +313,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 
     protected function adjustPath($path)
     {
-        return '/{_locale}'.str_replace('/{_locale}', '', $path);
+        return '/{_locale}' . str_replace('/{_locale}', '', $path);
     }
 
     protected function getRouteConfig()
@@ -404,15 +414,5 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         }
 
         return implode('|', $escapedLocales);
-    }
-    
-    public function supports($name)
-    {
-        return 0 === strpos($name, '_slug');
-    }
-
-    public function getRouteDebugMessage($name, array $parameters = [])
-    {
-        return 'Node bundle rote';
     }
 }

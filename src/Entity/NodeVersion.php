@@ -18,8 +18,8 @@ use Hgabka\UtilsBundle\Helper\ClassLookup;
  */
 class NodeVersion implements EntityInterface
 {
-    const DRAFT_VERSION = 'draft';
-    const PUBLIC_VERSION = 'public';
+    public const DRAFT_VERSION = 'draft';
+    public const PUBLIC_VERSION = 'public';
 
     /**
      * @ORM\Id

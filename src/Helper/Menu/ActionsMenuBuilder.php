@@ -137,7 +137,8 @@ class ActionsMenuBuilder
                 $this->factory,
                 $menu,
                 $activeNodeVersion
-            ), Events::CONFIGURE_SUB_ACTION_MENU
+            ),
+            Events::CONFIGURE_SUB_ACTION_MENU
         );
 
         return $menu;
@@ -176,7 +177,8 @@ class ActionsMenuBuilder
                     $this->factory,
                     $menu,
                     $activeNodeVersion
-                ), Events::CONFIGURE_ACTION_MENU
+                ),
+                Events::CONFIGURE_ACTION_MENU
             );
 
             return $menu;
@@ -252,7 +254,7 @@ class ActionsMenuBuilder
                         'linkAttributes' => [
                             'data-toggle' => 'modal',
                             'data-target' => '#pub',
-                            'class' => 'btn btn--raise-on-hover'.($isFirst ? ' btn-primary btn-save' : ' btn-default'),
+                            'class' => 'btn btn--raise-on-hover' . ($isFirst ? ' btn-primary btn-save' : ' btn-default'),
                         ],
                     ]
                 );
@@ -339,7 +341,7 @@ class ActionsMenuBuilder
                         [
                             'linkAttributes' => [
                                 'type' => 'submit',
-                                'class' => 'btn btn--raise-on-hover'.($isFirst ? ' btn-primary btn-save' : ' btn-default'),
+                                'class' => 'btn btn--raise-on-hover' . ($isFirst ? ' btn-primary btn-save' : ' btn-default'),
                                 'value' => 'saveasdraft',
                                 'name' => 'saveasdraft',
                             ],
@@ -428,7 +430,8 @@ class ActionsMenuBuilder
                 $this->factory,
                 $menu,
                 $activeNodeVersion
-            ), Events::CONFIGURE_ACTION_MENU
+            ),
+            Events::CONFIGURE_ACTION_MENU
         );
 
         return $menu;

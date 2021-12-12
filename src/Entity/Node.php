@@ -128,7 +128,7 @@ class Node implements GedmoNode, EntityInterface
      */
     public function __toString()
     {
-        return 'node '.$this->getId().', refEntityName: '.$this->getRefEntityName();
+        return 'node ' . $this->getId() . ', refEntityName: ' . $this->getRefEntityName();
     }
 
     /**

@@ -14,16 +14,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConvertSequenceNumberToWeightCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:convertsequencenumbertoweight';
-    
+
     /** @var EntityManagerInterface */
     protected $entityManager;
-    
+
     public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct();
         $this->entityManager = $entityManager;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +40,7 @@ class ConvertSequenceNumberToWeightCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->entityManager;
-        
+
         $batchSize = 20;
         $i = 0;
         $class = NodeTranslation::class;
@@ -52,7 +52,7 @@ class ConvertSequenceNumberToWeightCommand extends Command
             // @var NodeTranslation $nodeTranslation
             $nodeTranslation = $row[0];
             if (null === $nodeTranslation->getWeight()) {
-                $output->writeln('- editing node: '.$nodeTranslation->getTitle());
+                $output->writeln('- editing node: ' . $nodeTranslation->getTitle());
                 $nodeTranslation->setWeight($nodeTranslation->getNode()->getSequenceNumber());
                 $em->persist($nodeTranslation);
 
@@ -70,7 +70,7 @@ class ConvertSequenceNumberToWeightCommand extends Command
         $em->clear();
 
         $output->writeln('Updated all nodes');
-        
+
         return Command::SUCCESS;
     }
 }

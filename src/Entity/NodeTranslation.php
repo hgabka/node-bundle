@@ -279,11 +279,11 @@ class NodeTranslation implements EntityInterface
             if (null !== $nodeTranslation) {
                 $parentSlug = $nodeTranslation->getSlugPart();
                 if (!empty($parentSlug)) {
-                    $slug = rtrim($parentSlug, '/').'/';
+                    $slug = rtrim($parentSlug, '/') . '/';
                 }
             }
         }
-        $slug = $slug.$this->getSlug();
+        $slug = $slug . $this->getSlug();
 
         return $slug;
     }

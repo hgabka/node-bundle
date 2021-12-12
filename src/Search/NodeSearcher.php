@@ -95,16 +95,16 @@ class NodeSearcher
                 continue;
             }
             $qb
-                ->leftJoin($pagepartClass, 'ppc'.$key, 'WITH', 'pp.pagePartId = ppc'.$key.'.id AND pp.pagePartEntityname = :pagepartclass'.$key)
-                ->setParameter('pagepartclass'.$key, $pagepartClass)
+                ->leftJoin($pagepartClass, 'ppc' . $key, 'WITH', 'pp.pagePartId = ppc' . $key . '.id AND pp.pagePartEntityname = :pagepartclass' . $key)
+                ->setParameter('pagepartclass' . $key, $pagepartClass)
             ;
-            $qb->addSelect('ppc'.$key);
+            $qb->addSelect('ppc' . $key);
             if (\is_string($fields)) {
                 $fields = [$fields];
             }
 
             foreach ($fields as $field) {
-                $orX->add($qb->expr()->like('ppc'.$key.'.'.$field, ':search'));
+                $orX->add($qb->expr()->like('ppc' . $key . '.' . $field, ':search'));
             }
             ++$key;
         }
@@ -115,22 +115,22 @@ class NodeSearcher
                 continue;
             }
             $qb
-                ->leftJoin($pageClass, 'pc'.$key, 'WITH', 'v.refId = pc'.$key.'.id AND v.refEntityName = :pageclass'.$key)
-                ->setParameter('pageclass'.$key, $pageClass)
+                ->leftJoin($pageClass, 'pc' . $key, 'WITH', 'v.refId = pc' . $key . '.id AND v.refEntityName = :pageclass' . $key)
+                ->setParameter('pageclass' . $key, $pageClass)
             ;
-            $qb->addSelect('pc'.$key);
+            $qb->addSelect('pc' . $key);
             if (\is_string($fields)) {
                 $fields = [$fields];
             }
 
             foreach ($fields as $field) {
-                $orX->add($qb->expr()->like('pc'.$key.'.'.$field, ':search'));
+                $orX->add($qb->expr()->like('pc' . $key . '.' . $field, ':search'));
             }
             ++$key;
         }
 
         if ($orX->count() > 0) {
-            $qb->andWhere($orX)->setParameter('search', '%'.addcslashes($search, '%_').'%');
+            $qb->andWhere($orX)->setParameter('search', '%' . addcslashes($search, '%_') . '%');
         }
 
         $qb->groupBy('nt.id');

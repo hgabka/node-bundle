@@ -15,9 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class URLChooserType extends AbstractType
 {
-    const INTERNAL = 'internal';
-    const EXTERNAL = 'external';
-    const EMAIL = 'email';
+    public const INTERNAL = 'internal';
+    public const EXTERNAL = 'external';
+    public const EMAIL = 'email';
 
     /**
      * Builds the form.

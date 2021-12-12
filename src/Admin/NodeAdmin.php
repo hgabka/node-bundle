@@ -9,8 +9,8 @@ use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 class NodeAdmin extends AbstractAdmin
@@ -25,6 +25,11 @@ class NodeAdmin extends AbstractAdmin
         'revert' => 'REVERT',
         'reorder' => 'REORDER',
     ];
+
+    public function configureRoutes(RouteCollectionInterface $collection): void
+    {
+        $collection->add('edit_custom', $this->getRouterIdParameter() . '/editCustom');
+    }
 
     protected function configureQuery(ProxyQueryInterface $query): ProxyQueryInterface
     {
@@ -55,11 +60,6 @@ class NodeAdmin extends AbstractAdmin
     protected function getAccessMapping(): array
     {
         return $this->accessMapping;
-    }
-    
-    public function configureRoutes(RouteCollectionInterface $collection): void
-    {
-        $collection->add('edit_custom', $this->getRouterIdParameter().'/editCustom');
     }
 
     /**

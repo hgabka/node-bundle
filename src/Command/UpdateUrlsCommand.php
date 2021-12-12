@@ -24,6 +24,7 @@ class UpdateUrlsCommand extends Command
 
         $this->entityManager = $entityManager;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +53,7 @@ class UpdateUrlsCommand extends Command
         }
 
         $output->writeln('Updated all nodes');
-        
+
         return Command::SUCCESS;
     }
 }

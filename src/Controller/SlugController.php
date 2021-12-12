@@ -2,9 +2,9 @@
 
 namespace Hgabka\NodeBundle\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
@@ -69,7 +69,7 @@ class SlugController extends AbstractController
 
         // If no node translation -> 404
         if (!$nodeTranslation) {
-            throw $this->createNotFoundException('No page found for slug '.$url);
+            throw $this->createNotFoundException('No page found for slug ' . $url);
         }
 
         $entity = $this->getPageEntity(
@@ -128,7 +128,7 @@ class SlugController extends AbstractController
 
         $view = $renderContext->getView();
         if (empty($view)) {
-            throw $this->createNotFoundException('No page found for slug '.$url);
+            throw $this->createNotFoundException('No page found for slug ' . $url);
         }
 
         $template = new Template([]);

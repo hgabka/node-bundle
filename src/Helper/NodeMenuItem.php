@@ -172,8 +172,8 @@ class NodeMenuItem
     {
         // Check for namespace alias
         if (false !== strpos($class, ':')) {
-            list($namespaceAlias, $simpleClassName) = explode(':', $class);
-            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias).'\\'.$simpleClassName;
+            [$namespaceAlias, $simpleClassName] = explode(':', $class);
+            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias) . '\\' . $simpleClassName;
         }
         if (null === $this->getParent()) {
             return null;
@@ -236,8 +236,8 @@ class NodeMenuItem
     {
         // Check for namespace alias
         if (false !== strpos($class, ':')) {
-            list($namespaceAlias, $simpleClassName) = explode(':', $class);
-            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias).'\\'.$simpleClassName;
+            [$namespaceAlias, $simpleClassName] = explode(':', $class);
+            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias) . '\\' . $simpleClassName;
         }
         $result = [];
         $children = $this->getChildren();
@@ -261,8 +261,8 @@ class NodeMenuItem
     {
         // Check for namespace alias
         if (false !== strpos($class, ':')) {
-            list($namespaceAlias, $simpleClassName) = explode(':', $class);
-            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias).'\\'.$simpleClassName;
+            [$namespaceAlias, $simpleClassName] = explode(':', $class);
+            $class = $this->em->getConfiguration()->getEntityNamespace($namespaceAlias) . '\\' . $simpleClassName;
         }
         foreach ($this->getChildren() as $child) {
             if ($child->getPage() instanceof $class) {

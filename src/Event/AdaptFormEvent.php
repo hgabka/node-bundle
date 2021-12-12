@@ -7,8 +7,8 @@ use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersion;
 use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
-use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * The event to pass metadata if the adaptForm event is triggered.

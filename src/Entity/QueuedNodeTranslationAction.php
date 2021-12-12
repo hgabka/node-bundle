@@ -14,8 +14,8 @@ use Hgabka\UtilsBundle\Entity\EntityInterface;
  */
 class QueuedNodeTranslationAction implements EntityInterface
 {
-    const ACTION_PUBLISH = 'publish';
-    const ACTION_UNPUBLISH = 'unpublish';
+    public const ACTION_PUBLISH = 'publish';
+    public const ACTION_UNPUBLISH = 'unpublish';
 
     /**
      * @ORM\Id

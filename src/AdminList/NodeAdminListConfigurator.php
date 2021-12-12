@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\AdminList;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Hgabka\NodeBundle\Admin\NodeAdmin;
+use Hgabka\NodeBundle\Controller\NodeAdminController;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\AdminList\Configurator\AbstractDoctrineORMAdminListConfigurator;
 use Hgabka\UtilsBundle\AdminList\FilterType\ORM\BooleanFilterType;
@@ -16,7 +17,6 @@ use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use Symfony\Component\Security\Core\Security;
-use Hgabka\NodeBundle\Controller\NodeAdminController;
 
 /**
  * NodeAdminListConfigurator.

@@ -75,6 +75,6 @@ class LinkPage extends AbstractPage implements SlugActionInterface
      */
     public function getControllerAction()
     {
-        return LinkPageController::class.':service';
+        return LinkPageController::class . ':service';
     }
 }

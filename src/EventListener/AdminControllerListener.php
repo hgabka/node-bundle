@@ -24,9 +24,8 @@ class AdminControllerListener implements EventSubscriberInterface
 
         if ($controller instanceof NodeAdminController) {
             $request = $event->getRequest();
-            
+
             $request->query->set('_sonata_admin', 'hgabka_node.admin.node');
         }
     }
 }
-

@@ -41,8 +41,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -56,19 +56,19 @@ class NodeAdminController extends CRUDController
      * @var EntityManager
      */
     protected $em;
-    
+
     /** @var AclHelper */
     protected $aclHelper;
-    
+
     /** @var Security */
     protected $security;
-    
+
     /** @var AdminListFactory */
     protected $adminListFactory;
 
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
-    
+
     /** @var ActionsMenuBuilder */
     protected $actionsMenuBuilder;
 
@@ -90,7 +90,7 @@ class NodeAdminController extends CRUDController
         $this->eventDispatcher = $eventDispatcher;
         $this->actionsMenuBuilder = $actionsMenuBuilder;
     }
-    
+
     /**
      * @param Request $request
      *
@@ -184,7 +184,8 @@ class NodeAdminController extends CRUDController
                 $otherLanguageNodeNodeVersion,
                 $otherLanguagePage,
                 $originalLanguage
-            ),  Events::COPY_PAGE_TRANSLATION
+            ),
+            Events::COPY_PAGE_TRANSLATION
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -236,7 +237,8 @@ class NodeAdminController extends CRUDController
                 $otherLanguageNodeNodeVersion,
                 $otherLanguagePage,
                 $otherLanguageNodeTranslation->getLang()
-            ), Events::RECOPY_PAGE_TRANSLATION
+            ),
+            Events::RECOPY_PAGE_TRANSLATION
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id, 'subaction' => NodeVersion::DRAFT_VERSION]));
@@ -279,7 +281,7 @@ class NodeAdminController extends CRUDController
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
-            new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage), 
+            new NodeEvent($node, $nodeTranslation, $nodeVersion, $myLanguagePage),
             Events::ADD_EMPTY_PAGE_TRANSLATION
         );
 
@@ -310,7 +312,7 @@ class NodeAdminController extends CRUDController
 
         if ($request->get('pub_date')) {
             $date = new \DateTime(
-                $request->get('pub_date').' '.$request->get('pub_time')
+                $request->get('pub_date') . ' ' . $request->get('pub_time')
             );
             $this->get(NodeAdminPublisher::class)->publishLater(
                 $nodeTranslation,
@@ -358,7 +360,7 @@ class NodeAdminController extends CRUDController
         $request = $this->get('request_stack')->getCurrentRequest();
 
         if ($request->get('unpub_date')) {
-            $date = new \DateTime($request->get('unpub_date').' '.$request->get('unpub_time'));
+            $date = new \DateTime($request->get('unpub_date') . ' ' . $request->get('unpub_time'));
             $this->get(NodeAdminPublisher::class)->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
@@ -628,7 +630,8 @@ class NodeAdminController extends CRUDController
                 $clonedPage,
                 $nodeVersion,
                 $page
-            ), Events::REVERT
+            ),
+            Events::REVERT
         );
 
         $this->addFlash(
@@ -709,7 +712,8 @@ class NodeAdminController extends CRUDController
                 $nodeTranslation,
                 $nodeVersion,
                 $newPage
-            ), Events::ADD_NODE
+            ),
+            Events::ADD_NODE
         );
 
         return $this->redirect(
@@ -761,7 +765,8 @@ class NodeAdminController extends CRUDController
                 $nodeTranslation,
                 $nodeVersion,
                 $newPage
-            ), Events::ADD_NODE
+            ),
+            Events::ADD_NODE
         );
 
         return $this->redirect(
@@ -833,7 +838,7 @@ class NodeAdminController extends CRUDController
 
         return new JsonResponse(
             [
-                'Success' => 'The node-translations for ['.$this->locale.'] have got new weight values',
+                'Success' => 'The node-translations for [' . $this->locale . '] have got new weight values',
             ]
         );
     }
@@ -978,7 +983,8 @@ class NodeAdminController extends CRUDController
                 $node,
                 $nodeTranslation,
                 $nodeVersion
-            ), Events::ADAPT_FORM
+            ),
+            Events::ADAPT_FORM
         );
 
         $tabPane->buildForm();
@@ -1069,7 +1075,7 @@ class NodeAdminController extends CRUDController
             'nodeVersionLockInterval' => $this->getParameter('hgabka_node.lock_check_interval'),
         ];
 
-        return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit'.($request->isXmlHttpRequest() ? 'Ajax' : '').'.html.twig', $params);
+        return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit' . ($request->isXmlHttpRequest() ? 'Ajax' : '') . '.html.twig', $params);
     }
 
     /**
@@ -1192,7 +1198,8 @@ class NodeAdminController extends CRUDController
                 $nodeTranslation,
                 $nodeVersion,
                 $page
-            ), Events::CREATE_DRAFT_VERSION
+            ),
+            Events::CREATE_DRAFT_VERSION
         );
 
         return $nodeVersion;
@@ -1239,7 +1246,8 @@ class NodeAdminController extends CRUDController
                     $childNodeTranslation,
                     $childNodeVersion,
                     $childNodePage
-                ), Events::PRE_DELETE
+                ),
+                Events::PRE_DELETE
             );
 
             $childNode->setDeleted(true);
@@ -1254,7 +1262,8 @@ class NodeAdminController extends CRUDController
                     $childNodeTranslation,
                     $childNodeVersion,
                     $childNodePage
-                ), Events::POST_DELETE
+                ),
+                Events::POST_DELETE
             );
         }
     }

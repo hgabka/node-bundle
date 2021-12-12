@@ -65,8 +65,8 @@ class NodeChoiceType extends AbstractType
                 $alias = current($queryBuilder->getRootAliases());
 
                 $queryBuilder
-                    ->andWhere($alias.'.lft >= :left')
-                    ->andWhere($alias.'.rgt <= :right')
+                    ->andWhere($alias . '.lft >= :left')
+                    ->andWhere($alias . '.rgt <= :right')
                     ->setParameter('left', $node->getLeft())
                     ->setParameter('right', $node->getRight())
                 ;

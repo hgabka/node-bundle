@@ -334,7 +334,7 @@ class NodeTranslationRepository extends EntityRepository
         $em = $this->getEntityManager();
         $className = ClassLookup::getClass($hasNode);
         if (!$hasNode->getId() > 0) {
-            throw new \InvalidArgumentException('The entity of class '.$className.' has no id, maybe you forgot to flush first');
+            throw new \InvalidArgumentException('The entity of class ' . $className . ' has no id, maybe you forgot to flush first');
         }
 
         $nodeTranslation = new NodeTranslation();
@@ -385,7 +385,7 @@ class NodeTranslationRepository extends EntityRepository
         $em = $this->getEntityManager();
         $className = ClassLookup::getClass($hasNode);
         if (!$hasNode->getId() > 0) {
-            throw new \InvalidArgumentException('The entity of class '.$className.' has no id, maybe you forgot to flush first');
+            throw new \InvalidArgumentException('The entity of class ' . $className . ' has no id, maybe you forgot to flush first');
         }
 
         $nodeTranslation = $em->getRepository(NodeTranslation::class)->findOneBy(['lang' => $lang, 'node' => $node]);

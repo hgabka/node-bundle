@@ -5,22 +5,21 @@ namespace Hgabka\NodeBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class CronUpdateNodeCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:cron';
-    
+
     /** @var EntityManagerInterface */
     protected $entityManager;
-    
+
     /** @var TokenStorageInterface */
     protected $tokenStorage;
-    
+
     /** @var NodeAdminPublisher */
     protected $publisher;
 
@@ -32,7 +31,7 @@ class CronUpdateNodeCommand extends Command
         $this->tokenStorage = $tokenStorage;
         $this->publisher = $publisher;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -67,16 +66,16 @@ class CronUpdateNodeCommand extends Command
                     switch ($action) {
                         case QueuedNodeTranslationAction::ACTION_PUBLISH:
                             $this->publisher->publish($nodeTranslation, $user);
-                            $output->writeln('Published the page '.$nodeTranslation->getTitle());
+                            $output->writeln('Published the page ' . $nodeTranslation->getTitle());
 
                             break;
                         case QueuedNodeTranslationAction::ACTION_UNPUBLISH:
                             $this->publisher->unPublish($nodeTranslation);
-                            $output->writeln('Unpublished the page '.$nodeTranslation->getTitle());
+                            $output->writeln('Unpublished the page ' . $nodeTranslation->getTitle());
 
                             break;
                         default:
-                            $output->writeln("Don't understand the action ".$action);
+                            $output->writeln("Don't understand the action " . $action);
                     }
                 }
             }
@@ -84,7 +83,7 @@ class CronUpdateNodeCommand extends Command
         } else {
             $output->writeln('No queued jobs');
         }
-        
+
         return Command::SUCCESS;
     }
 }

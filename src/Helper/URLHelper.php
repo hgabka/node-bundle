@@ -100,7 +100,7 @@ class URLHelper
                     }
 
                     if (!$nodeTranslationFound) {
-                        $this->logger->error('No NodeTranslation found in the database when replacing url tag '.$fullTag);
+                        $this->logger->error('No NodeTranslation found in the database when replacing url tag ' . $fullTag);
                     }
                 }
             }
@@ -124,7 +124,7 @@ class URLHelper
                     }
 
                     if (!$mediaFound) {
-                        $this->logger->error('No Media found in the database when replacing url tag '.$fullTag);
+                        $this->logger->error('No Media found in the database when replacing url tag ' . $fullTag);
                     }
                 }
             }

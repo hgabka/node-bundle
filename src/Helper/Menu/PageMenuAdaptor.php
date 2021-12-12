@@ -213,7 +213,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
             $menuItem
                 ->setRoute('HgabkaNodeBundle_nodes_edit')
                 ->setRouteparams(['id' => $child['id']])
-                ->setUniqueId('node-'.$child['id'])
+                ->setUniqueId('node-' . $child['id'])
                 ->setLabel($child['title'])
                 ->setParent($parent)
                 ->setOffline(!$child['online'] && !$this->pagesConfiguration->isStructureNode($refName))

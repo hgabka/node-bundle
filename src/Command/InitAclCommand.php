@@ -14,30 +14,29 @@ use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Model\AclProviderInterface;
 use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterface;
 
-
 /**
  * Basic initialization of ACL entries for all nodes.
  */
 class InitAclCommand extends Command
 {
     protected static $defaultName = 'hgabka:init:acl';
-    
+
     /** @var ObjectIdentityRetrievalStrategy */
     protected $oiaStrategy;
-    
+
     /** @var EntityManagerInterface */
     private $entityManager;
-    
+
     /** @var AclProviderInterface */
     private $aclProvider;
-    
+
     public function __construct(EntityManagerInterface $manager)
     {
         parent::__construct();
 
         $this->entityManager = $manager;
     }
-    
+
     public function setAclProvider(AclProviderInterface $provider)
     {
         $this->aclProvider = $provider;
@@ -105,7 +104,7 @@ class InitAclCommand extends Command
             $aclProvider->updateAcl($acl);
         }
         $output->writeln("{$count} nodes processed.");
-        
+
         return Command::SUCCESS;
     }
 }

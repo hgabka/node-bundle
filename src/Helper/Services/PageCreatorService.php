@@ -120,11 +120,11 @@ class PageCreatorService
         $pagecreator = \array_key_exists('creator', $options) ? $options['creator'] : 'pagecreator';
         $creator = $userRepo->findOneBy(['username' => $pagecreator]);
 
-        $parent = isset($options['parent']) ? $options['parent'] : null;
+        $parent = $options['parent'] ?? null;
 
-        $pageInternalName = isset($options['page_internal_name']) ? $options['page_internal_name'] : null;
+        $pageInternalName = $options['page_internal_name'] ?? null;
 
-        $setOnline = isset($options['set_online']) ? $options['set_online'] : false;
+        $setOnline = $options['set_online'] ?? false;
 
         // We need to get the language of the first translation so we can create the rootnode.
         // This will also create a translationnode for that language attached to the rootnode.

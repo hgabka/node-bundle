@@ -235,7 +235,7 @@ class NodeRepository extends NestedTreeRepository
         $node = new Node();
         $node->setRef($hasNode);
         if (!$hasNode->getId() > 0) {
-            throw new \InvalidArgumentException('the entity of class '.$node->getRefEntityName().' has no id, maybe you forgot to flush first');
+            throw new \InvalidArgumentException('the entity of class ' . $node->getRefEntityName() . ' has no id, maybe you forgot to flush first');
         }
         $node->setDeleted(false);
         $node->setInternalName($internalName);
@@ -317,13 +317,13 @@ class NodeRepository extends NestedTreeRepository
         };
 
         $sql = <<<SQL
-n.id, n.parent_id AS parent, t.url, t.id AS nt_id,
-{$createIfStatement('t.weight IS NULL', 'v.weight', 't.weight')} AS weight,
-{$createIfStatement('t.title IS NULL', 'v.title', 't.title')} AS title,
-{$createIfStatement('t.online IS NULL', '0', 't.online')} AS online,
-n.hidden_from_nav AS hidden,
-n.ref_entity_name AS ref_entity_name
-SQL;
+            n.id, n.parent_id AS parent, t.url, t.id AS nt_id,
+            {$createIfStatement('t.weight IS NULL', 'v.weight', 't.weight')} AS weight,
+            {$createIfStatement('t.title IS NULL', 'v.title', 't.title')} AS title,
+            {$createIfStatement('t.online IS NULL', '0', 't.online')} AS online,
+            n.hidden_from_nav AS hidden,
+            n.ref_entity_name AS ref_entity_name
+            SQL;
 
         $qb->select($sql)
             ->from('hg_node_nodes', 'n')

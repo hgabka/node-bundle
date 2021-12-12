@@ -227,7 +227,7 @@ class NodeTranslationListener
         }
 
         $this->logger->info(
-            'Found NT '.$nodeTranslation->getId().' needed NO change'
+            'Found NT ' . $nodeTranslation->getId() . ' needed NO change'
         );
 
         return false;
@@ -291,9 +291,9 @@ class NodeTranslationListener
 
         if ($translation->getUrl() === $translation->getFullSlug()) {
             $this->logger->debug(
-                'Evaluating URL for NT '.$translation->getId().
-                ' getUrl: \''.$translation->getUrl().'\' getFullSlug: \''.
-                $translation->getFullSlug().'\''
+                'Evaluating URL for NT ' . $translation->getId() .
+                ' getUrl: \'' . $translation->getUrl() . '\' getFullSlug: \'' .
+                $translation->getFullSlug() . '\''
             );
 
             return false;
@@ -312,9 +312,9 @@ class NodeTranslationListener
         );
 
         $this->logger->debug(
-            'Found '.\count(
+            'Found ' . \count(
                 $translations
-            ).' node(s) that match url \''.$translation->getUrl().'\''
+            ) . ' node(s) that match url \'' . $translation->getUrl() . '\''
         );
 
         $translationsWithSameUrl = [];
@@ -335,7 +335,7 @@ class NodeTranslationListener
             );
             $newUrl = $translation->getFullSlug();
 
-            $message = 'The URL of the page has been changed from '.$oldUrl.' to '.$newUrl.' since another page already uses this URL.';
+            $message = 'The URL of the page has been changed from ' . $oldUrl . ' to ' . $newUrl . ' since another page already uses this URL.';
             $this->logger->info($message);
             $flashes[] = $message;
 
@@ -375,7 +375,7 @@ class NodeTranslationListener
             return preg_replace($finalDigitGrabberRegex, $digit, $string);
         }
 
-        return $string.$append.'1';
+        return $string . $append . '1';
     }
 
     private function isInRequestScope()
