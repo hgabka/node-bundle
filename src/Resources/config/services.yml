@@ -16,7 +16,7 @@ services:
 
     hgabka_node.nodetranslation.listener:
         class: Hgabka\NodeBundle\EventListener\NodeTranslationListener
-        arguments: ['@session', '@hgabka_utils.logger' , '@hgabka_utils.slugifier', '@hgabka_utils.hgabka_utils', '@hgabka_node.pages_configuration']
+        arguments: ['@request_stack', '@hgabka_utils.logger' , '@hgabka_utils.slugifier', '@hgabka_utils.hgabka_utils', '@hgabka_node.pages_configuration']
         calls:
             - [ 'setRequestStack', ['@request_stack'] ]
         tags:
