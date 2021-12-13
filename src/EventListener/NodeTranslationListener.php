@@ -17,7 +17,7 @@ use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\SlugifierInterface;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Listens to doctrine postFlush event and updates
@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class NodeTranslationListener
 {
-    private $session;
     private $logger;
     private $nodeTranslations;
 
@@ -49,22 +48,30 @@ class NodeTranslationListener
     private $pagesConfiguration;
 
     /**
-     * @param Session $session The session
      * @param Logger  $logger  The logger
      */
     public function __construct(
-        Session $session,
+        RequestStack $requestStack,
         $logger,
         SlugifierInterface $slugifier,
         HgabkaUtils $hgabkaUtils,
         PagesConfiguration $pagesConfiguration
     ) {
         $this->nodeTranslations = [];
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->logger = $logger;
         $this->slugifier = $slugifier;
         $this->hgabkaUtils = $hgabkaUtils;
         $this->pagesConfiguration = $pagesConfiguration;
+    }
+
+    protected function getSession(): ?SessionInterface
+    {
+        try {
+            return $this->requestStack->getSession();
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 
     public function setRequestStack(RequestStack $requestStack)
@@ -343,7 +350,10 @@ class NodeTranslationListener
         } elseif (\count($flashes) > 0 && $this->isInRequestScope()) {
             // No translations found so we're certain we can show this message.
             $flash = current(\array_slice($flashes, -1));
-            $this->session->getFlashBag()->add(FlashTypes::WARNING, $flash);
+            $session = $this->getSession();
+            if ($session) {
+                $session->getFlashBag()->add(FlashTypes::WARNING, $flash);
+            }
         }
 
         return true;
