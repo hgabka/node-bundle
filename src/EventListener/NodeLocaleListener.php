@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\EventListener;
 
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -11,9 +12,6 @@ use Symfony\Component\Routing\RouterInterface;
 
 class NodeLocaleListener implements EventSubscriberInterface
 {
-    /** @var SessionInterface */
-    private $session;
-
     /** @var HgabkaUtils */
     private $utils;
 
@@ -21,9 +19,8 @@ class NodeLocaleListener implements EventSubscriberInterface
      * @param string          $defaultLocale The default locale
      * @param RouterInterface $router        The router
      */
-    public function __construct(SessionInterface $session, HgabkaUtils $hgabkaUtils)
+    public function __construct(HgabkaUtils $hgabkaUtils)
     {
-        $this->session = $session;
         $this->utils = $hgabkaUtils;
     }
 
@@ -43,7 +40,9 @@ class NodeLocaleListener implements EventSubscriberInterface
                 $nodeLocale = $request->getLocale();
             }
 
-            $this->session->set('nodeLocale', $nodeLocale);
+            if ($request->getSession()) {
+                $request->getSession()->set('nodeLocale', $nodeLocale);
+            }
         }
 
         $request->attributes->set('nodeLocale', $nodeLocale);
