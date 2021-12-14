@@ -48,7 +48,7 @@ class NodeTranslationListener
     private $pagesConfiguration;
 
     /**
-     * @param Logger  $logger  The logger
+     * @param Logger $logger The logger
      */
     public function __construct(
         RequestStack $requestStack,
@@ -63,15 +63,6 @@ class NodeTranslationListener
         $this->slugifier = $slugifier;
         $this->hgabkaUtils = $hgabkaUtils;
         $this->pagesConfiguration = $pagesConfiguration;
-    }
-
-    protected function getSession(): ?SessionInterface
-    {
-        try {
-            return $this->requestStack->getSession();
-        } catch (Throwable $e) {
-            return null;
-        }
     }
 
     public function setRequestStack(RequestStack $requestStack)
@@ -150,6 +141,15 @@ class NodeTranslationListener
                     $this->updateNodeChildren($entity, $em);
                 }
             }
+        }
+    }
+
+    protected function getSession(): ?SessionInterface
+    {
+        try {
+            return $this->requestStack->getSession();
+        } catch (Throwable $e) {
+            return null;
         }
     }
 
