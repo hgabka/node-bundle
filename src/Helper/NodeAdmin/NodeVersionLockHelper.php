@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersionLock;
 use Hgabka\NodeBundle\Repository\NodeVersionLockRepository;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
