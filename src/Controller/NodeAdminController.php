@@ -88,7 +88,10 @@ class NodeAdminController extends CRUDController
     /** @var NodeAdminPublisher */
     protected $nodeAdminPublisher;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher)
+    /** @var CloneHelper */
+    protected $cloneHelper;
+
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
@@ -97,6 +100,7 @@ class NodeAdminController extends CRUDController
         $this->actionsMenuBuilder = $actionsMenuBuilder;
         $this->nodeVersionLockHelper = $nodeVersionLockHelper;
         $this->nodeAdminPublisher = $nodeAdminPublisher;
+        $this->cloneHelper = $cloneHelper;
     }
 
     /**
@@ -174,7 +178,7 @@ class NodeAdminController extends CRUDController
         $otherLanguageNodeTranslation = $node->getNodeTranslation($originalLanguage, true);
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
-        $myLanguagePage = $this->get(CloneHelper::class)
+        $myLanguagePage = $this->cloneHelper
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
@@ -227,7 +231,7 @@ class NodeAdminController extends CRUDController
         $otherLanguageNodeTranslation = $this->em->getRepository(NodeTranslation::class)->find($request->get('source'));
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
-        $myLanguagePage = $this->get(CloneHelper::class)
+        $myLanguagePage = $this->cloneHelper
             ->deepCloneAndSave($otherLanguagePage);
 
         // @var NodeTranslation $nodeTranslation
@@ -526,7 +530,7 @@ class NodeAdminController extends CRUDController
 
         $originalNodeTranslations = $originalNode->getNodeTranslation($this->locale, true);
         $originalRef = $originalNodeTranslations->getPublicNodeVersion()->getRef($this->em);
-        $newPage = $this->get(CloneHelper::class)
+        $newPage = $this->cloneHelper
             ->deepCloneAndSave($originalRef);
 
         //set the title
@@ -616,7 +620,7 @@ class NodeAdminController extends CRUDController
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $page = $nodeVersion->getRef($this->em);
         // @var HasNodeInterface $clonedPage
-        $clonedPage = $this->get(CloneHelper::class)
+        $clonedPage = $this->cloneHelper
             ->deepCloneAndSave($page);
         $newNodeVersion = $nodeVersionRepo->createNodeVersionFor(
             $clonedPage,
@@ -1176,7 +1180,7 @@ class NodeAdminController extends CRUDController
         NodeTranslation $nodeTranslation,
         NodeVersion $nodeVersion
     ) {
-        $publicPage = $this->get(CloneHelper::class)
+        $publicPage = $this->cloneHelper
             ->deepCloneAndSave($page);
         // @var NodeVersion $publicNodeVersion
 
