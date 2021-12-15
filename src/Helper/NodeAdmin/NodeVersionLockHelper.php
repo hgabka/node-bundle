@@ -3,9 +3,11 @@
 namespace Hgabka\NodeBundle\Helper\NodeAdmin;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersionLock;
 use Hgabka\NodeBundle\Repository\NodeVersionLockRepository;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,11 +17,11 @@ class NodeVersionLockHelper implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * @var ObjectManager
+     * @var EntityManagerInterface
      */
     private $objectManager;
 
-    public function __construct(ContainerInterface $container, ObjectManager $em)
+    public function __construct(ContainerInterface $container, EntityManagerInterface $em)
     {
         $this->setContainer($container);
         $this->setObjectManager($em);

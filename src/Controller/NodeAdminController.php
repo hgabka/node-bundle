@@ -82,13 +82,21 @@ class NodeAdminController extends CRUDController
      */
     protected $user;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder)
+    /** @var NodeVersionLockHelper */
+    protected $nodeVersionLockHelper;
+
+    /** @var NodeAdminPublisher */
+    protected $nodeAdminPublisher;
+
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
         $this->adminListFactory = $adminListFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->actionsMenuBuilder = $actionsMenuBuilder;
+        $this->nodeVersionLockHelper = $nodeVersionLockHelper;
+        $this->nodeAdminPublisher = $nodeAdminPublisher;
     }
 
     /**
@@ -314,7 +322,7 @@ class NodeAdminController extends CRUDController
             $date = new \DateTime(
                 $request->get('pub_date') . ' ' . $request->get('pub_time')
             );
-            $this->get(NodeAdminPublisher::class)->publishLater(
+            $this->nodeAdminPublisher->publishLater(
                 $nodeTranslation,
                 $date
             );
@@ -323,7 +331,7 @@ class NodeAdminController extends CRUDController
                 $this->get('translator')->trans('hg_node.admin.publish.flash.success_scheduled')
             );
         } else {
-            $this->get(NodeAdminPublisher::class)->publish(
+            $this->nodeAdminPublisher->publish(
                 $nodeTranslation
             );
             $this->addFlash(
@@ -361,13 +369,13 @@ class NodeAdminController extends CRUDController
 
         if ($request->get('unpub_date')) {
             $date = new \DateTime($request->get('unpub_date') . ' ' . $request->get('unpub_time'));
-            $this->get(NodeAdminPublisher::class)->unPublishLater($nodeTranslation, $date);
+            $this->nodeAdminPublisher->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
                 $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_scheduled')
             );
         } else {
-            $this->get(NodeAdminPublisher::class)->unPublish($nodeTranslation);
+            $this->nodeAdminPublisher->unPublish($nodeTranslation);
             $this->addFlash(
                 FlashTypes::SUCCESS,
                 $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_unpublished')
@@ -400,7 +408,7 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $this->get(NodeAdminPublisher::class)->unSchedulePublish($nodeTranslation);
+        $this->nodeAdminPublisher->unSchedulePublish($nodeTranslation);
 
         $this->addFlash(
             FlashTypes::SUCCESS,
@@ -932,7 +940,7 @@ class NodeAdminController extends CRUDController
                 if ($thresholdDate >= $updatedDate || $nodeVersionIsLocked) {
                     $page = $nodeVersion->getRef($this->em);
                     if ($nodeVersion === $nodeTranslation->getPublicNodeVersion()) {
-                        $this->get(NodeAdminPublisher::class)
+                        $this->nodeAdminPublisher
                             ->createPublicVersion(
                                 $page,
                                 $nodeTranslation,
@@ -1145,9 +1153,9 @@ class NodeAdminController extends CRUDController
      */
     private function isNodeVersionLocked(NodeTranslation $nodeTranslation, $isPublic)
     {
-        if ($this->container->getParameter('hgabka_node.lock_enabled')) {
+        if ($this->getParameter('hgabka_node.lock_enabled')) {
             /** @var NodeVersionLockHelper $nodeVersionLockHelper */
-            $nodeVersionLockHelper = $this->get('hgabka_node.admin_node.node_version_lock_helper');
+            $nodeVersionLockHelper = $this->nodeVersionLockHelper;
             $nodeVersionIsLocked = $nodeVersionLockHelper->isNodeVersionLocked($this->getUser(), $nodeTranslation, $isPublic);
 
             return $nodeVersionIsLocked;
