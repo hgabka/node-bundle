@@ -1282,7 +1282,7 @@ class NodeAdminController extends CRUDController
      */
     private function updateAcl($originalNode, $nodeNewPage)
     {
-        $this->container->get(AclHelper::class)->updateAcl($originalNode, $nodeNewPage);
+        $this->aclHelper->updateAcl($originalNode, $nodeNewPage);
     }
 
     /**
