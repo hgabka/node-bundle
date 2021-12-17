@@ -330,7 +330,7 @@ class NodeManager
         $url = '';
         $data = $this->getNodeDataByInternalName($internalName, $locale);
         /** @var NodeTranslation $translation */
-        $translation = $data['nodeTrans'] ?? null;
+        $translation = $data['nodeTranslation'] ?? null;
 
         if (null !== $translation) {
             $remoteUrl = $this->getRemoteUrl($translation);
