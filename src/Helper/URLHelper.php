@@ -145,8 +145,8 @@ class URLHelper
         if (null === $this->nodeTranslationMap) {
             $sql = 'SELECT id, url, lang FROM hg_node_node_translations';
             $stmt = $this->em->getConnection()->prepare($sql);
-            $stmt->execute();
-            $this->nodeTranslationMap = $stmt->fetchAll();
+            $result = $stmt->execute();
+            $this->nodeTranslationMap = $result->fetchAllAssociative();
         }
 
         return $this->nodeTranslationMap;
@@ -164,8 +164,8 @@ class URLHelper
         if (null === $this->mediaMap) {
             $sql = 'SELECT id, url FROM kuma_media';
             $stmt = $this->em->getConnection()->prepare($sql);
-            $stmt->execute();
-            $this->mediaMap = $stmt->fetchAll();
+            $result = $stmt->execute();
+            $this->mediaMap = $result->fetchAllAssociative();
         }
 
         return $this->mediaMap;
