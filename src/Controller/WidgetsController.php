@@ -2,7 +2,7 @@
 
 namespace Hgabka\NodeBundle\Controller;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\StructureNode;
