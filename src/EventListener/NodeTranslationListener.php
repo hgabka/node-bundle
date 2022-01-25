@@ -342,7 +342,7 @@ class NodeTranslationListener
             );
             $newUrl = $translation->getFullSlug();
 
-            $message = 'Az oldal URL meváltoztatásra került erről: '.$oldUrl.' erre: '.$newUrl.', mert egy másik oldalhoz már használatban van az URL.';
+            $message = 'Az oldal URL megváltoztatásra került erről: ' . $oldUrl . ' erre: ' . $newUrl . ', mert egy másik oldalhoz már használatban van az URL.';
             $this->logger->info($message);
             $flashes[] = $message;
 

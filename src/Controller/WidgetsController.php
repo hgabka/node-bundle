@@ -2,8 +2,8 @@
 
 namespace Hgabka\NodeBundle\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\StructureNode;
 use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
