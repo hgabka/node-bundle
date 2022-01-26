@@ -197,16 +197,12 @@ services:
 
     Hgabka\NodeBundle\Controller\UrlReplaceController:
         autoconfigure: true
-        public: true
-        arguments:
-            - '@hgabka_node.helper.url'
+        autowire: true
         tags: ['controller.service_arguments']
 
     Hgabka\NodeBundle\Controller\LinkPageController:
         autoconfigure: true
-        public: true
-        arguments:
-            - '@hgabka_node.helper.url'
+        autowire: true
         tags: ['controller.service_arguments']
 
     hgabka_node.url_replace.controller:
