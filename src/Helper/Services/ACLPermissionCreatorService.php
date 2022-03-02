@@ -20,6 +20,9 @@ class ACLPermissionCreatorService
     // @var ObjectIdentityRetrievalStrategyInterface $oidStrategy
     protected $oidStrategy;
 
+    /** @var string */
+    protected $publicAccessRole;
+
     public function setAclProvider($aclProvider)
     {
         $this->aclProvider = $aclProvider;
@@ -28,6 +31,17 @@ class ACLPermissionCreatorService
     public function setObjectIdentityRetrievalStrategy($oidStrategy)
     {
         $this->oidStrategy = $oidStrategy;
+    }
+
+    /**
+     * @param string $publicAccessRole
+     * @return ACLPermissionCreatorService
+     */
+    public function setPublicAccessRole(string $publicAccessRole): ACLPermissionCreatorService
+    {
+        $this->publicAccessRole = $publicAccessRole;
+
+        return $this;
     }
 
     /**
@@ -65,7 +79,7 @@ class ACLPermissionCreatorService
         }
         $acl = $aclProvider->createAcl($objectIdentity);
 
-        $securityIdentity = new RoleSecurityIdentity('IS_AUTHENTICATED_ANONYMOUSLY');
+        $securityIdentity = new RoleSecurityIdentity($this->publicAccessRole);
         $acl->insertObjectAce($securityIdentity, MaskBuilder::MASK_VIEW);
 
         $securityIdentity = new RoleSecurityIdentity('ROLE_ADMIN');

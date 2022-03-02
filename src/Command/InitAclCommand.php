@@ -30,6 +30,9 @@ class InitAclCommand extends Command
     /** @var AclProviderInterface */
     private $aclProvider;
 
+    /** @var string */
+    private $publicAccessRole;
+
     public function __construct(EntityManagerInterface $manager)
     {
         parent::__construct();
@@ -50,6 +53,17 @@ class InitAclCommand extends Command
     public function setOiaStrategy($oiaStrategy)
     {
         $this->oiaStrategy = $oiaStrategy;
+
+        return $this;
+    }
+
+    /**
+     * @param string $publicAccessRole
+     * @return InitAclCommand
+     */
+    public function setPublicAccessRole(string $publicAccessRole): InitAclCommand
+    {
+        $this->publicAccessRole = $publicAccessRole;
 
         return $this;
     }
@@ -90,7 +104,7 @@ class InitAclCommand extends Command
             }
             $acl = $aclProvider->createAcl($objectIdentity);
 
-            $securityIdentity = new RoleSecurityIdentity('IS_AUTHENTICATED_ANONYMOUSLY');
+            $securityIdentity = new RoleSecurityIdentity($this->publicAccessRole);
             $acl->insertObjectAce($securityIdentity, MaskBuilder::MASK_VIEW);
 
             $securityIdentity = new RoleSecurityIdentity('ROLE_ADMIN');
