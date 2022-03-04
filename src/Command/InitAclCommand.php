@@ -59,9 +59,10 @@ class InitAclCommand extends Command
 
     /**
      * @param string $publicAccessRole
+     *
      * @return InitAclCommand
      */
-    public function setPublicAccessRole(string $publicAccessRole): InitAclCommand
+    public function setPublicAccessRole(string $publicAccessRole): self
     {
         $this->publicAccessRole = $publicAccessRole;
 

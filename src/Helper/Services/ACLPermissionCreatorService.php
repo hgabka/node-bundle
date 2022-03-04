@@ -35,9 +35,10 @@ class ACLPermissionCreatorService
 
     /**
      * @param string $publicAccessRole
+     *
      * @return ACLPermissionCreatorService
      */
-    public function setPublicAccessRole(string $publicAccessRole): ACLPermissionCreatorService
+    public function setPublicAccessRole(string $publicAccessRole): self
     {
         $this->publicAccessRole = $publicAccessRole;
 
