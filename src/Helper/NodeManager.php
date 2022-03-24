@@ -92,7 +92,7 @@ class NodeManager
         return [
             'node' => $node,
             'nodeTranslation' => $nodeTrans,
-            'page' => $nodeTrans->getRef($this->manager),
+            'page' => $nodeTrans ? $nodeTrans->getRef($this->manager) : null,
         ];
     }
 
@@ -278,6 +278,10 @@ class NodeManager
     public function getPathByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
     {
         $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
+        
+        if (!$nodeTranslation) {
+            return null;
+        }
 
         return $this->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
@@ -290,9 +294,13 @@ class NodeManager
      *
      * @return string
      */
-    public function getUrlByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
+    public function getUrlByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false): ?string
     {
         $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
+        
+        if (!$nodeTranslation) {
+            return null;
+        }
 
         return $this->getUrlNodeTranslation($nodeTranslation, $parameters, $relative);
     }
@@ -304,10 +312,14 @@ class NodeManager
      *
      * @return string
      */
-    public function getPathByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    public function getPathByPage(PageInterface $page, array $parameters = [], bool $relative = false): ?string
     {
         $nodeTranslation = $this->getNodeTranslationFor($page);
 
+        if (!$nodeTranslation) {
+            return null;
+        }
+        
         return $this->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
@@ -318,10 +330,14 @@ class NodeManager
      *
      * @return string
      */
-    public function getUrlByPage(PageInterface $page, array $parameters = [], bool $relative = false)
+    public function getUrlByPage(PageInterface $page, array $parameters = [], bool $relative = false): ?string
     {
         $nodeTranslation = $this->getNodeTranslationFor($page);
 
+        if (!$nodeTranslation) {
+            return null;
+        }
+        
         return $this->getUrlByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
