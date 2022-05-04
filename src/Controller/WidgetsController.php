@@ -79,7 +79,7 @@ class WidgetsController extends AbstractController
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
 
-    protected function getParameter(string $name)
+    protected function getParameter(string $name): UnitEnum|array|string|int|float|bool|null
     {
         return $this->params->get($name);
     }
