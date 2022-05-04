@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -103,7 +103,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @api
      */
-    public function getContext()
+    public function getContext(): RequestContext
     {
         if (!isset($this->context)) {
             /** @var Request $request */
@@ -137,7 +137,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @return null|string
      */
-    public function generate($name, $parameters = [], $referenceType = UrlGenerator::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = [], int, $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
