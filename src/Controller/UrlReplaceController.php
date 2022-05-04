@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class UrlReplaceController.
  *
- * @Route(service="hgabka_node.url_replace.controller")
  */
 class UrlReplaceController
 {
