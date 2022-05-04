@@ -195,7 +195,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return 0 === strpos($name, '_slug');
     }
 
-    public function getRouteDebugMessage($name, array $parameters = [])
+    public function getRouteDebugMessage(string $name, array $parameters = []): string
     {
         return 'Node bundle rote';
     }
