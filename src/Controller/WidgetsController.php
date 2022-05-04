@@ -10,7 +10,7 @@ use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
