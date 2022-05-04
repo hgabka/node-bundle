@@ -46,6 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * NodeAdminController.
@@ -1141,9 +1142,9 @@ class NodeAdminController extends CRUDController
     /**
      * init.
      */
-    protected function init(Request $request)
+    protected function init(Request $request, ManagerRegistry $doctrine)
     {
-        $this->em = $this->getDoctrine()->getManager();
+        $this->em = $doctrine->getManager();
         $nodeLocale = $request->attributes->get('nodeLocale');
         $this->locale = $nodeLocale;
 
