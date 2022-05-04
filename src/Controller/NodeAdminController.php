@@ -91,7 +91,10 @@ class NodeAdminController extends CRUDController
     /** @var CloneHelper */
     protected $cloneHelper;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper)
+    /** @var ManagerRegistry */
+    protected $doctrine;
+
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper, ManagerRegistry $doctrine)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
@@ -101,6 +104,7 @@ class NodeAdminController extends CRUDController
         $this->nodeVersionLockHelper = $nodeVersionLockHelper;
         $this->nodeAdminPublisher = $nodeAdminPublisher;
         $this->cloneHelper = $cloneHelper;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -108,7 +112,7 @@ class NodeAdminController extends CRUDController
      *
      * @return array
      */
-    public function listAction(Request $request, ManagerRegistry $doctrine): Response
+    public function listAction(Request $request): Response
     {
         $this->admin->checkAccess('list');
         $preResponse = $this->preList($request);
@@ -116,7 +120,7 @@ class NodeAdminController extends CRUDController
             return $preResponse;
         }
 
-        $this->init($request, $doctrine);
+        $this->init($request);
 
         $nodeAdminListConfigurator = new NodeAdminListConfigurator(
             $this->em,
@@ -164,9 +168,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function copyFromOtherLanguageAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function copyFromOtherLanguageAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         // @var Node $node
         $this->admin->checkAccess('copy');
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -182,7 +186,7 @@ class NodeAdminController extends CRUDController
 
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -216,9 +220,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function recopyFromOtherLanguageAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function recopyFromOtherLanguageAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
 
         $this->admin->checkAccess('copy');
         // @var Node $node
@@ -234,7 +238,7 @@ class NodeAdminController extends CRUDController
 
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -268,9 +272,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function createEmptyPageAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function createEmptyPageAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         // @var Node $node
         $this->admin->checkAccess('create');
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -286,7 +290,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -308,9 +312,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function publishAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function publishAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('publish');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -356,9 +360,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function unPublishAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function unPublishAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('unpublish');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -397,9 +401,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function unSchedulePublishAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function unSchedulePublishAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('publish');
 
         // @var Node $node
@@ -431,14 +435,14 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function deleteAction(Request $request, ManagerRegistry $doctrine): Response
+    public function deleteAction(Request $request): Response
     {
         $this->assertObjectExists($request, true);
 
         $id = $request->get($this->admin->getIdParameter());
         $this->admin->checkAccess('delete');
 
-        $this->init($request, $doctrine);
+        $this->init($request);
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
 
@@ -506,14 +510,14 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function duplicateAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function duplicateAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('duplicate');
 
         // @var Node $parentNode
         $originalNode = $this->em->getRepository(Node::class)
-            ->find($id);
+                                 ->find($id);
 
         // Check with Acl
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $originalNode);
@@ -582,9 +586,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function revertAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function revertAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('revert');
 
         // @var Node $node
@@ -667,9 +671,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function addAction(Request $request, ManagerRegistry $doctrine, $id)
+    public function addAction(Request $request, $id)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('create');
 
         // @var Node $parentNode
@@ -688,13 +692,13 @@ class NodeAdminController extends CRUDController
 
         // @var Node $nodeNewPage
         $nodeNewPage = $this->em->getRepository(Node::class)
-            ->createNodeFor($newPage, $this->locale, $this->user);
+                                ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
         );
         $weight = $this->em->getRepository(NodeTranslation::class)
-                ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
+                           ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
         $nodeTranslation->setWeight($weight);
 
         if ($newPage->isStructureNode()) {
@@ -734,9 +738,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function addHomepageAction(Request $request, ManagerRegistry $doctrine)
+    public function addHomepageAction(Request $request)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
 
         // Check with Acl
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
@@ -747,7 +751,7 @@ class NodeAdminController extends CRUDController
 
         // @var Node $nodeNewPage
         $nodeNewPage = $this->em->getRepository(Node::class)
-            ->createNodeFor($newPage, $this->locale, $this->user);
+                                ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
@@ -756,7 +760,7 @@ class NodeAdminController extends CRUDController
 
         // Set default permissions
         $this->get(ACLPermissionCreatorService::class)
-            ->createPermission($nodeNewPage);
+             ->createPermission($nodeNewPage);
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -785,9 +789,9 @@ class NodeAdminController extends CRUDController
      *
      * @return string
      */
-    public function reorderAction(Request $request, ManagerRegistry $doctrine)
+    public function reorderAction(Request $request)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('reorder');
         $nodes = [];
         $nodeIds = $request->get('nodes');
@@ -864,9 +868,9 @@ class NodeAdminController extends CRUDController
      *
      * @return array|RedirectResponse
      */
-    public function editCustomAction(Request $request, ManagerRegistry $doctrine, $id, $subaction)
+    public function editCustomAction(Request $request, $id, $subaction)
     {
-        $this->init($request, $doctrine);
+        $this->init($request);
 
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -1089,11 +1093,11 @@ class NodeAdminController extends CRUDController
      *
      * @return JsonResponse
      */
-    public function checkNodeVersionLockAction(Request $request, ManagerRegistry $doctrine, $id, $public)
+    public function checkNodeVersionLockAction(Request $request, $id, $public)
     {
         $nodeVersionIsLocked = false;
         $message = '';
-        $this->init($request, $doctrine);
+        $this->init($request);
         $this->admin->checkAccess('edit');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -1128,9 +1132,9 @@ class NodeAdminController extends CRUDController
     /**
      * init.
      */
-    protected function init(Request $request, ManagerRegistry $doctrine)
+    protected function init(Request $request)
     {
-        $this->em = $doctrine->getManager();
+        $this->em = $this->doctrine->getManager();
         $nodeLocale = $request->attributes->get('nodeLocale');
         $this->locale = $nodeLocale;
 
