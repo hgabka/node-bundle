@@ -57,6 +57,8 @@ services:
     hgabka_node.admin_node.node_version_lock_helper:
         class: Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper
         arguments: ['@service_container', '@doctrine.orm.entity_manager']
+        autowire: true
+        autoconfigure: true
 
     Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper:
         alias: hgabka_node.admin_node.node_version_lock_helper
