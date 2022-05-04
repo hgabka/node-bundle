@@ -35,8 +35,7 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -154,9 +153,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/copyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id The node id
@@ -207,9 +205,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/recopyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage", methods={"POST"}
      * )
-     * @Method("POST")
      * @Template()
      *
      * @param int $id The node id
@@ -260,9 +257,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/createemptypage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_createemptypage"
+     *      name="HgabkaNodeBundle_nodes_createemptypage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id
@@ -303,8 +299,7 @@ class NodeAdminController extends CRUDController
     /**
      * @Route("/{id}/publish", requirements={"id" =
      *                         "\d+"},
-     *                         name="HgabkaNodeBundle_nodes_publish")
-     * @Method({"GET", "POST"})
+     *                         name="HgabkaNodeBundle_nodes_publish", methods={"GET", "POST"})
      *
      * @param int $id
      *
@@ -351,9 +346,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unpublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unpublish"
+     *      name="HgabkaNodeBundle_nodes_unpublish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -393,9 +387,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unschedulepublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unschedule_publish"
+     *      name="HgabkaNodeBundle_nodes_unschedule_publish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -426,10 +419,9 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/delete",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_delete"
+     *      name="HgabkaNodeBundle_nodes_delete", methods={"POST"}
      * )
      * @Template()
-     * @Method("POST")
      *
      * @param Request $request
      * @param int     $id
@@ -504,9 +496,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/duplicate",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_duplicate"
+     *      name="HgabkaNodeBundle_nodes_duplicate", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -579,10 +570,9 @@ class NodeAdminController extends CRUDController
      *      "/{id}/revert",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_revert"
+     *      name="HgabkaNodeBundle_nodes_revert", methods={"GET"}
      * )
      * @Template()
-     * @Method("GET")
      *
      * @param int $id The node id
      *
@@ -666,9 +656,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/add",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_add"
+     *      name="HgabkaNodeBundle_nodes_add", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -737,8 +726,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage")
-     * @Method("POST")
+     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage", methods={"POST"})
      *
      * @throws AccessDeniedException
      * @throws InvalidArgumentException
@@ -790,8 +778,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder")
-     * @Method("POST")
+     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder", methods={"POST"})
      *
      * @throws AccessDeniedException
      *
@@ -865,9 +852,8 @@ class NodeAdminController extends CRUDController
      *      "/{id}/{subaction}",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_edit"
+     *      name="HgabkaNodeBundle_nodes_edit", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @param int     $id        The node id
