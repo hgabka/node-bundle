@@ -36,6 +36,7 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
@@ -43,9 +44,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * NodeAdminController.
@@ -94,7 +97,16 @@ class NodeAdminController extends CRUDController
     /** @var ManagerRegistry */
     protected $doctrine;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper, ManagerRegistry $doctrine)
+    /** @var TranslatorInterface */
+    protected $translator;
+
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /** @var UrlGeneratorInterface */
+    protected $router;
+
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper, ManagerRegistry $doctrine, TranslatorInterface $translator, RequestStack $requestStack, UrlGeneratorInterface $router)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
@@ -105,6 +117,9 @@ class NodeAdminController extends CRUDController
         $this->nodeAdminPublisher = $nodeAdminPublisher;
         $this->cloneHelper = $cloneHelper;
         $this->doctrine = $doctrine;
+        $this->translator = $translator;
+        $this->requestStack = $requestStack;
+        $this->router = $router;
     }
 
     /**
@@ -320,7 +335,7 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         if ($request->get('pub_date')) {
             $date = new \DateTime(
@@ -332,7 +347,7 @@ class NodeAdminController extends CRUDController
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.publish.flash.success_scheduled')
+                $this->translator->trans('hg_node.admin.publish.flash.success_scheduled')
             );
         } else {
             $this->nodeAdminPublisher->publish(
@@ -340,7 +355,7 @@ class NodeAdminController extends CRUDController
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.publish.flash.success_published')
+                $this->translator->trans('hg_node.admin.publish.flash.success_published')
             );
         }
 
@@ -368,20 +383,20 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         if ($request->get('unpub_date')) {
             $date = new \DateTime($request->get('unpub_date') . ' ' . $request->get('unpub_time'));
             $this->nodeAdminPublisher->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_scheduled')
+                $this->translator->trans('hg_node.admin.unpublish.flash.success_scheduled')
             );
         } else {
             $this->nodeAdminPublisher->unPublish($nodeTranslation);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_unpublished')
+                $this->translator->trans('hg_node.admin.unpublish.flash.success_unpublished')
             );
         }
 
@@ -414,7 +429,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('hg_node.admin.unschedule.flash.success')
+            $this->translator->trans('hg_node.admin.unschedule.flash.success')
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -451,7 +466,7 @@ class NodeAdminController extends CRUDController
         if (!empty($node->getInternalName()) && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash(
                 FlashTypes::ERROR,
-                $this->get('translator')->trans('hg_node.admin.delete.flash.not_possible')
+                $this->translator->trans('hg_node.admin.delete.flash.not_possible')
             );
 
             return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]);
@@ -479,7 +494,7 @@ class NodeAdminController extends CRUDController
             $nodeParent = $node->getParent();
             // Check if we have a parent. Otherwise redirect to pages overview.
             if ($nodeParent) {
-                $url = $this->get('router')->generate(
+                $url = $this->router->generate(
                     'HgabkaNodeBundle_nodes_edit',
                     ['id' => $nodeParent->getId()]
                 );
@@ -522,7 +537,7 @@ class NodeAdminController extends CRUDController
         // Check with Acl
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $originalNode);
 
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         $originalNodeTranslations = $originalNode->getNodeTranslation($this->locale, true);
         $originalRef = $originalNodeTranslations->getPublicNodeVersion()->getRef($this->em);
