@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Controller;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Hgabka\NodeBundle\AdminList\NodeAdminListConfigurator;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
@@ -35,8 +36,7 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +46,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * NodeAdminController.
@@ -109,7 +108,7 @@ class NodeAdminController extends CRUDController
      *
      * @return array
      */
-    public function listAction(Request $request): Response
+    public function listAction(Request $request, ManagerRegistry $doctrine): Response
     {
         $this->admin->checkAccess('list');
         $preResponse = $this->preList($request);
@@ -117,7 +116,7 @@ class NodeAdminController extends CRUDController
             return $preResponse;
         }
 
-        $this->init($request);
+        $this->init($request, $doctrine);
 
         $nodeAdminListConfigurator = new NodeAdminListConfigurator(
             $this->em,
@@ -155,9 +154,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/copyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id The node id
@@ -166,9 +164,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function copyFromOtherLanguageAction(Request $request, $id)
+    public function copyFromOtherLanguageAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         // @var Node $node
         $this->admin->checkAccess('copy');
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -208,9 +206,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/recopyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage", methods={"POST"}
      * )
-     * @Method("POST")
      * @Template()
      *
      * @param int $id The node id
@@ -219,9 +216,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function recopyFromOtherLanguageAction(Request $request, $id)
+    public function recopyFromOtherLanguageAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
 
         $this->admin->checkAccess('copy');
         // @var Node $node
@@ -261,9 +258,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/createemptypage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_createemptypage"
+     *      name="HgabkaNodeBundle_nodes_createemptypage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id
@@ -272,9 +268,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function createEmptyPageAction(Request $request, $id)
+    public function createEmptyPageAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         // @var Node $node
         $this->admin->checkAccess('create');
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -304,8 +300,7 @@ class NodeAdminController extends CRUDController
     /**
      * @Route("/{id}/publish", requirements={"id" =
      *                         "\d+"},
-     *                         name="HgabkaNodeBundle_nodes_publish")
-     * @Method({"GET", "POST"})
+     *                         name="HgabkaNodeBundle_nodes_publish", methods={"GET", "POST"})
      *
      * @param int $id
      *
@@ -313,9 +308,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function publishAction(Request $request, $id)
+    public function publishAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('publish');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -352,9 +347,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unpublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unpublish"
+     *      name="HgabkaNodeBundle_nodes_unpublish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -362,9 +356,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function unPublishAction(Request $request, $id)
+    public function unPublishAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('unpublish');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -394,9 +388,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unschedulepublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unschedule_publish"
+     *      name="HgabkaNodeBundle_nodes_unschedule_publish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -404,9 +397,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function unSchedulePublishAction(Request $request, $id)
+    public function unSchedulePublishAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('publish');
 
         // @var Node $node
@@ -427,10 +420,9 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/delete",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_delete"
+     *      name="HgabkaNodeBundle_nodes_delete", methods={"POST"}
      * )
      * @Template()
-     * @Method("POST")
      *
      * @param Request $request
      * @param int     $id
@@ -439,14 +431,14 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function deleteAction(Request $request): Response
+    public function deleteAction(Request $request, ManagerRegistry $doctrine): Response
     {
         $this->assertObjectExists($request, true);
 
         $id = $request->get($this->admin->getIdParameter());
         $this->admin->checkAccess('delete');
 
-        $this->init($request);
+        $this->init($request, $doctrine);
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
 
@@ -505,9 +497,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/duplicate",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_duplicate"
+     *      name="HgabkaNodeBundle_nodes_duplicate", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -515,9 +506,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function duplicateAction(Request $request, $id)
+    public function duplicateAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('duplicate');
 
         // @var Node $parentNode
@@ -580,10 +571,9 @@ class NodeAdminController extends CRUDController
      *      "/{id}/revert",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_revert"
+     *      name="HgabkaNodeBundle_nodes_revert", methods={"GET"}
      * )
      * @Template()
-     * @Method("GET")
      *
      * @param int $id The node id
      *
@@ -592,9 +582,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function revertAction(Request $request, $id)
+    public function revertAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('revert');
 
         // @var Node $node
@@ -667,9 +657,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/add",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_add"
+     *      name="HgabkaNodeBundle_nodes_add", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -678,9 +667,9 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function addAction(Request $request, $id)
+    public function addAction(Request $request, ManagerRegistry $doctrine, $id)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('create');
 
         // @var Node $parentNode
@@ -738,17 +727,16 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage")
-     * @Method("POST")
+     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage", methods={"POST"})
      *
      * @throws AccessDeniedException
      * @throws InvalidArgumentException
      *
      * @return RedirectResponse
      */
-    public function addHomepageAction(Request $request)
+    public function addHomepageAction(Request $request, ManagerRegistry $doctrine)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
 
         // Check with Acl
         $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
@@ -791,16 +779,15 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder")
-     * @Method("POST")
+     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder", methods={"POST"})
      *
      * @throws AccessDeniedException
      *
      * @return string
      */
-    public function reorderAction(Request $request)
+    public function reorderAction(Request $request, ManagerRegistry $doctrine)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('reorder');
         $nodes = [];
         $nodeIds = $request->get('nodes');
@@ -866,9 +853,8 @@ class NodeAdminController extends CRUDController
      *      "/{id}/{subaction}",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_edit"
+     *      name="HgabkaNodeBundle_nodes_edit", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @param int     $id        The node id
@@ -878,9 +864,9 @@ class NodeAdminController extends CRUDController
      *
      * @return array|RedirectResponse
      */
-    public function editCustomAction(Request $request, $id, $subaction)
+    public function editCustomAction(Request $request, ManagerRegistry $doctrine, $id, $subaction)
     {
-        $this->init($request);
+        $this->init($request, $doctrine);
 
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
@@ -1103,11 +1089,11 @@ class NodeAdminController extends CRUDController
      *
      * @return JsonResponse
      */
-    public function checkNodeVersionLockAction(Request $request, $id, $public)
+    public function checkNodeVersionLockAction(Request $request, ManagerRegistry $doctrine, $id, $public)
     {
         $nodeVersionIsLocked = false;
         $message = '';
-        $this->init($request);
+        $this->init($request, $doctrine);
         $this->admin->checkAccess('edit');
         // @var Node $node
         $node = $this->em->getRepository(Node::class)->find($id);
