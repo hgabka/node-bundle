@@ -61,7 +61,7 @@ class SlugController extends AbstractController
     public function slug(Request $request, $url = null, $preview = false)
     {
         // @var EntityManager $em
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $locale = $request->getLocale();
 
         // @var NodeTranslation $nodeTranslation
