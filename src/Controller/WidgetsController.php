@@ -98,7 +98,7 @@ class WidgetsController extends AbstractController
     private function getTemplateParameters(Request $request)
     {
         // @var EntityManager $em
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $locale = $request->attributes->get('nodeLocale');
 
         $result = $em->getRepository(Node::class)
