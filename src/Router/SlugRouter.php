@@ -73,7 +73,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @return array
      */
-    public function match($pathinfo)
+    public function match(string $pathinfo): array
     {
         $urlMatcher = new UrlMatcher(
             $this->getRouteCollection(),
