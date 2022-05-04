@@ -137,7 +137,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @return null|string
      */
-    public function generate(string $name, array $parameters = [], int, $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
+    public function generate(string $name, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
