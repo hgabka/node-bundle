@@ -96,17 +96,30 @@ class NodeAdminController extends CRUDController
 
     /** @var ManagerRegistry */
     protected $doctrine;
-
+    
     /** @var TranslatorInterface */
     protected $translator;
-
+    
     /** @var RequestStack */
     protected $requestStack;
-
+    
     /** @var UrlGeneratorInterface */
     protected $router;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper, ManagerRegistry $doctrine, TranslatorInterface $translator, RequestStack $requestStack, UrlGeneratorInterface $router)
+    public function __construct(
+        AclHelper $aclHelper, 
+        Security $security, 
+        AdminListFactory $adminListFactory, 
+        EventDispatcherInterface $eventDispatcher, 
+        ActionsMenuBuilder $actionsMenuBuilder, 
+        NodeVersionLockHelper $nodeVersionLockHelper, 
+        NodeAdminPublisher $nodeAdminPublisher, 
+        CloneHelper $cloneHelper, 
+        ManagerRegistry $doctrine,
+        TranslatorInterface $translator,
+        RequestStack $requestStack,
+        UrlGeneratorInterface $router
+    )
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
@@ -506,7 +519,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('hg_node.admin.delete.flash.success')
+            $this->translator->trans('hg_node.admin.delete.flash.success')
         );
 
         return $response;
@@ -577,7 +590,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('hg_node.admin.duplicate.flash.success')
+            $this->translator->trans('hg_node.admin.duplicate.flash.success')
         );
 
         return $this->redirect(
@@ -658,7 +671,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('hg_node.admin.revert.flash.success')
+            $this->translator->trans('hg_node.admin.revert.flash.success')
         );
 
         return $this->redirect(
@@ -753,7 +766,7 @@ class NodeAdminController extends CRUDController
      *
      * @return RedirectResponse
      */
-    public function addHomepageAction(Request $request)
+    public function addHomepageAction(Request $request, ACLPermissionCreatorService $ACLPermissionCreator)
     {
         $this->init($request);
 
@@ -774,7 +787,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
 
         // Set default permissions
-        $this->get(ACLPermissionCreatorService::class)
+        $ACLPermissionCreator
              ->createPermission($nodeNewPage);
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
@@ -1038,12 +1051,12 @@ class NodeAdminController extends CRUDController
                 if ($nodeVersionIsLocked) {
                     $this->addFlash(
                         FlashTypes::SUCCESS,
-                        $this->get('translator')->trans('hg_node.admin.edit.flash.locked_success')
+                        $this->translator->trans('hg_node.admin.edit.flash.locked_success')
                     );
                 } else {
                     $this->addFlash(
                         FlashTypes::SUCCESS,
-                        $this->get('translator')->trans('hg_node.admin.edit.flash.success')
+                        $this->translator->trans('hg_node.admin.edit.flash.success')
                     );
                 }
 
@@ -1108,7 +1121,7 @@ class NodeAdminController extends CRUDController
      *
      * @return JsonResponse
      */
-    public function checkNodeVersionLockAction(Request $request, $id, $public)
+    public function checkNodeVersionLockAction(Request $request, NodeVersionLockHelper $nodeVersionLockHelper, $id, $public)
     {
         $nodeVersionIsLocked = false;
         $message = '';
@@ -1121,7 +1134,6 @@ class NodeAdminController extends CRUDController
             $this->checkPermission($node, PermissionMap::PERMISSION_EDIT);
 
             /** @var NodeVersionLockHelper $nodeVersionLockHelper */
-            $nodeVersionLockHelper = $this->get('kunstmaan_node.admin_node.node_version_lock_helper');
             $nodeTranslation = $node->getNodeTranslation($this->locale, true);
 
             if ($nodeTranslation) {
@@ -1129,7 +1141,7 @@ class NodeAdminController extends CRUDController
 
                 if ($nodeVersionIsLocked) {
                     $users = $nodeVersionLockHelper->getUsersWithNodeVersionLock($nodeTranslation, $public, $this->getUser());
-                    $message = $this->get('translator')->trans('hg_node.admin.edit.flash.locked', ['%users%' => implode(', ', $users)]);
+                    $message = $this->translator->trans('hg_node.admin.edit.flash.locked', ['%users%' => implode(', ', $users)]);
                 }
             }
         } catch (AccessDeniedException $ade) {
@@ -1309,7 +1321,7 @@ class NodeAdminController extends CRUDController
         if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
-            $newPage->setTitle($this->get('translator')->trans('hg_node.admin.new_page.title.default'));
+            $newPage->setTitle($this->translator->trans('hg_node.admin.new_page.title.default'));
         }
         $this->em->persist($newPage);
         $this->em->flush();
