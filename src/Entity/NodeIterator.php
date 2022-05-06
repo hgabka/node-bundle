@@ -3,8 +3,9 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
+use RecursiveIterator;
 
-class NodeIterator implements \RecursiveIterator
+class NodeIterator implements RecursiveIterator
 {
     private $_data;
 
@@ -13,37 +14,37 @@ class NodeIterator implements \RecursiveIterator
         $this->_data = $data;
     }
 
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return !$this->_data->current()->getChildren()->isEmpty();
     }
 
-    public function getChildren()
+    public function getChildren(): ?RecursiveIterator
     {
         return new self($this->_data->current()->getChildren());
     }
 
-    public function current()
+    public function current(): mixed
     {
         return $this->_data->current();
     }
 
-    public function next()
+    public function next(): void
     {
         $this->_data->next();
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->_data->key();
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return $this->_data->current() instanceof Node;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->_data->first();
     }
