@@ -36,14 +36,14 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
@@ -96,31 +96,30 @@ class NodeAdminController extends CRUDController
 
     /** @var ManagerRegistry */
     protected $doctrine;
-    
+
     /** @var TranslatorInterface */
     protected $translator;
-    
+
     /** @var RequestStack */
     protected $requestStack;
-    
+
     /** @var UrlGeneratorInterface */
     protected $router;
 
     public function __construct(
-        AclHelper $aclHelper, 
-        Security $security, 
-        AdminListFactory $adminListFactory, 
-        EventDispatcherInterface $eventDispatcher, 
-        ActionsMenuBuilder $actionsMenuBuilder, 
-        NodeVersionLockHelper $nodeVersionLockHelper, 
-        NodeAdminPublisher $nodeAdminPublisher, 
-        CloneHelper $cloneHelper, 
+        AclHelper $aclHelper,
+        Security $security,
+        AdminListFactory $adminListFactory,
+        EventDispatcherInterface $eventDispatcher,
+        ActionsMenuBuilder $actionsMenuBuilder,
+        NodeVersionLockHelper $nodeVersionLockHelper,
+        NodeAdminPublisher $nodeAdminPublisher,
+        CloneHelper $cloneHelper,
         ManagerRegistry $doctrine,
         TranslatorInterface $translator,
         RequestStack $requestStack,
         UrlGeneratorInterface $router
-    )
-    {
+    ) {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
         $this->adminListFactory = $adminListFactory;

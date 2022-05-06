@@ -3,13 +3,12 @@
 namespace Hgabka\NodeBundle\Controller;
 
 use Hgabka\NodeBundle\Helper\URLHelper;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class UrlReplaceController.
- *
  */
 class UrlReplaceController
 {

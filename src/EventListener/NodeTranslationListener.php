@@ -272,7 +272,7 @@ class NodeTranslationListener
      * @return bool
      */
     private function ensureUniqueUrl(
-        NodeTranslation &$translation,
+        NodeTranslation & $translation,
         EntityManager $em,
         $flashes = []
     ) {

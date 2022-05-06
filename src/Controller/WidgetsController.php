@@ -10,11 +10,11 @@ use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * WidgetsController.

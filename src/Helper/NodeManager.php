@@ -278,7 +278,7 @@ class NodeManager
     public function getPathByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false)
     {
         $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
-        
+
         if (!$nodeTranslation) {
             return null;
         }
@@ -297,7 +297,7 @@ class NodeManager
     public function getUrlByNode(Node $node, ?string $locale = null, array $parameters = [], bool $relative = false): ?string
     {
         $nodeTranslation = $this->getNodeTranslationByNodeId($node->getId(), $this->hgabkaUtils->getCurrentLocale($locale));
-        
+
         if (!$nodeTranslation) {
             return null;
         }
@@ -319,7 +319,7 @@ class NodeManager
         if (!$nodeTranslation) {
             return null;
         }
-        
+
         return $this->getPathByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
@@ -337,7 +337,7 @@ class NodeManager
         if (!$nodeTranslation) {
             return null;
         }
-        
+
         return $this->getUrlByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
