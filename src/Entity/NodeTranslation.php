@@ -48,7 +48,7 @@ class NodeTranslation implements EntityInterface
     protected ?NodeVersion $publicNodeVersion = null;
 
     #[ORM\OneToMany(targetEntity: NodeVersion::class, mappedBy: 'nodeTranslation')]
-    #[ORM\OrderBy(['created', 'ASC'])]
+    #[ORM\OrderBy(['created' => 'ASC'])]
     #[Assert\Valid]
     protected Collection|array|null $nodeVersions = null;
 
