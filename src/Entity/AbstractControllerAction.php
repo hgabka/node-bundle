@@ -16,7 +16,10 @@ abstract class AbstractControllerAction implements HasNodeInterface
      * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
      * @var string
@@ -24,24 +27,27 @@ abstract class AbstractControllerAction implements HasNodeInterface
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
-    protected $title;
+    #[ORM\Column(name: 'title', type: 'string')]
+    #[Assert\NotBlank]
+    protected ?string $title = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=true, name="page_title")
      */
-    protected $pageTitle;
+    #[ORM\Column(name: 'page_title', type: 'string', nullable: true)]
+    protected ?string $pageTitle = null;
 
     /**
      * @var HasNodeInterface
      */
-    protected $parent;
+    protected ?HasNodeInterface $parent = null;
 
     /**
      * @return mixed
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -51,7 +57,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
      *
      * @return AbstractControllerAction
      */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -65,7 +71,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
      *
      * @return AbstractControllerAction
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
@@ -77,7 +83,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -85,7 +91,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
     /**
      * @return HasNodeInterface
      */
-    public function getParent()
+    public function getParent(): ?HasNodeInterface
     {
         return $this->parent;
     }
@@ -93,7 +99,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
     /**
      * @return AbstractControllerAction
      */
-    public function setParent(HasNodeInterface $parent)
+    public function setParent(HasNodeInterface $parent): self
     {
         $this->parent = $parent;
 
@@ -103,7 +109,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
     /**
      * @return string
      */
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): string
     {
         return ControllerActionAdminType::class;
     }

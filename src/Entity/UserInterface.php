@@ -4,19 +4,7 @@ namespace Hgabka\NodeBundle\Entity;
 
 interface UserInterface
 {
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId();
+    public function getId(): ?int;
 
-    /**
-     * Set id.
-     *
-     * @param int $id The unique identifier
-     *
-     * @return AbstractEntity
-     */
-    public function setId($id);
+    public function setId(?int $id): self;
 }

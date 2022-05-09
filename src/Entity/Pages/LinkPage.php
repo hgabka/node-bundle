@@ -14,19 +14,23 @@ use Hgabka\NodeBundle\Form\Pages\LinkPageAdminType;
  * @ORM\Entity()
  * @ORM\Table(name="hg_node_link_pages")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_node_link_pages')]
 class LinkPage extends AbstractPage implements SlugActionInterface
 {
     /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
      */
-    protected $opensInNewWindow = false;
+    #[ORM\Column(name: 'opens_in_new_window', type: 'boolean')]
+    protected bool $opensInNewWindow = false;
 
     /**
      * @var null|string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $remoteUrl;
+    #[ORM\Column(type: string, length: 255, nullable: true)]
+    private ?string $remoteUrl = null;
 
     public function getRemoteUrl(): ?string
     {
@@ -57,7 +61,7 @@ class LinkPage extends AbstractPage implements SlugActionInterface
      *
      * @return string
      */
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): string
     {
         return LinkPageAdminType::class;
     }
@@ -65,7 +69,7 @@ class LinkPage extends AbstractPage implements SlugActionInterface
     /**
      * @return array
      */
-    public function getPossibleChildTypes()
+    public function getPossibleChildTypes(): array
     {
         return [];
     }
@@ -73,7 +77,7 @@ class LinkPage extends AbstractPage implements SlugActionInterface
     /**
      * @return string
      */
-    public function getControllerAction()
+    public function getControllerAction(): string
     {
         return LinkPageController::class . ':service';
     }

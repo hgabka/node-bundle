@@ -7,5 +7,5 @@ interface SlugActionInterface
     /**
      * @return mixed
      */
-    public function getControllerAction();
+    public function getControllerAction(): string;
 }

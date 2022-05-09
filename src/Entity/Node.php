@@ -3,11 +3,13 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Node as GedmoNode;
 use Hgabka\NodeBundle\Form\NodeAdminType;
+use Hgabka\NodeBundle\Repository\NodeRepository;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,6 +30,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  * @Gedmo\Tree(type="nested")
  */
+#[ORM\Entity(repositoryClass: NodeRepository::class)]
+#[ORM\Table(name: 'hg_node_nodes')]
+#[ORM\Index(name: 'idx_node_internal_name', columns: ['internal_name'])]
+#[ORM\Index(name: 'idx_node_ref_entity_name', columns: ['ref_entity_name'])]
+#[ORM\Index(name: 'idx_node_tree', columns: ['deleted', 'hidden_from_nav', 'lft', 'rgt'])]
 class Node implements GedmoNode, EntityInterface
 {
     /**
@@ -35,7 +42,10 @@ class Node implements GedmoNode, EntityInterface
      * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id;
 
     /**
      * @var Node
@@ -44,14 +54,18 @@ class Node implements GedmoNode, EntityInterface
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      * @Gedmo\TreeParent
      */
-    protected $parent;
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id')]
+    #[Gedmo\TreeParent]
+    protected ?Node $parent = null;
 
     /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Node", mappedBy="parent")
      */
-    protected $children;
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    protected Collection|array|null $children = null;
 
     /**
      * @var int
@@ -59,7 +73,9 @@ class Node implements GedmoNode, EntityInterface
      * @ORM\Column(name="lft", type="integer", nullable=true)
      * @Gedmo\TreeLeft
      */
-    protected $lft;
+    #[ORM\Column(name: 'lft', type: 'integer', nullable: true)]
+    #[Gedmo\TreeLeft]
+    protected ?int $lft = null;
 
     /**
      * @var int
@@ -67,7 +83,9 @@ class Node implements GedmoNode, EntityInterface
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      * @Gedmo\TreeLevel
      */
-    protected $lvl;
+    #[ORM\Column(name: 'lvl', type: 'integer', nullable: true)]
+    #[Gedmo\TreeLevel]
+    protected ?int $lvl = null;
 
     /**
      * @var int
@@ -75,42 +93,50 @@ class Node implements GedmoNode, EntityInterface
      * @ORM\Column(name="rgt", type="integer", nullable=true)
      * @Gedmo\TreeRight
      */
-    protected $rgt;
+    #[ORM\Column(name: 'rgt', type: 'integer', nullable: true)]
+    #[Gedmo\TreeRight]
+    protected ?int $rgt = null;
 
     /**
      * @var ArrayCollection
      * @Assert\Valid()
      * @ORM\OneToMany(targetEntity="NodeTranslation", mappedBy="node")
      */
-    protected $nodeTranslations;
+    #[ORM\OneToMany(targetEntity: NodeTranslation::class, mappedBy: 'node')]
+    #[Assert\Valid]
+    protected Collection|array|null $nodeTranslations = null;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    protected $deleted;
+    #[ORM\Column(name: 'deleted', type: 'boolean')]
+    protected bool $deleted = false;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="hidden_from_nav")
      */
-    protected $hiddenFromNav;
+    #[ORM\Column(name: 'hidden_from_nav', type: 'boolean')]
+    protected bool $hiddenFromNav = false;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=false, name="ref_entity_name")
      */
-    protected $refEntityName;
+    #[ORM\Column(name: 'ref_entity_name', type: 'string', nullable: false)]
+    protected ?string $refEntityName = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=true, name="internal_name")
      */
-    protected $internalName;
+    #[ORM\Column(name: 'internal_name', type: 'string', nullable: true)]
+    protected ?string $internalName = null;
 
     /**
      * constructor.
@@ -126,25 +152,17 @@ class Node implements GedmoNode, EntityInterface
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'node ' . $this->getId() . ', refEntityName: ' . $this->getRefEntityName();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return Node
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -154,7 +172,7 @@ class Node implements GedmoNode, EntityInterface
     /**
      * @return bool
      */
-    public function isHiddenFromNav()
+    public function isHiddenFromNav(): bool
     {
         return $this->hiddenFromNav;
     }
@@ -162,17 +180,12 @@ class Node implements GedmoNode, EntityInterface
     /**
      * @return bool
      */
-    public function getHiddenFromNav()
+    public function getHiddenFromNav(): bool
     {
         return $this->hiddenFromNav;
     }
 
-    /**
-     * @param bool $hiddenFromNav
-     *
-     * @return Node
-     */
-    public function setHiddenFromNav($hiddenFromNav)
+    public function setHiddenFromNav(bool $hiddenFromNav): self
     {
         $this->hiddenFromNav = $hiddenFromNav;
 
@@ -182,7 +195,7 @@ class Node implements GedmoNode, EntityInterface
     /**
      * @return ArrayCollection
      */
-    public function getChildren()
+    public function getChildren(): Collection|array|null
     {
         return $this->children->filter(
             function (self $entry) {
@@ -200,17 +213,12 @@ class Node implements GedmoNode, EntityInterface
      *
      * @return ArrayCollection
      */
-    public function getChildrenSorted($sortFields = ['lft' => 'ASC'])
+    public function getChildrenSorted($sortFields = ['lft' => 'ASC']): Collection|array|null
     {
         return $this->getChildren()->matching(Criteria::create()->orderBy($sortFields));
     }
 
-    /**
-     * @param ArrayCollection $children
-     *
-     * @return Node
-     */
-    public function setChildren($children)
+    public function setChildren(Collection|array|null $children): self
     {
         $this->children = $children;
 
@@ -224,7 +232,7 @@ class Node implements GedmoNode, EntityInterface
      *
      * @return Node
      */
-    public function addNode(self $child)
+    public function addNode(self $child): self
     {
         $this->children[] = $child;
         $child->setParent($this);
@@ -237,7 +245,7 @@ class Node implements GedmoNode, EntityInterface
      *
      * @return ArrayCollection
      */
-    public function getNodeTranslations($includeOffline = false)
+    public function getNodeTranslations(bool $includeOffline = false): Collection|array|null
     {
         return $this->nodeTranslations
             ->filter(
@@ -251,10 +259,7 @@ class Node implements GedmoNode, EntityInterface
             );
     }
 
-    /**
-     * @return Node
-     */
-    public function setNodeTranslations(ArrayCollection $nodeTranslations)
+    public function setNodeTranslations(Collection|array|null $nodeTranslations): self
     {
         $this->nodeTranslations = $nodeTranslations;
 
@@ -267,7 +272,7 @@ class Node implements GedmoNode, EntityInterface
      *
      * @return null|NodeTranslation
      */
-    public function getNodeTranslation($lang, $includeOffline = false)
+    public function getNodeTranslation(string $lang, bool $includeOffline = false): ?NodeTranslation
     {
         $nodeTranslations = $this->getNodeTranslations($includeOffline);
         // @var NodeTranslation $nodeTranslation
@@ -280,12 +285,7 @@ class Node implements GedmoNode, EntityInterface
         return null;
     }
 
-    /**
-     * Add nodeTranslation.
-     *
-     * @return Node
-     */
-    public function addNodeTranslation(NodeTranslation $nodeTranslation)
+    public function addNodeTranslation(NodeTranslation $nodeTranslation): self
     {
         $this->nodeTranslations[] = $nodeTranslation;
         $nodeTranslation->setNode($this);
@@ -293,26 +293,14 @@ class Node implements GedmoNode, EntityInterface
         return $this;
     }
 
-    /**
-     * Set parent.
-     *
-     * @param Node $parent
-     *
-     * @return Node
-     */
-    public function setParent($parent)
+    public function setParent(?self $parent): self
     {
         $this->parent = $parent;
 
         return $this;
     }
 
-    /**
-     * Get parent.
-     *
-     * @return Node
-     */
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
@@ -320,7 +308,7 @@ class Node implements GedmoNode, EntityInterface
     /**
      * @return Node[]
      */
-    public function getParents()
+    public function getParents(): ?array
     {
         $parent = $this->getParent();
         $parents = [];
@@ -332,118 +320,63 @@ class Node implements GedmoNode, EntityInterface
         return array_reverse($parents);
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         return $this->deleted;
     }
 
-    /**
-     * @param bool $deleted
-     *
-     * @return Node
-     */
-    public function setDeleted($deleted)
+    public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
 
         return $this;
     }
 
-    /**
-     * Set referenced entity.
-     *
-     * @return Node
-     */
-    public function setRef(HasNodeInterface $entity)
+    public function setRef(HasNodeInterface $entity): self
     {
         $this->setRefEntityName(ClassLookup::getClass($entity));
 
         return $this;
     }
 
-    /**
-     * Get class name of referenced entity.
-     *
-     * @return string
-     */
-    public function getRefEntityName()
+    public function getRefEntityName(): ?string
     {
         return $this->refEntityName;
     }
 
-    /**
-     * Set internal name.
-     *
-     * @param string $internalName
-     *
-     * @return Node
-     */
-    public function setInternalName($internalName)
+    public function setInternalName(?string $internalName): self
     {
         $this->internalName = $internalName;
 
         return $this;
     }
 
-    /**
-     * Get internal name.
-     *
-     * @return string
-     */
-    public function getInternalName()
+    public function getInternalName(): ?string
     {
         return $this->internalName;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): string
     {
         return NodeAdminType::class;
     }
 
-    /**
-     * Get tree left.
-     *
-     * @return int
-     */
-    public function getLeft()
+    public function getLeft(): ?int
     {
         return $this->lft;
     }
 
-    /**
-     * Get tree right.
-     *
-     * @return int
-     */
-    public function getRight()
+    public function getRight(): ?int
     {
         return $this->rgt;
     }
 
-    /**
-     * Get tree level.
-     *
-     * @return int
-     */
-    public function getLevel()
+    public function getLevel(): ?int
     {
         return $this->lvl;
     }
 
-    /**
-     * Set class name of referenced entity.
-     *
-     * @param string $refEntityName
-     *
-     * @return Node
-     */
-    protected function setRefEntityName($refEntityName)
+    protected function setRefEntityName(?string $refEntityName): self
     {
         $this->refEntityName = $refEntityName;
 

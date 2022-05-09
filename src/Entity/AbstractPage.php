@@ -21,7 +21,10 @@ abstract class AbstractPage implements PageInterface
      * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
      * @var string
@@ -29,24 +32,27 @@ abstract class AbstractPage implements PageInterface
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
-    protected $title;
+    #[ORM\Column(type: 'string')]
+    #[Assert\NotBlank]
+    protected ?string $title = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=true, name="page_title")
      */
-    protected $pageTitle;
+    #[ORM\Column(name: 'page_title', type: string, nullable: true)]
+    protected ?string $pageTitle = null;
 
     /**
      * @var HasNodeInterface
      */
-    protected $parent;
+    protected ?HasNodeInterface $parent = null;
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getTitle();
     }
@@ -54,7 +60,7 @@ abstract class AbstractPage implements PageInterface
     /**
      * @return mixed
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -64,7 +70,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return AbstractPage
      */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -78,7 +84,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return AbstractPage
      */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
@@ -90,7 +96,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -102,7 +108,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return AbstractPage
      */
-    public function setPageTitle($pageTitle)
+    public function setPageTitle(?string $pageTitle): self
     {
         $this->pageTitle = $pageTitle;
 
@@ -114,7 +120,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return string
      */
-    public function getPageTitle()
+    public function getPageTitle(): ?string
     {
         if (!empty($this->pageTitle)) {
             return $this->pageTitle;
@@ -126,7 +132,7 @@ abstract class AbstractPage implements PageInterface
     /**
      * @return HasNodeInterface
      */
-    public function getParent()
+    public function getParent(): ?HasNodeInterface
     {
         return $this->parent;
     }
@@ -134,7 +140,7 @@ abstract class AbstractPage implements PageInterface
     /**
      * @return AbstractPage
      */
-    public function setParent(HasNodeInterface $parent)
+    public function setParent(?HasNodeInterface $parent): self
     {
         $this->parent = $parent;
 
@@ -146,7 +152,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @return string
      */
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): string
     {
         return PageAdminType::class;
     }
@@ -167,7 +173,7 @@ abstract class AbstractPage implements PageInterface
      *
      * {@inheritdoc}
      */
-    public function isStructureNode()
+    public function isStructureNode(): bool
     {
         return false;
     }

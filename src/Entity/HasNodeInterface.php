@@ -12,36 +12,29 @@ interface HasNodeInterface extends EntityInterface
     /**
      * @return string
      */
-    public function getTitle();
+    public function getTitle(): ?string;
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return HasNodeInterface
-     */
-    public function setTitle($title);
+    public function setTitle(?string $title): self;
 
     /**
      * @return HasNodeInterface
      */
-    public function getParent();
+    public function getParent(): ?self;
 
     /**
      * @param HasNodeInterface $hasNode
      */
-    public function setParent(self $hasNode);
+    public function setParent(?self $hasNode): self;
 
     /**
      * @return string
      */
-    public function getDefaultAdminType();
+    public function getDefaultAdminType(): string;
 
     /**
      * @return array
      */
-    public function getPossibleChildTypes();
+    public function getPossibleChildTypes(): array;
 
     /**
      * When this is true there won't be any save, publish, copy, menu, meta, preview, etc.
@@ -49,5 +42,5 @@ interface HasNodeInterface extends EntityInterface
      *
      * @return bool
      */
-    public function isStructureNode();
+    public function isStructureNode(): bool;
 }

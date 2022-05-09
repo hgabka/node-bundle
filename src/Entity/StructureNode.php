@@ -12,7 +12,7 @@ abstract class StructureNode extends AbstractPage
      *
      * @return bool
      */
-    public function isOnline()
+    public function isOnline(): bool
     {
         return false;
     }
@@ -22,7 +22,7 @@ abstract class StructureNode extends AbstractPage
      *
      * {@inheritdoc}
      */
-    public function isStructureNode()
+    public function isStructureNode(): bool
     {
         return true;
     }

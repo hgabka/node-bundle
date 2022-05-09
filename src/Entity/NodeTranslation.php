@@ -3,9 +3,11 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Hgabka\NodeBundle\Form\NodeTranslationAdminType;
+use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -20,6 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
+#[ORM\Entity(repositoryClass: NodeTranslationRepository::class)]
+#[ORM\Table(name: 'hg_node_node_translations')]
+#[ORM\UniqueConstraint(name: 'ix_hg_node_translations_node_lang', columns: ['node_id', 'lang'])]
+#[ORM\Index(name: 'idx__node_translation_lang_url', columns: ['lang', 'url'])]
 class NodeTranslation implements EntityInterface
 {
     /**
@@ -27,7 +33,10 @@ class NodeTranslation implements EntityInterface
      * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
     /**
      * @var Node
@@ -35,28 +44,33 @@ class NodeTranslation implements EntityInterface
      * @ORM\ManyToOne(targetEntity="Node", inversedBy="nodeTranslations")
      * @ORM\JoinColumn(name="node_id", referencedColumnName="id")
      */
-    protected $node;
+    #[ORM\ManyToOne(targetEntity: Node::class, inversedBy: 'nodeTranslations')]
+    #[ORM\JoinColumn(name: 'node_id', referencedColumnName: 'id')]
+    protected ?Node $node = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
-    protected $lang;
+    #[ORM\Column(name: 'lang', type: 'string')]
+    protected ?string $lang = null;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    protected $online = false;
+    #[ORM\Column(name: 'online', type: 'boolean')]
+    protected bool $online = false;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
-    protected $title;
+    #[ORM\Column(name: 'title', type: 'string')]
+    protected ?string $title = null;
 
     /**
      * @var string
@@ -64,14 +78,17 @@ class NodeTranslation implements EntityInterface
      * @ORM\Column(type="string", nullable=true)
      * @Assert\Regex("/^[a-zA-Z0-9\-_\/]+$/")
      */
-    protected $slug;
+    #[ORM\Column(name: 'slug', type: 'string', nullable: true)]
+    #[Assert\Regex('/^[a-zA-Z0-9\-_\/]+$/')]
+    protected ?string $slug = null;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", nullable=true)
      */
-    protected $url;
+    #[ORM\Column(name: 'url', type: 'string', nullable: true)]
+    protected ?string $url = null;
 
     /**
      * @var NodeVersion
@@ -79,7 +96,9 @@ class NodeTranslation implements EntityInterface
      * @ORM\ManyToOne(targetEntity="NodeVersion", fetch="EAGER")
      * @ORM\JoinColumn(name="public_node_version_id", referencedColumnName="id")
      */
-    protected $publicNodeVersion;
+    #[ORM\ManyToOne(targetEntity: NodeVersion::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'public_node_version_id', referencedColumnName: 'id')]
+    protected ?NodeVersion $publicNodeVersion = null;
 
     /**
      * @var ArrayCollection
@@ -87,28 +106,34 @@ class NodeTranslation implements EntityInterface
      * @ORM\OneToMany(targetEntity="NodeVersion", mappedBy="nodeTranslation")
      * @ORM\OrderBy({"created" = "ASC"})
      */
-    protected $nodeVersions;
+    #[ORM\OneToMany(targetEntity: NodeVersion::class, mappedBy: 'nodeTranslation')]
+    #[ORM\OrderBy(['created', 'ASC'])]
+    #[Assert\Valid]
+    protected Collection|array|null $nodeVersions = null;
 
     /**
      * @var int
      *
      * @ORM\Column(type="smallint", nullable=true)
      */
-    protected $weight;
+    #[ORM\Column(name: 'weight', type: 'smallint', nullable: true)]
+    protected ?int $weight = null;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    protected $created;
+    #[ORM\Column(name: 'created', type: 'datetime', nullable: true)]
+    protected ?\DateTime $created = null;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    protected $updated;
+    #[ORM\Column(name: 'updated', type: 'datetime', nullable: true)]
+    protected ?\DateTime $updated = null;
 
     /**
      * contructor.
@@ -120,142 +145,74 @@ class NodeTranslation implements EntityInterface
         $this->setUpdated(new \DateTime());
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return NodeTranslation
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * Set node.
-     *
-     * @param Node $node
-     *
-     * @return NodeTranslation
-     */
-    public function setNode($node)
+    public function setNode(?Node $node): self
     {
         $this->node = $node;
 
         return $this;
     }
 
-    /**
-     * Get Node.
-     *
-     * @return Node
-     */
-    public function getNode()
+    public function getNode(): ?Node
     {
         return $this->node;
     }
 
-    /**
-     * Set lang.
-     *
-     * @param string $lang
-     *
-     * @return NodeTranslation
-     */
-    public function setLang($lang)
+    public function setLang(?string $lang): self
     {
         $this->lang = $lang;
 
         return $this;
     }
 
-    /**
-     * Get lang.
-     *
-     * @return string
-     */
-    public function getLang()
+    public function getLang(): ?string
     {
         return $this->lang;
     }
 
-    /**
-     * Is online.
-     *
-     * @return bool
-     */
-    public function isOnline()
+    public function isOnline(): bool
     {
         return $this->online;
     }
 
-    /**
-     * Set online.
-     *
-     * @param bool $online
-     *
-     * @return NodeTranslation
-     */
-    public function setOnline($online)
+    public function setOnline(bool $online): self
     {
         $this->online = $online;
 
         return $this;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return NodeTranslation
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Set slug.
-     *
-     * @param string $slug
-     *
-     * @return NodeTranslation
-     */
-    public function setSlug($slug)
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    /**
-     * Get slug.
-     *
-     * @return string
-     */
-    public function getFullSlug()
+    public function getFullSlug(): ?string
     {
         $slug = $this->getSlugPart();
 
@@ -266,10 +223,7 @@ class NodeTranslation implements EntityInterface
         return $slug;
     }
 
-    /**
-     * @return string
-     */
-    public function getSlugPart()
+    public function getSlugPart(): ?string
     {
         $slug = '';
         $parentNode = $this->getNode()->getParent();
@@ -293,61 +247,41 @@ class NodeTranslation implements EntityInterface
      *
      * @return string
      */
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /**
-     * @return NodeTranslation
-     */
-    public function setPublicNodeVersion(NodeVersion $publicNodeVersion)
+    public function setPublicNodeVersion(?NodeVersion $publicNodeVersion): self
     {
         $this->publicNodeVersion = $publicNodeVersion;
 
         return $this;
     }
 
-    /**
-     * @return NodeVersion
-     */
-    public function getPublicNodeVersion()
+    public function getPublicNodeVersion(): ?NodeVersion
     {
         return $this->publicNodeVersion;
     }
 
-    /**
-     * @return NodeVersion
-     */
-    public function getDraftNodeVersion()
+    public function getDraftNodeVersion(): ?NodeVersion
     {
         return $this->getNodeVersion('draft');
     }
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getNodeVersions()
+    public function getNodeVersions(): Collection|array|null
     {
         return $this->nodeVersions;
     }
 
-    /**
-     * @return NodeTranslation
-     */
-    public function setNodeVersions(ArrayCollection $nodeVersions)
+    public function setNodeVersions(Collection|array|null $nodeVersions): self
     {
         $this->nodeVersions = $nodeVersions;
 
         return $this;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return null|NodeVersion
-     */
-    public function getNodeVersion($type)
+    public function getNodeVersion(string $type): ?NodeVersion
     {
         if ('public' === $type) {
             return $this->publicNodeVersion;
@@ -368,12 +302,7 @@ class NodeTranslation implements EntityInterface
         return null;
     }
 
-    /**
-     * Add nodeVersion.
-     *
-     * @return NodeTranslation
-     */
-    public function addNodeVersion(NodeVersion $nodeVersion)
+    public function addNodeVersion(NodeVersion $nodeVersion): self
     {
         $this->nodeVersions[] = $nodeVersion;
         $nodeVersion->setNodeTranslation($this);
@@ -385,10 +314,7 @@ class NodeTranslation implements EntityInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): string
     {
         return NodeTranslationAdminType::class;
     }
@@ -399,7 +325,7 @@ class NodeTranslation implements EntityInterface
      *
      * @return null|object
      */
-    public function getRef(EntityManager $em, $type = 'public')
+    public function getRef(EntityManager $em, string $type = 'public'): mixed
     {
         $nodeVersion = $this->getNodeVersion($type);
         if ($nodeVersion) {
@@ -409,80 +335,48 @@ class NodeTranslation implements EntityInterface
         return null;
     }
 
-    /**
-     * @param string $url
-     *
-     * @return NodeTranslation
-     */
-    public function setUrl($url)
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param int $weight
-     *
-     * @return NodeTranslation
-     */
-    public function setWeight($weight)
+    public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getWeight()
+    public function getWeight(): ?int
     {
         return $this->weight;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }
 
-    /**
-     * @param \DateTime $created
-     *
-     * @return NodeTranslation
-     */
-    public function setCreated($created)
+    public function setCreated(?\DateTime $created): self
     {
         $this->created = $created;
 
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getUpdated()
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }
 
-    /**
-     * @param \DateTime $updated
-     *
-     * @return NodeTranslation
-     */
-    public function setUpdated($updated)
+    public function setUpdated(?\DateTime $updated): self
     {
         $this->updated = $updated;
 
