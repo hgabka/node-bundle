@@ -8,28 +8,14 @@ use Hgabka\NodeBundle\Controller\SlugActionInterface;
 use Hgabka\NodeBundle\Entity\AbstractPage;
 use Hgabka\NodeBundle\Form\Pages\LinkPageAdminType;
 
-/**
- * Link Page.
- *
- * @ORM\Entity()
- * @ORM\Table(name="hg_node_link_pages")
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'hg_node_link_pages')]
 class LinkPage extends AbstractPage implements SlugActionInterface
 {
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean", nullable=false)
-     */
     #[ORM\Column(name: 'opens_in_new_window', type: 'boolean')]
     protected bool $opensInNewWindow = false;
 
-    /**
-     * @var null|string
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    #[ORM\Column(type: string, length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $remoteUrl = null;
 
     public function getRemoteUrl(): ?string

@@ -3,164 +3,90 @@
 namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Google\Service\ShoppingContent\DateTime;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 
-/**
- * QueuedNodeTranslationAction.
- *
- * @ORM\Entity
- * @ORM\Table(name="hg_node_queued_node_translation_actions")
- * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'hg_node_queued_node_translation_actions')]
+#[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
 class QueuedNodeTranslationAction implements EntityInterface
 {
     public const ACTION_PUBLISH = 'publish';
     public const ACTION_UNPUBLISH = 'unpublish';
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="id")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column]
+    #[ORM\GeneratedValue]
+    protected ?int $id = null;
 
-    /**
-     * @var NodeTranslation
-     *
-     * @ORM\ManyToOne(targetEntity="NodeTranslation")
-     * @ORM\JoinColumn(name="node_translation_id", referencedColumnName="id")
-     */
-    protected $nodeTranslation;
+    #[ORM\ManyToOne(targetEntity: NodeTranslation::class)]
+    #[ORM\JoinColumn(name: 'node_translation_id', referencedColumnName: 'id')]
+    protected ?NodeTranslation $nodeTranslation = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
-    protected $action;
+    #[ORM\Column(name: 'action', type: 'string')]
+    protected ?string $action = null;
 
-    /**
-     * @var UserInterface
-     *
-     * The doctrine metadata is set dynamically in Hgabka\NodeBundle\EventListener\MappingListener
-     */
-    protected $user;
+    protected ?UserInterface $user = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $date;
+    #[ORM\Column(name: '`date`', type: 'datetime')]
+    protected ?DateTime $date = null;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return QueuedNodeTranslationAction
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * Set nodeTranslation.
-     *
-     * @return QueuedNodeTranslationAction
-     */
-    public function setNodeTranslation(NodeTranslation $nodeTranslation)
+    public function setNodeTranslation(?NodeTranslation $nodeTranslation): self
     {
         $this->nodeTranslation = $nodeTranslation;
 
         return $this;
     }
 
-    /**
-     * Get NodeTranslation.
-     *
-     * @return NodeTranslation
-     */
-    public function getNodeTranslation()
+    public function getNodeTranslation(): ?NodeTranslation
     {
         return $this->nodeTranslation;
     }
 
-    /**
-     * Get action.
-     *
-     * @return string
-     */
-    public function getAction()
+    public function getAction(): ?string
     {
         return $this->action;
     }
 
-    /**
-     * Set action.
-     *
-     * @param string $action
-     *
-     * @return QueuedNodeTranslationAction
-     */
-    public function setAction($action)
+    public function setAction(?string $action): self
     {
         $this->action = $action;
 
         return $this;
     }
 
-    /**
-     * Set user.
-     *
-     * @param UserInterface $user
-     *
-     * @return QueuedNodeTranslationAction
-     */
-    public function setUser($user)
+    public function setUser(?UserInterface $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user.
-     *
-     * @return UserInterface
-     */
-    public function getUser()
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }
 
-    /**
-     * Set date.
-     *
-     * @return QueuedNodeTranslationAction
-     */
-    public function setDate(\DateTime $date)
+    public function setDate(?\DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    /**
-     * Get date.
-     *
-     * @return DateTime
-     */
-    public function getDate()
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }

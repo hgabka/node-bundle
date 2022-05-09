@@ -41,7 +41,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @ORM\Column(type="string", nullable=true, name="page_title")
      */
-    #[ORM\Column(name: 'page_title', type: string, nullable: true)]
+    #[ORM\Column(name: 'page_title', type: 'string', nullable: true)]
     protected ?string $pageTitle = null;
 
     /**

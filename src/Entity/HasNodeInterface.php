@@ -29,7 +29,7 @@ interface HasNodeInterface extends EntityInterface
     /**
      * @return string
      */
-    public function getDefaultAdminType(): string;
+    public function getDefaultAdminType(): ?string;
 
     /**
      * @return array

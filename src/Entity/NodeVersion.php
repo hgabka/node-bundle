@@ -5,88 +5,50 @@ namespace Hgabka\NodeBundle\Entity;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Hgabka\NodeBundle\Repository\NodeVersionRepository;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Hgabka\UtilsBundle\Helper\ClassLookup;
 
-/**
- * NodeVersion.
- *
- * @ORM\Entity(repositoryClass="Hgabka\NodeBundle\Repository\NodeVersionRepository")
- * @ORM\Table(name="hg_node_node_versions", indexes={@ORM\Index(name="idx_node_version_lookup", columns={"ref_id", "ref_entity_name"})})
- * @ORM\HasLifecycleCallbacks()
- * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
- */
+#[ORM\Entity(repositoryClass: NodeVersionRepository::class)]
+#[ORM\Table(name: 'hg_node_node_versions')]
+#[ORM\Index(name: 'idx_node_version_lookup', columns: ['ref_id', 'ref_entity_name'])]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
 class NodeVersion implements EntityInterface
 {
     public const DRAFT_VERSION = 'draft';
     public const PUBLIC_VERSION = 'public';
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="id")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
-    /**
-     * @var NodeTranslation
-     *
-     * @ORM\ManyToOne(targetEntity="NodeTranslation", inversedBy="nodeVersions")
-     * @ORM\JoinColumn(name="node_translation_id", referencedColumnName="id")
-     */
-    protected $nodeTranslation;
+    #[ORM\ManyToOne(targetEntity: NodeTranslation::class, inversedBy: 'nodeVersions')]
+    #[ORM\JoinColumn(name: 'node_translation_id', referencedColumnName: 'id')]
+    protected ?NodeTranslation $nodeTranslation = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
-    protected $type;
+    #[ORM\Column(name: 'type', type: 'string')]
+    protected ?string $type = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
-    protected $owner;
+    #[ORM\Column(name: 'owner', type: 'string')]
+    protected ?string $owner = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $created;
+    #[ORM\Column(name: 'created', type: 'datetime')]
+    protected ?DateTime $created = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     */
-    protected $updated;
+    #[ORM\Column(name: 'updated', type: 'datetime')]
+    protected ?DateTime $updated = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="bigint", name="ref_id")
-     */
-    protected $refId;
+    #[ORM\Column(name: 'ref_id', type: 'bigint')]
+    protected ?int $refId = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="ref_entity_name")
-     */
-    protected $refEntityName;
+    #[ORM\Column(name: 'ref_entity_name', type: 'string')]
+    protected ?string $refEntityName = null;
 
-    /**
-     * The nodeVersion this nodeVersion originated from.
-     *
-     * @var NodeVersion
-     *
-     * @ORM\ManyToOne(targetEntity="NodeVersion")
-     * @ORM\JoinColumn(name="origin_id", referencedColumnName="id")
-     */
-    protected $origin;
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'origin_id', referencedColumnName: 'id')]
+    protected ?NodeVersion $origin = null;
 
     /**
      * Constructor.
@@ -97,171 +59,99 @@ class NodeVersion implements EntityInterface
         $this->setUpdated(new DateTime());
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @return NodeVersion
-     */
-    public function setId($id)
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * Set nodeTranslation.
-     *
-     * @return NodeVersion
-     */
-    public function setNodeTranslation(NodeTranslation $nodeTranslation)
+    public function setNodeTranslation(?NodeTranslation $nodeTranslation): self
     {
         $this->nodeTranslation = $nodeTranslation;
 
         return $this;
     }
 
-    /**
-     * Get NodeTranslation.
-     *
-     * @return NodeTranslation
-     */
-    public function getNodeTranslation()
+    public function getNodeTranslation(): ?NodeTranslation
     {
         return $this->nodeTranslation;
     }
 
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function isDraft()
+    public function isDraft(): bool
     {
         return self::DRAFT_VERSION === $this->type;
     }
 
-    public function isPublic()
+    public function isPublic(): bool
     {
         return self::PUBLIC_VERSION === $this->type;
     }
 
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return NodeVersion
-     */
-    public function setType($type)
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Set owner.
-     *
-     * @param string $owner
-     *
-     * @return NodeVersion
-     */
-    public function setOwner($owner)
+    public function setOwner(?string $owner): self
     {
         $this->owner = $owner;
 
         return $this;
     }
 
-    /**
-     * Get owner.
-     *
-     * @return string
-     */
-    public function getOwner()
+    public function getOwner(): ?string
     {
         return $this->owner;
     }
 
-    /**
-     * Set created.
-     *
-     * @return NodeVersion
-     */
-    public function setCreated(DateTime $created)
+    public function setCreated(?DateTime $created): self
     {
         $this->created = $created;
 
         return $this;
     }
 
-    /**
-     * Get created.
-     *
-     * @return DateTime
-     */
-    public function getCreated()
+    public function getCreated(): ?DateTime
     {
         return $this->created;
     }
 
-    /**
-     * Set updated.
-     *
-     * @return NodeVersion
-     */
-    public function setUpdated(DateTime $updated)
+    public function setUpdated(DateTime $updated): self
     {
         $this->updated = $updated;
 
         return $this;
     }
 
-    /**
-     * Get updated.
-     *
-     * @return DateTime
-     */
-    public function getUpdated()
+    public function getUpdated(): ?DateTime
     {
         return $this->updated;
     }
 
-    /**
-     * Get refId.
-     *
-     * @return int
-     */
-    public function getRefId()
+    public function getRefId(): ?int
     {
         return $this->refId;
     }
 
-    /**
-     * Get reference entity name.
-     *
-     * @return string
-     */
-    public function getRefEntityName()
+    public function getRefEntityName(): ?string
     {
         return $this->refEntityName;
     }
 
-    public function getDefaultAdminType()
+    public function getDefaultAdminType(): ?string
     {
         return null;
     }

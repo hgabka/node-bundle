@@ -35,106 +35,49 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_node_internal_name', columns: ['internal_name'])]
 #[ORM\Index(name: 'idx_node_ref_entity_name', columns: ['ref_entity_name'])]
 #[ORM\Index(name: 'idx_node_tree', columns: ['deleted', 'hidden_from_nav', 'lft', 'rgt'])]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
+#[Gedmo\Tree(type: 'nested')]
 class Node implements GedmoNode, EntityInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="id")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id;
 
-    /**
-     * @var Node
-     *
-     * @ORM\ManyToOne(targetEntity="Node", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     * @Gedmo\TreeParent
-     */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id')]
     #[Gedmo\TreeParent]
     protected ?Node $parent = null;
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Node", mappedBy="parent")
-     */
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     protected Collection|array|null $children = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="lft", type="integer", nullable=true)
-     * @Gedmo\TreeLeft
-     */
     #[ORM\Column(name: 'lft', type: 'integer', nullable: true)]
     #[Gedmo\TreeLeft]
     protected ?int $lft = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="lvl", type="integer", nullable=true)
-     * @Gedmo\TreeLevel
-     */
     #[ORM\Column(name: 'lvl', type: 'integer', nullable: true)]
     #[Gedmo\TreeLevel]
     protected ?int $lvl = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="rgt", type="integer", nullable=true)
-     * @Gedmo\TreeRight
-     */
     #[ORM\Column(name: 'rgt', type: 'integer', nullable: true)]
     #[Gedmo\TreeRight]
     protected ?int $rgt = null;
 
-    /**
-     * @var ArrayCollection
-     * @Assert\Valid()
-     * @ORM\OneToMany(targetEntity="NodeTranslation", mappedBy="node")
-     */
     #[ORM\OneToMany(targetEntity: NodeTranslation::class, mappedBy: 'node')]
     #[Assert\Valid]
     protected Collection|array|null $nodeTranslations = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
     #[ORM\Column(name: 'deleted', type: 'boolean')]
     protected bool $deleted = false;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", name="hidden_from_nav")
-     */
     #[ORM\Column(name: 'hidden_from_nav', type: 'boolean')]
     protected bool $hiddenFromNav = false;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=false, name="ref_entity_name")
-     */
     #[ORM\Column(name: 'ref_entity_name', type: 'string', nullable: false)]
     protected ?string $refEntityName = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true, name="internal_name")
-     */
     #[ORM\Column(name: 'internal_name', type: 'string', nullable: true)]
     protected ?string $internalName = null;
 

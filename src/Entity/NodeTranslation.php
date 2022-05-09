@@ -11,127 +11,53 @@ use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * NodeTranslation.
- *
- * @ORM\Entity(repositoryClass="Hgabka\NodeBundle\Repository\NodeTranslationRepository")
- * @ORM\Table(
- *     name="hg_node_node_translations",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="ix_hg_node_translations_node_lang", columns={"node_id", "lang"})},
- *     indexes={@ORM\Index(name="idx__node_translation_lang_url", columns={"lang", "url"})}
- * )
- * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
- */
 #[ORM\Entity(repositoryClass: NodeTranslationRepository::class)]
 #[ORM\Table(name: 'hg_node_node_translations')]
 #[ORM\UniqueConstraint(name: 'ix_hg_node_translations_node_lang', columns: ['node_id', 'lang'])]
 #[ORM\Index(name: 'idx__node_translation_lang_url', columns: ['lang', 'url'])]
+#[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
 class NodeTranslation implements EntityInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="id")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    /**
-     * @var Node
-     *
-     * @ORM\ManyToOne(targetEntity="Node", inversedBy="nodeTranslations")
-     * @ORM\JoinColumn(name="node_id", referencedColumnName="id")
-     */
     #[ORM\ManyToOne(targetEntity: Node::class, inversedBy: 'nodeTranslations')]
     #[ORM\JoinColumn(name: 'node_id', referencedColumnName: 'id')]
     protected ?Node $node = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
     #[ORM\Column(name: 'lang', type: 'string')]
     protected ?string $lang = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
     #[ORM\Column(name: 'online', type: 'boolean')]
     protected bool $online = false;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
     #[ORM\Column(name: 'title', type: 'string')]
     protected ?string $title = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\Regex("/^[a-zA-Z0-9\-_\/]+$/")
-     */
     #[ORM\Column(name: 'slug', type: 'string', nullable: true)]
     #[Assert\Regex('/^[a-zA-Z0-9\-_\/]+$/')]
     protected ?string $slug = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
     #[ORM\Column(name: 'url', type: 'string', nullable: true)]
     protected ?string $url = null;
 
-    /**
-     * @var NodeVersion
-     *
-     * @ORM\ManyToOne(targetEntity="NodeVersion", fetch="EAGER")
-     * @ORM\JoinColumn(name="public_node_version_id", referencedColumnName="id")
-     */
     #[ORM\ManyToOne(targetEntity: NodeVersion::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'public_node_version_id', referencedColumnName: 'id')]
     protected ?NodeVersion $publicNodeVersion = null;
 
-    /**
-     * @var ArrayCollection
-     * @Assert\Valid()
-     * @ORM\OneToMany(targetEntity="NodeVersion", mappedBy="nodeTranslation")
-     * @ORM\OrderBy({"created" = "ASC"})
-     */
     #[ORM\OneToMany(targetEntity: NodeVersion::class, mappedBy: 'nodeTranslation')]
     #[ORM\OrderBy(['created', 'ASC'])]
     #[Assert\Valid]
     protected Collection|array|null $nodeVersions = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="smallint", nullable=true)
-     */
     #[ORM\Column(name: 'weight', type: 'smallint', nullable: true)]
     protected ?int $weight = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
     #[ORM\Column(name: 'created', type: 'datetime', nullable: true)]
     protected ?\DateTime $created = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
     #[ORM\Column(name: 'updated', type: 'datetime', nullable: true)]
     protected ?\DateTime $updated = null;
 
