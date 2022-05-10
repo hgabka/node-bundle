@@ -60,7 +60,8 @@ class NodeRepository extends NestedTreeRepository
         $includeHiddenFromNav = false,
         $includeHiddenWithInternalName = false,
         $rootNode = null,
-        $refEntityName = null
+        $refEntityName = null,
+        $includeOffline = true
     ) {
         $qb = $this->createQueryBuilder('b')
                    ->select('b', 't', 'v')
@@ -102,6 +103,10 @@ class NodeRepository extends NestedTreeRepository
                 ->andWhere('v.refEntityName = :refEntityName')
                 ->setParameter('refEntityName', $refEntityName);
         }
+        
+        if (!$includeOffline) {
+            $qb->andWhere('t.online = 1');
+        }
 
         return $qb;
     }
@@ -126,9 +131,10 @@ class NodeRepository extends NestedTreeRepository
         $includeHiddenFromNav = false,
         $includeHiddenWithInternalName = false,
         $rootNode = null,
-        $refEntityName = null
+        $refEntityName = null,
+        $includeOffline = true
     ) {
-        $qb = $this->getChildNodesQueryBuilder($parentId, $lang, $includeHiddenFromNav, $includeHiddenWithInternalName, $rootNode, $refEntityName);
+        $qb = $this->getChildNodesQueryBuilder($parentId, $lang, $includeHiddenFromNav, $includeHiddenWithInternalName, $rootNode, $refEntityName, $includeOffline);
         $qb
             ->addOrderBy('t.weight', 'ASC')
             ->addOrderBy('t.title', 'ASC');
