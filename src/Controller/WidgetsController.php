@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -49,12 +50,8 @@ class WidgetsController extends AbstractController
         return $this->aclHelper;
     }
 
-    /**
-     * @Route("/ckselecturl", name="HgabkaNodeBundle_ckselecturl")
-     *
-     * @return array
-     */
-    public function ckSelectLinkAction(Request $request)
+    #[Route('/ckselecturl', name: 'HgabkaNodeBundle_ckselecturl')]
+    public function ckSelectLinkAction(Request $request): Response
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = true;
@@ -63,14 +60,8 @@ class WidgetsController extends AbstractController
         return $this->render('@HgabkaNode/Widgets/selectLink.html.twig', $params);
     }
 
-    /**
-     * Select a link.
-     *
-     * @Route   ("/selecturl", name="HgabkaNodeBundle_selecturl")
-     *
-     * @return array
-     */
-    public function selectLinkAction(Request $request)
+    #[Route('/selecturl', name: 'HgabkaNodeBundle_selecturl')]
+    public function selectLinkAction(Request $request): Response
     {
         $params = $this->getTemplateParameters($request);
         $params['cke'] = false;
@@ -148,7 +139,7 @@ class WidgetsController extends AbstractController
      *
      * @return bool
      */
-    private function isStructureNode($refEntityName)
+    private function isStructureNode($refEntityName): bool
     {
         $structureNode = false;
         if (class_exists($refEntityName)) {
