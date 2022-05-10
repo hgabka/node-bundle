@@ -43,6 +43,7 @@ hg_node:
     title: Pages
     group: CMS
     form:
+        validation_errors: 'The form has not been saved because there are validation errors'
         controller_action:
             title:
                 label:  Title
