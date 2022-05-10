@@ -181,8 +181,12 @@ class NodeAdminController extends CRUDController
         ]);
     }
 
-    #[Route('/{id}/copyfromotherlanguage', name: 'HgabkaNodeBundle_nodes_copyfromotherlanguage', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[Template]
+    #[Route(
+        '/{id}/copyfromotherlanguage',
+        name: 'HgabkaNodeBundle_nodes_copyfromotherlanguage',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
     public function copyFromOtherLanguageAction(Request $request, int $id): Response
     {
         $this->init($request);
@@ -221,9 +225,13 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
-    #[Route('/{id}/recopyfromotherlanguage', name: 'HgabkaNodeBundle_nodes_recopyfromotherlanguage', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[Template]
-    public function recopyFromOtherLanguageAction(Request $request, $id)
+    #[Route(
+        '/{id}/recopyfromotherlanguage',
+        name: 'HgabkaNodeBundle_nodes_recopyfromotherlanguage',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
+    public function recopyFromOtherLanguageAction(Request $request, int $id): Response
     {
         $this->init($request);
 
@@ -261,9 +269,13 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id, 'subaction' => NodeVersion::DRAFT_VERSION]));
     }
 
-    #[Route('/{id}/createemptypage', name: 'HgabkaNodeBundle_nodes_createemptypage', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[Template]
-    public function createEmptyPageAction(Request $request, $id): Response
+    #[Route(
+        '/{id}/createemptypage',
+        name: 'HgabkaNodeBundle_nodes_createemptypage',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
+    public function createEmptyPageAction(Request $request, int $id): Response
     {
         $this->init($request);
         // @var Node $node
@@ -292,8 +304,13 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
-    #[Route('/{id}/publish', name: 'HgabkaNodeBundle_nodes_publish', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function publishAction(Request $request, $id): Response
+    #[Route(
+        '/{id}/publish',
+        name: 'HgabkaNodeBundle_nodes_publish',
+        requirements: ['id' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function publishAction(Request $request, int $id): Response
     {
         $this->init($request);
         $this->admin->checkAccess('publish');
@@ -328,8 +345,13 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]));
     }
 
-    #[Route('/{id}/unpublish', name: 'HgabkaNodeBundle_nodes_unpublish', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function unPublishAction(Request $request, $id): Response
+    #[Route(
+        '/{id}/unpublish',
+        name: 'HgabkaNodeBundle_nodes_unpublish',
+        requirements: ['id' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function unPublishAction(Request $request, int $id): Response
     {
         $this->init($request);
         $this->admin->checkAccess('unpublish');
@@ -357,7 +379,12 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]));
     }
 
-    #[Route('/{id}/unschedulepublish', name: 'HgabkaNodeBundle_nodes_unschedule_publish', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route(
+        '/{id}/unschedulepublish',
+        name: 'HgabkaNodeBundle_nodes_unschedule_publish',
+        requirements: ['id' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
     public function unSchedulePublishAction(Request $request, int $id): Response
     {
         $this->init($request);
@@ -377,8 +404,12 @@ class NodeAdminController extends CRUDController
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
     }
 
-    #[Route('/{id}/delete', name: 'HgabkaNodeBundle_nodes_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[Template]
+    #[Route(
+        '/{id}/delete',
+        name: 'HgabkaNodeBundle_nodes_delete',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
     public function deleteAction(Request $request): Response
     {
         $this->assertObjectExists($request, true);
@@ -441,8 +472,12 @@ class NodeAdminController extends CRUDController
         return $response;
     }
 
-    #[Route('/{id}/duplicate', name: 'HgabkaNodeBundle_nodes_duplicate', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[Template]
+    #[Route(
+        '/{id}/duplicate',
+        name: 'HgabkaNodeBundle_nodes_duplicate',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
     public function duplicateAction(Request $request, int $id): Response
     {
         $this->init($request);
@@ -503,23 +538,13 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    /**
-     * @Route(
-     *      "/{id}/revert",
-     *      requirements={"id" = "\d+"},
-     *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_revert", methods={"GET"}
-     * )
-     * @Template()
-     *
-     * @param int $id The node id
-     *
-     * @throws AccessDeniedException
-     * @throws InvalidArgumentException
-     *
-     * @return RedirectResponse
-     */
-    public function revertAction(Request $request, $id)
+    #[Route(
+        '/{id}/revert',
+        name: 'HgabkaNodeBundle_nodes_revert',
+        requirements: ['id' => '\d+'],
+        methods: ['GET']
+    )]
+    public function revertAction(Request $request, int $id): Response
     {
         $this->init($request);
         $this->admin->checkAccess('revert');
@@ -590,21 +615,13 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    /**
-     * @Route(
-     *      "/{id}/add",
-     *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_add", methods={"POST"}
-     * )
-     *
-     * @param int $id
-     *
-     * @throws AccessDeniedException
-     * @throws InvalidArgumentException
-     *
-     * @return RedirectResponse
-     */
-    public function addAction(Request $request, $id)
+    #[Route(
+        '/{id}/add',
+        name: 'HgabkaNodeBundle_nodes_add',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
+    public function addAction(Request $request, int $id): Response
     {
         $this->init($request);
         $this->admin->checkAccess('create');
@@ -663,15 +680,12 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    /**
-     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage", methods={"POST"})
-     *
-     * @throws AccessDeniedException
-     * @throws InvalidArgumentException
-     *
-     * @return RedirectResponse
-     */
-    public function addHomepageAction(Request $request, ACLPermissionCreatorService $ACLPermissionCreator)
+    #[Route(
+        'add-homepage',
+        name: 'HgabkaNodeBundle_nodes_add_homepage',
+        methods: ['POST']
+    )]
+    public function addHomepageAction(Request $request, ACLPermissionCreatorService $ACLPermissionCreator): Response
     {
         $this->init($request);
 
@@ -693,7 +707,7 @@ class NodeAdminController extends CRUDController
 
         // Set default permissions
         $ACLPermissionCreator
-             ->createPermission($nodeNewPage);
+            ->createPermission($nodeNewPage);
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -715,14 +729,12 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    /**
-     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder", methods={"POST"})
-     *
-     * @throws AccessDeniedException
-     *
-     * @return string
-     */
-    public function reorderAction(Request $request)
+    #[Route(
+        '/reorder',
+        name: 'HgabkaNodeBundle_nodes_reorder',
+        methods: ['POST']
+    )]
+    public function reorderAction(Request $request): Response
     {
         $this->init($request);
         $this->admin->checkAccess('reorder');
@@ -785,23 +797,13 @@ class NodeAdminController extends CRUDController
         return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $id]);
     }
 
-    /**
-     * @Route(
-     *      "/{id}/{subaction}",
-     *      requirements={"id" = "\d+"},
-     *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_edit", methods={"GET", "POST"}
-     * )
-     *
-     * @param Request $request
-     * @param int     $id        The node id
-     * @param string  $subaction The subaction (draft|public)
-     *
-     * @throws AccessDeniedException
-     *
-     * @return array|RedirectResponse
-     */
-    public function editCustomAction(Request $request, $id, $subaction)
+    #[Route(
+        '/{id}/{subaction}',
+        name: 'HgabkaNodeBundle_nodes_edit',
+        requirements: ['id' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function editCustomAction(Request $request, int $id, string $subaction = 'public'): Response
     {
         $this->init($request);
 
@@ -1014,19 +1016,12 @@ class NodeAdminController extends CRUDController
         return $this->renderWithExtraParams('@HgabkaNode/NodeAdmin/edit' . ($request->isXmlHttpRequest() ? 'Ajax' : '') . '.html.twig', $params);
     }
 
-    /**
-     * @Route(
-     *      "checkNodeVersionLock/{id}/{public}",
-     *      requirements={"id" = "\d+", "public" = "(0|1)"},
-     *      name="HgabkaNodeBundle_nodes_versionlock_check"
-     * )
-     *
-     * @param $id
-     * @param mixed $public
-     *
-     * @return JsonResponse
-     */
-    public function checkNodeVersionLockAction(Request $request, NodeVersionLockHelper $nodeVersionLockHelper, $id, $public)
+    #[Route(
+        'checkNodeVersionLock/{id}/{public}',
+        name: 'HgabkaNodeBundle_nodes_versionlock_check',
+        requirements: ['id' => '\d+', 'public' => '(0|1)']
+    )]
+    public function checkNodeVersionLockAction(Request $request, NodeVersionLockHelper $nodeVersionLockHelper, int $id, int $public): Response
     {
         $nodeVersionIsLocked = false;
         $message = '';
