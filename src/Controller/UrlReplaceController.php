@@ -15,18 +15,14 @@ class UrlReplaceController
     /**
      * @var URLHelper
      */
-    private $urlHelper;
+    private URL$urlHelper;
 
     public function __construct(URLHelper $urlHelper)
     {
         $this->urlHelper = $urlHelper;
     }
 
-    /**
-     * Render a url with the twig url replace filter.
-     *
-     * @Route("/replace", name="HgabkaNodeBundle_urlchooser_replace", condition="request.isXmlHttpRequest()")
-     */
+    #[Route('/replace', name: 'HgabkaNodeBundle_urlchooser_replace', condition: 'request.isXmlHttpRequest()')]
     public function replaceURLAction(Request $request)
     {
         $response = new JsonResponse();
