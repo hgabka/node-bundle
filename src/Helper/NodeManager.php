@@ -240,12 +240,12 @@ class NodeManager
     /**
      * @return Node[]
      */
-    public function getChildrenByNodeId(int $nodeId, string $lang, ?string $refEntityName = null)
+    public function getChildrenByNodeId(int $nodeId, string $lang, ?string $refEntityName = null, $includeOffline = true)
     {
         return $this
             ->manager
             ->getRepository(Node::class)
-            ->getChildNodes($nodeId, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, null, $refEntityName)
+            ->getChildNodes($nodeId, $lang, PermissionMap::PERMISSION_VIEW, $this->aclHelper, false, false, null, $refEntityName, $includeOffline)
         ;
     }
 
