@@ -28,7 +28,7 @@
     {% endif %}
     {% if form_has_errors_recursive(form) %}
         <div class="alert alert-danger">
-            <strong>{{ "Error" | trans }}: </strong>{{ 'hg_node.form.validation_errors' | trans }}
+            <strong>{{ 'hg_node.form.error' | trans }}: </strong>{{ 'hg_node.form.validation_errors' | trans }}
             {{ form_errors(form) }}
             <button class="close" data-dismiss="alert">
                 <i class="fa fa-times"></i>
