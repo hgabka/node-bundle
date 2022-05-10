@@ -45,6 +45,7 @@ hg_node:
     title: Oldalak
     group: CMS
     form:
+        validation_errors: 'Az oldalt nem lehetett elmenteni, mert az űrlap hibákat tartalmaz'
         controller_action:
             title:
                 label:  Cím
