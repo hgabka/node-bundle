@@ -58,7 +58,7 @@ class LogPageEventsSubscriber implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             Events::COPY_PAGE_TRANSLATION => 'onCopyPageTranslation',
