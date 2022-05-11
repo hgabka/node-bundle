@@ -46,7 +46,7 @@ class NodeLocaleListener implements EventSubscriberInterface
         $request->attributes->set('nodeLocale', $nodeLocale);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [['onKernelRequest', 50]],
