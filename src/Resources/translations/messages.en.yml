@@ -42,6 +42,7 @@ hg_node:
         lang: '%lang% version'
     title: Pages
     group: CMS
+    title_edit: 'Editing page "%title%"'
     form:
         error: 'Error'
         validation_errors: 'The form has not been saved because there are validation errors'

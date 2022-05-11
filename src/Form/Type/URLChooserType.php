@@ -30,7 +30,7 @@ class URLChooserType extends AbstractType
      *
      * @see FormTypeExtensionInterface::buildForm()
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $choices = [
             'kuma_admin.pagepart.link.internal' => self::INTERNAL,
@@ -66,7 +66,7 @@ class URLChooserType extends AbstractType
      *
      * @param OptionsResolver $resolver the resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => null,
@@ -77,7 +77,7 @@ class URLChooserType extends AbstractType
     /**
      * @return string
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'urlchooser';
     }

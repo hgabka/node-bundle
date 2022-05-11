@@ -12,8 +12,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NodeMenuTabAdminType extends AbstractType
 {
-    /** @var AuthorizationCheckerInterface */
-    protected $authChecker;
+    protected AuthorizationCheckerInterface $authChecker;
 
     /**
      * NodeMenuTabAdminType constructor.
@@ -23,7 +22,7 @@ class NodeMenuTabAdminType extends AbstractType
         $this->authChecker = $authChecker;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['available_in_nav']) {
             $builder->add('hiddenFromNav', CheckboxType::class, [
@@ -42,12 +41,12 @@ class NodeMenuTabAdminType extends AbstractType
     /**
      * @return string
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'menu';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Node::class,

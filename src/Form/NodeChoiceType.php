@@ -13,11 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeChoiceType extends AbstractType
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /** @var NodeManager */
-    private $nodeManager;
+    private NodeManager $nodeManager;
 
     public function __construct(RequestStack $requestStack, NodeManager $nodeManager)
     {
@@ -25,7 +23,7 @@ class NodeChoiceType extends AbstractType
         $this->nodeManager = $nodeManager;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
@@ -80,12 +78,12 @@ class NodeChoiceType extends AbstractType
         $resolver->setAllowedTypes('root_node', ['null', 'string', Node::class]);
     }
 
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityType::class;
     }
 
-    private function getCurrentLocale()
+    private function getCurrentLocale(): ?string
     {
         if (null === $this->requestStack->getCurrentRequest()) {
             return null;

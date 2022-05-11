@@ -51,6 +51,7 @@ class NodeRepository extends NestedTreeRepository
      * @param bool        $includeHiddenWithInternalName
      * @param null|Node   $rootNode                      Root node of the current tree
      * @param null|string $refEntityName
+     * @param mixed       $includeOffline
      *
      * @return Node[]
      */
@@ -103,7 +104,7 @@ class NodeRepository extends NestedTreeRepository
                 ->andWhere('v.refEntityName = :refEntityName')
                 ->setParameter('refEntityName', $refEntityName);
         }
-        
+
         if (!$includeOffline) {
             $qb->andWhere('t.online = 1');
         }
@@ -120,6 +121,7 @@ class NodeRepository extends NestedTreeRepository
      * @param bool        $includeHiddenWithInternalName
      * @param null|Node   $rootNode                      Root node of the current tree
      * @param null|string $refEntityName
+     * @param mixed       $includeOffline
      *
      * @return Node[]
      */

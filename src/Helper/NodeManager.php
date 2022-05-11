@@ -238,6 +238,8 @@ class NodeManager
     }
 
     /**
+     * @param mixed $includeOffline
+     *
      * @return Node[]
      */
     public function getChildrenByNodeId(int $nodeId, string $lang, ?string $refEntityName = null, $includeOffline = true)

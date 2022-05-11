@@ -13,14 +13,8 @@ use Symfony\Component\Form\FormView;
  */
 class SlugType extends AbstractType
 {
-    /**
-     * @var SlugifierInterface
-     */
-    private $slugifier;
+    private SlugifierInterface $slugifier;
 
-    /**
-     * @param SlugifierInterface $slugifier The slugifier
-     */
     public function __construct(SlugifierInterface $slugifier)
     {
         $this->slugifier = $slugifier;
@@ -29,7 +23,7 @@ class SlugType extends AbstractType
     /**
      * @return string
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return TextType::class;
     }
@@ -37,7 +31,7 @@ class SlugType extends AbstractType
     /**
      * @return string
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'slug';
     }
@@ -45,7 +39,7 @@ class SlugType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $nodeTranslation = $form->getParent()->getData();
         $view->vars['reset'] = $this->slugifier->slugify($nodeTranslation->getTitle(), '');

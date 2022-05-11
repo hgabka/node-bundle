@@ -36,7 +36,6 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

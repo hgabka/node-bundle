@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class NodeMenuTabTranslationAdminType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['slugable']) {
             $builder->add('slug', SlugType::class, [
@@ -36,12 +36,12 @@ class NodeMenuTabTranslationAdminType extends AbstractType
     /**
      * @return string
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'menutranslation';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => NodeTranslation::class,

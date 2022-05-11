@@ -43,6 +43,7 @@ hg_node:
         draft: piszkozat
         lang: '%lang% verzió'
     title: Oldalak
+    title_edit: '"%title%" oldal szerkesztése'
     group: CMS
     form:
         error: 'Hiba'
