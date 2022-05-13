@@ -2,9 +2,10 @@
 
 namespace Hgabka\NodeBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Google\Service\ShoppingContent\DateTime;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
+use Hgabka\UtilsBundle\Model\AbstractUser;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'hg_node_queued_node_translation_actions')]
@@ -26,7 +27,7 @@ class QueuedNodeTranslationAction implements EntityInterface
     #[ORM\Column(name: 'action', type: 'string')]
     protected ?string $action = null;
 
-    protected ?UserInterface $user = null;
+    protected ?AbstractUser $user = null;
 
     #[ORM\Column(name: '`date`', type: 'datetime')]
     protected ?DateTime $date = null;
@@ -67,26 +68,26 @@ class QueuedNodeTranslationAction implements EntityInterface
         return $this;
     }
 
-    public function setUser(?UserInterface $user): self
+    public function setUser(?AbstractUser $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getUser(): ?UserInterface
+    public function getUser(): ?AbstractUser
     {
         return $this->user;
     }
 
-    public function setDate(?\DateTime $date): self
+    public function setDate(?DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
