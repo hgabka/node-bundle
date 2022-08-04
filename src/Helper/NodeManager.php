@@ -406,8 +406,8 @@ class NodeManager
             $parameters
         );
     }
-    
-    public function getNodePathForPage(PageInterface $page, ?int $topLevel = null): array
+
+    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null): array
     {
         $node = $this->getNodeFor($page);
 
@@ -427,12 +427,11 @@ class NodeManager
 
         $nodes = [];
 
-        while ($parent && (null === $$topLevel || $parent->getLevel() >= $topLevel) {
+        while ($parent && (null === $$topLevel || $parent->getLevel() >= $topLevel)) {
             array_unshift($nodes, $parent);
             $parent = $parent->getParent();
         }
 
         return $nodes;
     }
-
 }
