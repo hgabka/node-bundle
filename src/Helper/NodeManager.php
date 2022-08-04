@@ -406,4 +406,33 @@ class NodeManager
             $parameters
         );
     }
+    
+    public function getNodePathForPage(PageInterface $page, ?int $topLevel = null): array
+    {
+        $node = $this->getNodeFor($page);
+
+        if (!$node) {
+            return [];
+        }
+
+        return $this->getTreePathForNode($node, $topLevel);
+    }
+
+    public function getTreePathForNode(Node $node, ?int $topLevel = null): array
+    {
+        $parent = $node->getParent();
+        if (empty($parent)) {
+            return [];
+        }
+
+        $nodes = [];
+
+        while ($parent && (null === $$topLevel || $parent->getLevel() >= $topLevel) {
+            array_unshift($nodes, $parent);
+            $parent = $parent->getParent();
+        }
+
+        return $nodes;
+    }
+
 }
