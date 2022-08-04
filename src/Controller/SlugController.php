@@ -95,7 +95,7 @@ class SlugController extends AbstractController
         $eventDispatcher = $this->eventDispatcher;
         $eventDispatcher->dispatch($securityEvent, Events::SLUG_SECURITY);
 
-        //render page
+        // render page
         $renderContext = new RenderContext(
             [
                 'nodetranslation' => $nodeTranslation,

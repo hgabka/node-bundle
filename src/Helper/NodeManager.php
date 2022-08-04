@@ -343,6 +343,34 @@ class NodeManager
         return $this->getUrlByNodeTranslation($nodeTranslation, $parameters, $relative);
     }
 
+    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null, bool $includeSelf = false): array
+    {
+        $node = $this->getNodeFor($page);
+
+        if (!$node) {
+            return [];
+        }
+
+        return $this->getTreePathForNode($node, $topLevel, $includeSelf);
+    }
+
+    public function getTreePathForNode(Node $node, ?int $topLevel = null, bool $includeSelf = false): array
+    {
+        $parent = $node->getParent();
+        $nodes = [];
+
+        while ($parent && (null === $topLevel || (int) $parent->getLevel() >= $topLevel)) {
+            array_unshift($nodes, $parent);
+            $parent = $parent->getParent();
+        }
+
+        if ($includeSelf) {
+            $nodes[] = $node;
+        }
+
+        return $nodes;
+    }
+
     protected function getRouteParametersByInternalName(string $internalName, string $locale, array $parameters = [])
     {
         $url = '';
@@ -405,33 +433,5 @@ class NodeManager
             ],
             $parameters
         );
-    }
-
-    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null, bool $includeSelf = false): array
-    {
-        $node = $this->getNodeFor($page);
-
-        if (!$node) {
-            return [];
-        }
-
-        return $this->getTreePathForNode($node, $topLevel, $includeSelf);
-    }
-
-    public function getTreePathForNode(Node $node, ?int $topLevel = null, bool $includeSelf = false): array
-    {
-        $parent = $node->getParent();
-        $nodes = [];
-
-        while ($parent && (null === $topLevel || (int) $parent->getLevel() >= $topLevel)) {
-            array_unshift($nodes, $parent);
-            $parent = $parent->getParent();
-        }
-
-        if ($includeSelf) {
-            $nodes[] = $node;
-        }
-
-        return $nodes;
     }
 }

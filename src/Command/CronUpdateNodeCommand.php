@@ -15,17 +15,13 @@ class CronUpdateNodeCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:cron';
 
-
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly NodeAdminPublisher $publisher,
         private readonly string $adminFirewallName
-    )
-    {
+    ) {
         parent::__construct();
-
     }
 
     /**

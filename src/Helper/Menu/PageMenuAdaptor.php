@@ -70,7 +70,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
      */
     public function adaptChildren(
         MenuBuilder $menu,
-        array & $children,
+        array &$children,
         MenuItem $parent = null,
         Request $request = null
     ) {
@@ -201,7 +201,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
      */
     private function processNodes(
         MenuBuilder $menu,
-        array & $children,
+        array &$children,
         array $nodes,
         MenuItem $parent = null,
         array $activeNodeIds
