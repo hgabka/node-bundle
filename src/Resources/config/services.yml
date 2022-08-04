@@ -228,6 +228,8 @@ services:
     Hgabka\NodeBundle\Command\CronUpdateNodeCommand:
         autowire: true
         autoconfigure: true
+        arguments:
+            $adminFirewallName: '%hgabka_utils.admin_firewall_name%'
 
     Hgabka\NodeBundle\Command\FixTimestampsCommand:
         autowire: true

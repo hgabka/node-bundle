@@ -15,22 +15,13 @@ class CronUpdateNodeCommand extends Command
 {
     protected static $defaultName = 'hgabka:nodes:cron';
 
-    /** @var EntityManagerInterface */
-    protected $entityManager;
-
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
-
-    /** @var NodeAdminPublisher */
-    protected $publisher;
-
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, NodeAdminPublisher $publisher)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly NodeAdminPublisher $publisher,
+        private readonly string $adminFirewallName
+    ) {
         parent::__construct();
-
-        $this->entityManager = $entityManager;
-        $this->tokenStorage = $tokenStorage;
-        $this->publisher = $publisher;
     }
 
     /**
@@ -60,7 +51,7 @@ class CronUpdateNodeCommand extends Command
 
                     // Set user security context
                     $user = $queuedNodeTranslationAction->getUser();
-                    $runAsToken = new UsernamePasswordToken($user, null, 'foo', $user->getRoles());
+                    $runAsToken = new UsernamePasswordToken($user, $this->adminFirewallName, $user->getRoles());
                     $this->tokenStorage->setToken($runAsToken);
 
                     $nodeTranslation = $queuedNodeTranslationAction->getNodeTranslation();

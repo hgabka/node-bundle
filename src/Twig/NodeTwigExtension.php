@@ -131,6 +131,14 @@ class NodeTwigExtension extends AbstractExtension
                 'get_page_title',
                 [$this, 'getPageTitle']
             ),
+            new TwigFunction(
+                'get_tree_path_for_page',
+                [$this, 'getTreePathForPage']
+            ),
+            new TwigFunction(
+                'get_tree_path_for_node',
+                [$this, 'getTreePathForNode']
+            ),
         ];
     }
 
@@ -334,5 +342,15 @@ class NodeTwigExtension extends AbstractExtension
         $pageTitle = $page->getPageTitle();
 
         return empty($pageTitle) ? $page->getTitle() : $pageTitle;
+    }
+
+    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null, bool $includeSelf = false): array
+    {
+        return $this->nodeManager->getTreePathForPage($page, $topLevel, $includeSelf);
+    }
+
+    public function getTreePathForNode(Node $node, ?int $topLevel = null, bool $includeSelf = false): array
+    {
+        return $this->nodeManager->getTreePathForNode($node, $topLevel, $includeSelf);
     }
 }
