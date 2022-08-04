@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Controller;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Hgabka\NodeBundle\AdminList\NodeAdminListConfigurator;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
@@ -35,17 +36,19 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * NodeAdminController.
@@ -91,7 +94,19 @@ class NodeAdminController extends CRUDController
     /** @var CloneHelper */
     protected $cloneHelper;
 
-    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper)
+    /** @var ManagerRegistry */
+    protected $doctrine;
+
+    /** @var TranslatorInterface */
+    protected $translator;
+
+    /** @var RequestStack */
+    protected $requestStack;
+
+    /** @var UrlGeneratorInterface */
+    protected $router;
+
+    public function __construct(AclHelper $aclHelper, Security $security, AdminListFactory $adminListFactory, EventDispatcherInterface $eventDispatcher, ActionsMenuBuilder $actionsMenuBuilder, NodeVersionLockHelper $nodeVersionLockHelper, NodeAdminPublisher $nodeAdminPublisher, CloneHelper $cloneHelper, ManagerRegistry $doctrine, TranslatorInterface $translator, RequestStack $requestStack, UrlGeneratorInterface $router)
     {
         $this->aclHelper = $aclHelper;
         $this->security = $security;
@@ -101,6 +116,10 @@ class NodeAdminController extends CRUDController
         $this->nodeVersionLockHelper = $nodeVersionLockHelper;
         $this->nodeAdminPublisher = $nodeAdminPublisher;
         $this->cloneHelper = $cloneHelper;
+        $this->doctrine = $doctrine;
+        $this->translator = $translator;
+        $this->requestStack = $requestStack;
+        $this->router = $router;
     }
 
     /**
@@ -154,9 +173,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/copyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_copyfromotherlanguage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id The node id
@@ -183,7 +201,7 @@ class NodeAdminController extends CRUDController
 
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -207,9 +225,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/recopyfromotherlanguage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage"
+     *      name="HgabkaNodeBundle_nodes_recopyfromotherlanguage", methods={"POST"}
      * )
-     * @Method("POST")
      * @Template()
      *
      * @param int $id The node id
@@ -236,7 +253,7 @@ class NodeAdminController extends CRUDController
 
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->addDraftNodeVersionFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -260,9 +277,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/createemptypage",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_createemptypage"
+     *      name="HgabkaNodeBundle_nodes_createemptypage", methods={"GET"}
      * )
-     * @Method("GET")
      * @Template()
      *
      * @param int $id
@@ -289,7 +305,7 @@ class NodeAdminController extends CRUDController
         $this->em->flush();
         // @var NodeTranslation $nodeTranslation
         $nodeTranslation = $this->em->getRepository(NodeTranslation::class)
-            ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
+                                    ->createNodeTranslationFor($myLanguagePage, $this->locale, $node, $this->user);
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
         $this->eventDispatcher->dispatch(
@@ -303,8 +319,7 @@ class NodeAdminController extends CRUDController
     /**
      * @Route("/{id}/publish", requirements={"id" =
      *                         "\d+"},
-     *                         name="HgabkaNodeBundle_nodes_publish")
-     * @Method({"GET", "POST"})
+     *                         name="HgabkaNodeBundle_nodes_publish", methods={"GET", "POST"})
      *
      * @param int $id
      *
@@ -320,7 +335,7 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         if ($request->get('pub_date')) {
             $date = new \DateTime(
@@ -332,7 +347,7 @@ class NodeAdminController extends CRUDController
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.publish.flash.success_scheduled')
+                $this->translator->trans('hg_node.admin.publish.flash.success_scheduled')
             );
         } else {
             $this->nodeAdminPublisher->publish(
@@ -340,7 +355,7 @@ class NodeAdminController extends CRUDController
             );
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.publish.flash.success_published')
+                $this->translator->trans('hg_node.admin.publish.flash.success_published')
             );
         }
 
@@ -351,9 +366,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unpublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unpublish"
+     *      name="HgabkaNodeBundle_nodes_unpublish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -369,20 +383,20 @@ class NodeAdminController extends CRUDController
         $node = $this->em->getRepository(Node::class)->find($id);
 
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         if ($request->get('unpub_date')) {
             $date = new \DateTime($request->get('unpub_date') . ' ' . $request->get('unpub_time'));
             $this->nodeAdminPublisher->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_scheduled')
+                $this->translator->trans('hg_node.admin.unpublish.flash.success_scheduled')
             );
         } else {
             $this->nodeAdminPublisher->unPublish($nodeTranslation);
             $this->addFlash(
                 FlashTypes::SUCCESS,
-                $this->get('translator')->trans('hg_node.admin.unpublish.flash.success_unpublished')
+                $this->translator->trans('hg_node.admin.unpublish.flash.success_unpublished')
             );
         }
 
@@ -393,9 +407,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/unschedulepublish",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_unschedule_publish"
+     *      name="HgabkaNodeBundle_nodes_unschedule_publish", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param int $id
      *
@@ -416,7 +429,7 @@ class NodeAdminController extends CRUDController
 
         $this->addFlash(
             FlashTypes::SUCCESS,
-            $this->get('translator')->trans('hg_node.admin.unschedule.flash.success')
+            $this->translator->trans('hg_node.admin.unschedule.flash.success')
         );
 
         return $this->redirect($this->generateUrl('HgabkaNodeBundle_nodes_edit', ['id' => $id]));
@@ -426,10 +439,9 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/delete",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_delete"
+     *      name="HgabkaNodeBundle_nodes_delete", methods={"POST"}
      * )
      * @Template()
-     * @Method("POST")
      *
      * @param Request $request
      * @param int     $id
@@ -454,7 +466,7 @@ class NodeAdminController extends CRUDController
         if (!empty($node->getInternalName()) && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash(
                 FlashTypes::ERROR,
-                $this->get('translator')->trans('hg_node.admin.delete.flash.not_possible')
+                $this->translator->trans('hg_node.admin.delete.flash.not_possible')
             );
 
             return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $node->getId()]);
@@ -482,7 +494,7 @@ class NodeAdminController extends CRUDController
             $nodeParent = $node->getParent();
             // Check if we have a parent. Otherwise redirect to pages overview.
             if ($nodeParent) {
-                $url = $this->get('router')->generate(
+                $url = $this->router->generate(
                     'HgabkaNodeBundle_nodes_edit',
                     ['id' => $nodeParent->getId()]
                 );
@@ -504,9 +516,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/duplicate",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_duplicate"
+     *      name="HgabkaNodeBundle_nodes_duplicate", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -521,12 +532,12 @@ class NodeAdminController extends CRUDController
 
         // @var Node $parentNode
         $originalNode = $this->em->getRepository(Node::class)
-            ->find($id);
+                                 ->find($id);
 
         // Check with Acl
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $originalNode);
 
-        $request = $this->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         $originalNodeTranslations = $originalNode->getNodeTranslation($this->locale, true);
         $originalRef = $originalNodeTranslations->getPublicNodeVersion()->getRef($this->em);
@@ -579,10 +590,9 @@ class NodeAdminController extends CRUDController
      *      "/{id}/revert",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_revert"
+     *      name="HgabkaNodeBundle_nodes_revert", methods={"GET"}
      * )
      * @Template()
-     * @Method("GET")
      *
      * @param int $id The node id
      *
@@ -666,9 +676,8 @@ class NodeAdminController extends CRUDController
      * @Route(
      *      "/{id}/add",
      *      requirements={"id" = "\d+"},
-     *      name="HgabkaNodeBundle_nodes_add"
+     *      name="HgabkaNodeBundle_nodes_add", methods={"POST"}
      * )
-     * @Method("POST")
      *
      * @param int $id
      *
@@ -698,13 +707,13 @@ class NodeAdminController extends CRUDController
 
         // @var Node $nodeNewPage
         $nodeNewPage = $this->em->getRepository(Node::class)
-            ->createNodeFor($newPage, $this->locale, $this->user);
+                                ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
         );
         $weight = $this->em->getRepository(NodeTranslation::class)
-                ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
+                           ->getMaxChildrenWeight($parentNode, $this->locale) + 1;
         $nodeTranslation->setWeight($weight);
 
         if ($newPage->isStructureNode()) {
@@ -737,8 +746,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage")
-     * @Method("POST")
+     * @Route("/add-homepage", name="HgabkaNodeBundle_nodes_add_homepage", methods={"POST"})
      *
      * @throws AccessDeniedException
      * @throws InvalidArgumentException
@@ -758,7 +766,7 @@ class NodeAdminController extends CRUDController
 
         // @var Node $nodeNewPage
         $nodeNewPage = $this->em->getRepository(Node::class)
-            ->createNodeFor($newPage, $this->locale, $this->user);
+                                ->createNodeFor($newPage, $this->locale, $this->user);
         $nodeTranslation = $nodeNewPage->getNodeTranslation(
             $this->locale,
             true
@@ -767,7 +775,7 @@ class NodeAdminController extends CRUDController
 
         // Set default permissions
         $this->get(ACLPermissionCreatorService::class)
-            ->createPermission($nodeNewPage);
+             ->createPermission($nodeNewPage);
 
         $nodeVersion = $nodeTranslation->getPublicNodeVersion();
 
@@ -790,8 +798,7 @@ class NodeAdminController extends CRUDController
     }
 
     /**
-     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder")
-     * @Method("POST")
+     * @Route("/reorder", name="HgabkaNodeBundle_nodes_reorder", methods={"POST"})
      *
      * @throws AccessDeniedException
      *
@@ -865,9 +872,8 @@ class NodeAdminController extends CRUDController
      *      "/{id}/{subaction}",
      *      requirements={"id" = "\d+"},
      *      defaults={"subaction" = "public"},
-     *      name="HgabkaNodeBundle_nodes_edit"
+     *      name="HgabkaNodeBundle_nodes_edit", methods={"GET", "POST"}
      * )
-     * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @param int     $id        The node id
@@ -1143,7 +1149,7 @@ class NodeAdminController extends CRUDController
      */
     protected function init(Request $request)
     {
-        $this->em = $this->getDoctrine()->getManager();
+        $this->em = $this->doctrine->getManager();
         $nodeLocale = $request->attributes->get('nodeLocale');
         $this->locale = $nodeLocale;
 
