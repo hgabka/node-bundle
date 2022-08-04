@@ -407,7 +407,7 @@ class NodeManager
         );
     }
 
-    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null): array
+    public function getTreePathForPage(PageInterface $page, ?int $topLevel = null, bool $includeSelf = false): array
     {
         $node = $this->getNodeFor($page);
 
@@ -415,21 +415,21 @@ class NodeManager
             return [];
         }
 
-        return $this->getTreePathForNode($node, $topLevel);
+        return $this->getTreePathForNode($node, $topLevel, $includeSelf);
     }
 
-    public function getTreePathForNode(Node $node, ?int $topLevel = null): array
+    public function getTreePathForNode(Node $node, ?int $topLevel = null, bool $includeSelf = false): array
     {
         $parent = $node->getParent();
-        if (empty($parent)) {
-            return [];
-        }
-
         $nodes = [];
 
-        while ($parent && (null === $$topLevel || $parent->getLevel() >= $topLevel)) {
+        while ($parent && (null === $topLevel || (int) $parent->getLevel() >= $topLevel)) {
             array_unshift($nodes, $parent);
             $parent = $parent->getParent();
+        }
+
+        if ($includeSelf) {
+            $nodes[] = $node;
         }
 
         return $nodes;
