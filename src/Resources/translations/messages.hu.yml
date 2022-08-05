@@ -46,6 +46,9 @@ hg_node:
     title_edit: '"%title%" oldal szerkesztése'
     group: CMS
     form:
+        folder_type:
+            only_structure: Struktúrális oldal (nincs URL)
+            remote_url: Átirányítás (nem struktúrális oldal esetén)
         error: 'Hiba'
         validation_errors: 'Az oldalt nem lehetett elmenteni, mert az űrlap hibákat tartalmaz'
         controller_action:

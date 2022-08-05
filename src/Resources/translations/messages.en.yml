@@ -44,6 +44,9 @@ hg_node:
     group: CMS
     title_edit: 'Editing page "%title%"'
     form:
+        folder_type:
+            only_structure: Only structure node
+            remote_url: Redirect to (if not only structure node)
         error: 'Error'
         validation_errors: 'The form has not been saved because there are validation errors'
         controller_action:

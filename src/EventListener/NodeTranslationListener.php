@@ -129,6 +129,14 @@ class NodeTranslationListener
                 // Do nothing for StructureNode objects, skip
                 if ($publicNode instanceof HasNodeInterface && $publicNode->isStructureNode()
                 ) {
+                    if (!empty($entity->getSlug())) {
+                        $entity->setSlug('')->setUrl($entity->getFullSlug());
+                        $em->persist($entity);
+                        $em->flush($entity);
+
+                        $this->updateNodeChildren($entity, $em);
+                    }
+
                     continue;
                 }
 
