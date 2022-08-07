@@ -30,8 +30,8 @@ class NodeLocaleListener implements EventSubscriberInterface
         if (\count($availableLocales) > 1) {
             if ($request->query->has('nodeLocale')) {
                 $nodeLocale = $request->query->get('nodeLocale');
-            } elseif ($this->session->has('nodeLocale')) {
-                $nodeLocale = $this->session->get('nodeLocale');
+            } elseif ($request->getSession() && $request->getSession()->has('nodeLocale')) {
+                $nodeLocale = $request->getSession()->get('nodeLocale');
             }
 
             if (empty($nodeLocale) || !\in_array($nodeLocale, $availableLocales, true)) {
