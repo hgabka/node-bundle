@@ -1275,7 +1275,7 @@ class NodeAdminController extends CRUDController
             $parentsAreOk = true;
         }
 
-        return $this->render(
+        return $this->renderWithExtraParams(
             '@HgabkaNode/NodeAdmin/pagenottranslated.html.twig',
             [
                 'node' => $node,
