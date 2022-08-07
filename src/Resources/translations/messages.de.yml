@@ -16,3 +16,7 @@ modal:
 
 pages:
     copynotavailable: "Bitte zuerst die übergeordnete Seite übersetzen."
+
+hg_node:
+    form:
+        reset: Zurücksetzen
