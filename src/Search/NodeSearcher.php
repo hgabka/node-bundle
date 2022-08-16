@@ -60,6 +60,7 @@ class NodeSearcher
                            ->orderBy('nt.weight')
                            ->addOrderBy('nt.weight');
 
+
         if (!empty($lang)) {
             $qb
                 ->andWhere('nt.lang = :lang')
