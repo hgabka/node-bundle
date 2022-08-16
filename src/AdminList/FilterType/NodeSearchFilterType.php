@@ -37,7 +37,7 @@ class NodeSearchFilterType extends AbstractORMFilterType
         if (empty($data['value'])) {
             return;
         }
-        $res = $this->nodeSearcher->search($data['value']);
+        $res = $this->nodeSearcher->search($data['value'], [], [], null, false);
         $comparator = $data['comparator'] ?? 'contains';
 
         if (!empty($res)) {
