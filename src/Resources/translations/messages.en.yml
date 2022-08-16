@@ -80,6 +80,7 @@ hg_node:
         offline.raw:                        Offline
         "go_to_draft_version.%url%.raw":    (Go to <a href="%url%">draft version</a>)
     admin:
+        back_to_list: List of pages
         node:
             label: CMS pages
             list: Administration
