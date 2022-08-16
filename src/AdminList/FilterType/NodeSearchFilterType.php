@@ -2,7 +2,6 @@
 
 namespace Hgabka\NodeBundle\AdminList\FilterType;
 
-use array_unique;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Search\NodeSearcher;
 use Hgabka\UtilsBundle\AdminList\FilterType\ORM\AbstractORMFilterType;
