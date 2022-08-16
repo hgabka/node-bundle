@@ -124,6 +124,7 @@ hg_node:
                 created_at: Created At
                 updated_at: Updated At
                 online:     Online
+                search:     Search expression
 
     tab:
         properties:
