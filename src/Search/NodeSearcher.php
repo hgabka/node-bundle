@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\PagePartBundle\Entity\PagePartRef;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
@@ -44,7 +45,7 @@ class NodeSearcher
      * @param null   $rootNode        - csak ezen node alatt keressen, ha null, akkor minden node jöhet
      * @param null   $lang            - csak ezen nyelvű változatokban keres, ha null, akkor az aktuális nyelv lesz, ha más üres érték, akkor nincs nyelvi megkötés
      */
-    public function search(string $search, array $pageClasses, array $pagepartClasses, $rootNode = null, $lang = null)
+    public function search(string $search, array $pageClasses = [], array $pagepartClasses = [], $rootNode = null, $lang = null)
     {
         if (null === $lang) {
             $lang = $this->hgabkaUtils->getCurrentLocale();
@@ -80,10 +81,18 @@ class NodeSearcher
                ->setParameter('right', $rootNode->getRight());
         }
 
+        if (empty($pageClasses)) {
+            $pageClasses = $this->getAllPageClasses();
+        }
+
         if (!empty($pageClasses)) {
             $qb
                 ->andWhere($qb->expr()->in('v.refEntityName', array_keys($pageClasses)))
             ;
+        }
+
+        if (empty($pagepartClasses)) {
+            $pagepartClasses = $this->getAllPagePartClasses();
         }
 
         $qb->leftJoin(PagePartRef::class, 'pp', 'WITH', 'pp.pageEntityname = v.refEntityName AND pp.pageId = v.refId');
@@ -201,5 +210,77 @@ class NodeSearcher
         }
 
         return $ret;
+    }
+
+    public function getAllPageClasses()
+    {
+        $res = $this->doctrine->getRepository(Node::class)
+            ->createQueryBuilder('n')
+            ->select('DISTINCT n.refEntityName')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+
+        if (empty($res)) {
+            return [];
+        }
+
+        $classes = [];
+        foreach ($res as $row) {
+            $class = reset($row);
+            $pageFields = $this->getEntityTextFields($class);
+
+            if (!empty($pageFields)) {
+                $classes[$class] = $pageFields;
+            }
+        }
+
+        return $classes;
+    }
+
+    public function getAllPagePartClasses()
+    {
+        $res = $this->doctrine->getRepository(PagePartRef::class)
+            ->createQueryBuilder('n')
+            ->select('DISTINCT n.pagePartEntityname')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+
+        if (empty($res)) {
+            return [];
+        }
+
+        $classes = [];
+        foreach ($res as $row) {
+            $class = reset($row);
+            $pagePartFields = $this->getEntityTextFields($class);
+
+            if (!empty($pagePartFields)) {
+                $classes[$class] = $pagePartFields;
+            }
+        }
+
+        return $classes;
+    }
+
+    protected function getEntityTextFields(string $class)
+    {
+        $textFields = [];
+        $md = $this->doctrine->getClassMetadata($class);
+
+        if ($md) {
+            if (!empty(($fields = $md->fieldMappings))) {
+                foreach ($fields as $name => $fieldData) {
+                    $type = $fieldData['type'] ?? null;
+
+                    if ($type && \in_array($type, ['integer', 'string', 'text', 'json', 'blob', 'json_array', 'array', 'simple_array'], true)) {
+                        $textFields[] = $name;
+                    }
+                }
+            }
+        }
+
+        return $textFields;
     }
 }

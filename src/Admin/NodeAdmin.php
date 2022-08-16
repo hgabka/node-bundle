@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Hgabka\NodeBundle\Search\NodeSearcher;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
@@ -15,6 +16,9 @@ use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 
 class NodeAdmin extends AbstractAdmin
 {
+    /** @var NodeSearcher */
+    protected $nodeSearcher;
+
     protected $baseRoutePattern = 'cms';
 
     protected $accessMapping = [
@@ -25,6 +29,26 @@ class NodeAdmin extends AbstractAdmin
         'revert' => 'REVERT',
         'reorder' => 'REORDER',
     ];
+
+    /**
+     * @param NodeSearcher $nodeSearcher
+     *
+     * @return NodeAdmin
+     */
+    public function setNodeSearcher(NodeSearcher $nodeSearcher): self
+    {
+        $this->nodeSearcher = $nodeSearcher;
+
+        return $this;
+    }
+
+    /**
+     * @return NodeSearcher
+     */
+    public function getNodeSearcher(): NodeSearcher
+    {
+        return $this->nodeSearcher;
+    }
 
     public function configureRoutes(RouteCollectionInterface $collection): void
     {

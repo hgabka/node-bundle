@@ -118,6 +118,7 @@ hg_node:
                 created_at: Létrehozva
                 updated_at: Frissítve
                 online:     Online
+                search:     Keresőkifejezés
 
     tab:
         properties:

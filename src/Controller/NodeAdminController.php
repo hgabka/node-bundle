@@ -36,14 +36,14 @@ use Hgabka\UtilsBundle\Helper\FormWidgets\Tabs\TabPane;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
@@ -544,7 +544,7 @@ class NodeAdminController extends CRUDController
         $newPage = $this->cloneHelper
             ->deepCloneAndSave($originalRef);
 
-        //set the title
+        // set the title
         $title = $request->get('title');
         if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
@@ -552,7 +552,7 @@ class NodeAdminController extends CRUDController
             $newPage->setTitle('New page');
         }
 
-        //set the parent
+        // set the parent
         $parentNodeTranslation = $originalNode->getParent()->getNodeTranslation($this->locale, true);
         $parent = $parentNodeTranslation->getPublicNodeVersion()->getRef($this->em);
         $newPage->setParent($parent);
@@ -936,7 +936,7 @@ class NodeAdminController extends CRUDController
             if ('POST' === $request->getMethod()) {
                 $nodeVersionIsLocked = $this->isNodeVersionLocked($nodeTranslation, true);
 
-                //Check the version timeout and make a new nodeversion if the timeout is passed
+                // Check the version timeout and make a new nodeversion if the timeout is passed
                 $thresholdDate = date(
                     'Y-m-d H:i:s',
                     time() - $this->getParameter(
@@ -1339,8 +1339,8 @@ class NodeAdminController extends CRUDController
      */
     private function renderNodeNotTranslatedPage(Node $node)
     {
-        //try to find a parent node with the correct translation, if there is none allow copy.
-        //if there is a parent but it doesn't have the language to copy to don't allow it
+        // try to find a parent node with the correct translation, if there is none allow copy.
+        // if there is a parent but it doesn't have the language to copy to don't allow it
         $parentNode = $node->getParent();
         if ($parentNode) {
             $parentNodeTranslation = $parentNode->getNodeTranslation(
