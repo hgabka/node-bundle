@@ -42,11 +42,17 @@ class NodeSearchFilterType extends AbstractORMFilterType
             $ids = [];
             foreach ($res as $row) {
                 /** @var NodeTranslation $nt */
-                $nt = $row['nodeTranslation'];
-                $ids[] = $nt->getNode()->getId();
+                $nt = $row['nodeTranslation'] ?? null;
+                if ($nt instaceof NodeTranslation) {
+                    $ids[] = $nt->getNode()->getId();
+                }    
             }
 
-            $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+            if (!empty($ids)) {
+                $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+            } else {
+                $this->queryBuilder->andWhere('1=0');
+            }
         } else {
             $this->queryBuilder->andWhere('1=0');
         }
