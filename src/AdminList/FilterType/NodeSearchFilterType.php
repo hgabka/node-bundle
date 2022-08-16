@@ -47,6 +47,8 @@ class NodeSearchFilterType extends AbstractORMFilterType
             }
 
             $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+        } else {
+            $this->queryBuilder->andWhere('1=0');
         }
     }
 
