@@ -42,8 +42,10 @@ class NodeSearchFilterType extends AbstractORMFilterType
             $ids = [];
             foreach ($res as $row) {
                 /** @var NodeTranslation $nt */
-                $nt = $row['nodeTranslation'];
-                $ids[] = $nt->getNode()->getId();
+                $nt = $row['nodeTranslation'] ?? null;
+                if ($nt instaceof NodeTranslation) {
+                    $ids[] = $nt->getNode()->getId();
+                }    
             }
 
             if (!empty($ids)) {
