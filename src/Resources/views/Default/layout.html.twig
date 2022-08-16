@@ -21,3 +21,10 @@
         {% endfor %}
     {% endif %}
 {% endblock %}
+
+{% block admin_breadcrumb %}
+    <ul class="breadcrumb app__content__breadcrumb sub-breadcrumb">
+        <li><a style="margin-left:55px;color:#333"href="{{ path('sonata_admin_dashboard') }}">« {{ 'kuma_admin.back'|trans }}</a></li>
+        <li><a style="margin-left:55px;color:#333"href="{{ path('admin_hgabka_node_node_list') }}">« {{ 'hg_node.admin.back_to_list'|trans }}</a></li>
+    </ul>
+{% endblock %}
