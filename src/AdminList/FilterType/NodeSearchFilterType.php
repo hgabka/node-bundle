@@ -24,6 +24,7 @@ class NodeSearchFilterType extends AbstractORMFilterType
 
     public function bindRequest(Request $request, array &$data, $uniqueId)
     {
+        $data['comparator'] = $request->query->get('filter_comparator_' . $uniqueId);
         $data['value'] = $request->query->get('filter_value_' . $uniqueId);
     }
 
@@ -37,6 +38,7 @@ class NodeSearchFilterType extends AbstractORMFilterType
             return;
         }
         $res = $this->nodeSearcher->search($data['value']);
+        $comparator = $data['comparator'] ?? 'contains';
 
         if (!empty($res)) {
             $ids = [];
@@ -45,16 +47,26 @@ class NodeSearchFilterType extends AbstractORMFilterType
                 $nt = $row['nodeTranslation'] ?? null;
                 if ($nt instanceof NodeTranslation) {
                     $ids[] = $nt->getNode()->getId();
-                }    
+                }
             }
 
             if (!empty($ids)) {
-                $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+                $ids = array_unique($ids);
+
+                if ('contains' === $comparator) {
+                    $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+                } else {
+                    $this->queryBuilder->andWhere($this->getAlias() . 'id NOT IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+                }
             } else {
-                $this->queryBuilder->andWhere('1=0');
+                if ('contains' === $comparator) {
+                    $this->queryBuilder->andWhere('1=0');
+                }
             }
         } else {
-            $this->queryBuilder->andWhere('1=0');
+            if ('contains' === $comparator) {
+                $this->queryBuilder->andWhere('1=0');
+            }
         }
     }
 

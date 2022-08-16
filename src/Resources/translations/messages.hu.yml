@@ -124,7 +124,7 @@ hg_node:
                 created_at: Létrehozva
                 updated_at: Frissítve
                 online:     Online
-                search:     Keresőkifejezés
+                search:     Oldal tartalom
 
     tab:
         properties:
