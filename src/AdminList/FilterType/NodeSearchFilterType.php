@@ -53,9 +53,9 @@ class NodeSearchFilterType extends AbstractORMFilterType
             if (!empty($ids)) {
                 $ids = array_unique($ids);
                 if ('contains' === $comparator) {
-                    $this->queryBuilder->andWhere($this->getAlias() . 'id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+                    $this->queryBuilder->andWhere('n.id IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
                 } else {
-                    $this->queryBuilder->andWhere($this->getAlias() . 'id NOT IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
+                    $this->queryBuilder->andWhere('n.id NOT IN (:ids_' . $uniqueId . ')')->setParameter('ids_' . $uniqueId, $ids);
                 }
             } else {
                 if ('contains' === $comparator) {
