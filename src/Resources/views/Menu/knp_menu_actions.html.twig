@@ -43,7 +43,7 @@
     {% else %}
     {%- import 'knp_menu.html.twig' as macros -%}
     {%- set renderType = item.getExtra('renderType', 'a') -%}
-    <{{ renderType }} {{ ('a' == renderType ? 'href="' ~ (item.uri | default('#')) ~ '"' : '') | raw }}{{ macros.attributes(item.linkAttributes) }}>{{ block('label') }}</{{ renderType }}>
+    <{{ renderType }} {{ ('a' == renderType ? 'href="' ~ (item.uri | default('#subac')) ~ '"' : '') | raw }}{{ macros.attributes(item.linkAttributes) }}>{{ block('label') }}</{{ renderType }}>
     {% endif %}
 {% endblock %}
 
