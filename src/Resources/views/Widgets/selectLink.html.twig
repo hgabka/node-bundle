@@ -63,7 +63,7 @@
         {% set slug = "[%s]" | format("NT" ~ item.nt_id) %}
 
     <li rel="page" class="{% if item.online == 0 %}jstree-node--offline{% endif %}"{% if item.online == 0 %} data-jstree='{"type":"offline"}'{% endif %}>
-        <a href="#" class="js-url-chooser-link-select" data-slug="{{ slug }}" data-id="{{ item.id }}">
+        <a href="#title" class="js-url-chooser-link-select" data-slug="{{ slug }}" data-id="{{ item.id }}">
             {{ item.title }}
         </a>
         <ul>
