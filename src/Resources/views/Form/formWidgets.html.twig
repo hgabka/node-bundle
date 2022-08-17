@@ -45,7 +45,7 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                 {% for choice in linkType.vars.choices %}
                                     <li data-name="{{ linkType.vars.full_name }}" data-id="{{ linkType.vars.id }}" class="{% if linkType.vars.attr is defined %}{{ linkType.vars.attr.class }}{% endif %}" data-value="{{ choice.value }}">
-                                        <a href="#">{{ choice.label | trans }}</a>
+                                        <a href="#choice">{{ choice.label | trans }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
