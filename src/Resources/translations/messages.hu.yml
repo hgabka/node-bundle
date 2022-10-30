@@ -22,7 +22,7 @@ action:
     duplicate: Másolás
 
 modal:
-    sourcelanguage: modal.sourcelanguage
+    sourcelanguage: Forrás nyelvi verzió
 
 pages:
     copynotavailable: Másolás nem lehetséges
