@@ -341,7 +341,7 @@
 {% if node.nodeTranslations(true) is not empty %}
     {% for translation in node.nodeTranslations(true) %}
         {% if translation.lang != nodeVersion.nodeTranslation.lang %}
-            {% set translationOptions = translationOptions|merge({(translation.lang): translation.id}) %}
+            {% set translationOptions = translationOptions|merge({('wt_kuma_extension.locales.'~translation.lang)|trans: translation.id}) %}
         {% endif %}
     {% endfor %}
 {% endif %}
