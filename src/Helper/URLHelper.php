@@ -88,7 +88,7 @@ class URLHelper
                     $nodeTranslationId = $match[3];
 
                     foreach ($map as $nodeTranslation) {
-                        if ($nodeTranslation['id'] === $nodeTranslationId) {
+                        if ((int) $nodeTranslation['id'] === (int) $nodeTranslationId) {
                             $urlParams = ['url' => $nodeTranslation['url'], '_locale' => $nodeTranslation['lang']];
                             $nodeTranslationFound = true;
                             // Only add locale if multilingual site
