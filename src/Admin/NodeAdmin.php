@@ -19,8 +19,6 @@ class NodeAdmin extends AbstractAdmin
     /** @var NodeSearcher */
     protected $nodeSearcher;
 
-    protected $baseRoutePattern = 'cms';
-
     protected $accessMapping = [
         'copy' => 'COPY',
         'duplicate' => 'DUPLICATE',
@@ -48,6 +46,11 @@ class NodeAdmin extends AbstractAdmin
         $this->nodeSearcher = $nodeSearcher;
 
         return $this;
+    }
+
+    public function generateBaseRoutePattern(bool $isChildAdmin = false): string
+    {
+        return 'cms';
     }
 
     public function configureRoutes(RouteCollectionInterface $collection): void
