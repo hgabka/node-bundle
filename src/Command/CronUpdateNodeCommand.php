@@ -5,16 +5,16 @@ namespace Hgabka\NodeBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
 use Hgabka\NodeBundle\Helper\NodeAdmin\NodeAdminPublisher;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+#[AsCommand(name: 'hgabka:nodes:cron', description: 'Does everything that needs to be run in a cron job', hidden: false)]
 class CronUpdateNodeCommand extends Command
 {
-    protected static $defaultName = 'hgabka:nodes:cron';
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TokenStorageInterface $tokenStorage,
@@ -29,8 +29,7 @@ class CronUpdateNodeCommand extends Command
      */
     protected function configure()
     {
-        $this->setName(static::$defaultName)
-            ->setDescription('Do everything that needs to be run in a cron job.')
+        $this
             ->setHelp('The <info>hgabka:nodes:cron</info> will loop over all queued node translation action entries and update the nodetranslations if needed.');
     }
 

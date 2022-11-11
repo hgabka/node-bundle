@@ -4,33 +4,22 @@ namespace Hgabka\NodeBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * ConvertSequenceNumberToWeightCommand.
- */
+#[AsCommand(name: 'hgabka:nodes:convertsequencenumbertoweight', description: 'Sets all the nodetranslations weights based on the nodes sequencenumber', hidden: false)]
 class ConvertSequenceNumberToWeightCommand extends Command
 {
-    protected static $defaultName = 'hgabka:nodes:convertsequencenumbertoweight';
-
-    /** @var EntityManagerInterface */
-    protected $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(protected readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-        $this->entityManager = $entityManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
-        $this->setName(static::$defaultName)
-            ->setDescription('Set all the nodetranslations weights based on the nodes sequencenumber')
+        $this
             ->setHelp('The <info>Node:nodetranslations:updateweights</info> will loop over all nodetranslation and set their weight based on the nodes sequencenumber.');
     }
 

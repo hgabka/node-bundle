@@ -2,18 +2,17 @@
 
 namespace Hgabka\NodeBundle\EventListener;
 
-use count;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
-use in_array;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\RouterInterface;
 use Throwable;
 
 class NodeLocaleListener implements EventSubscriberInterface
 {
-    public function __construct(private HgabkaUtils $utils) {}
+    public function __construct(private HgabkaUtils $utils)
+    {
+    }
 
     public function onKernelRequest(RequestEvent $event)
     {

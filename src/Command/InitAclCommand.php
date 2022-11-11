@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\MaskBuilder;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,18 +15,11 @@ use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Model\AclProviderInterface;
 use Symfony\Component\Security\Acl\Model\ObjectIdentityRetrievalStrategyInterface;
 
-/**
- * Basic initialization of ACL entries for all nodes.
- */
+#[AsCommand(name: 'hgabka:init:acl', description: 'Basic initialization of ACL for projects', hidden: false)]
 class InitAclCommand extends Command
 {
-    protected static $defaultName = 'hgabka:init:acl';
-
     /** @var ObjectIdentityRetrievalStrategy */
     protected $oiaStrategy;
-
-    /** @var EntityManagerInterface */
-    private $entityManager;
 
     /** @var AclProviderInterface */
     private $aclProvider;
@@ -33,11 +27,9 @@ class InitAclCommand extends Command
     /** @var string */
     private $publicAccessRole;
 
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(protected readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-
-        $this->entityManager = $manager;
     }
 
     public function setAclProvider(AclProviderInterface $provider)
@@ -74,8 +66,7 @@ class InitAclCommand extends Command
      */
     protected function configure()
     {
-        $this->setName(static::$defaultName)
-            ->setDescription('Basic initialization of ACL for projects')
+        $this
             ->setHelp('The <info>hgabka:init:acl</info> will create basic ACL entries for the nodes of the current project');
     }
 
