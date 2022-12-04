@@ -6,7 +6,7 @@ use Hgabka\NodeBundle\Event\CopyPageTranslationNodeEvent;
 use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Event\NodeEvent;
 use Hgabka\NodeBundle\Event\RecopyPageTranslationNodeEvent;
-use Symfony\Bridge\Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -19,7 +19,7 @@ class LogPageEventsSubscriber implements EventSubscriberInterface
      */
     private ?UserInterface $user = null;
 
-    public function __construct(private readonly Logger $logger, private readonly Security $security) {}
+    public function __construct(private readonly LoggerInterface $logger, private readonly Security $security) {}
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
