@@ -7,6 +7,7 @@ use Hgabka\NodeBundle\Event\Events;
 use Hgabka\NodeBundle\Event\NodeEvent;
 use Hgabka\NodeBundle\Event\RecopyPageTranslationNodeEvent;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,29 +15,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class LogPageEventsSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
      * @var UserInterface
      */
-    private $user;
+    private ?UserInterface $user = null;
 
     /**
      * @param Logger                $logger       The logger
      * @param TokenStorageInterface $tokenStorage The security token storage
      */
-    public function __construct(Logger $logger, TokenStorageInterface $tokenStorage)
-    {
-        $this->logger = $logger;
-        $this->tokenStorage = $tokenStorage;
-    }
+    public function __construct(private readonly Logger $logger, private readonly Security $security) {}
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
@@ -130,7 +117,7 @@ class LogPageEventsSubscriber implements EventSubscriberInterface
     private function getUser()
     {
         if (null === $this->user) {
-            $this->user = $this->tokenStorage->getToken()->getUser();
+            $this->user = $this->security->getUser();
         }
 
         return $this->user;
