@@ -103,7 +103,7 @@ services:
 
     hgabka_node.log_page_events.subscriber:
         class: Hgabka\NodeBundle\EventListener\LogPageEventsSubscriber
-        arguments: ['@hgabka_utils.logger', '@security.token_storage']
+        arguments: ['@hgabka_utils.logger', '@security.helper']
         tags:
             - { name: kernel.event_subscriber }
 
