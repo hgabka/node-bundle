@@ -15,6 +15,7 @@ use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\FlashMessages\FlashTypes;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\SlugifierInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -25,45 +26,18 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class NodeTranslationListener
 {
-    private $logger;
-    private $nodeTranslations;
-
-    /**
-     * @var SlugifierInterface
-     */
-    private $slugifier;
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var HgabkaUtils
-     */
-    private $hgabkaUtils;
-
-    /**
-     * @var PagesConfiguration
-     */
-    private $pagesConfiguration;
+    private array $nodeTranslations = [];
 
     /**
      * @param Logger $logger The logger
      */
     public function __construct(
-        RequestStack $requestStack,
-        $logger,
-        SlugifierInterface $slugifier,
-        HgabkaUtils $hgabkaUtils,
-        PagesConfiguration $pagesConfiguration
-    ) {
-        $this->nodeTranslations = [];
-        $this->requestStack = $requestStack;
-        $this->logger = $logger;
-        $this->slugifier = $slugifier;
-        $this->hgabkaUtils = $hgabkaUtils;
-        $this->pagesConfiguration = $pagesConfiguration;
-    }
+        private readonly RequestStack $requestStack,
+        private readonly LoggerInterface $logger,
+        private readonly SlugifierInterface $slugifier,
+        private readonly HgabkaUtils $hgabkaUtils,
+        private readonly PagesConfiguration $pagesConfiguration
+    ) {}
 
     public function setRequestStack(RequestStack $requestStack)
     {
@@ -164,7 +138,7 @@ class NodeTranslationListener
     private function setSlugWhenEmpty(
         NodeTranslation $nodeTranslation,
         EntityManager $em
-    ) {
+    ): void {
         $publicNode = $nodeTranslation->getRef($em);
 
         // Do nothing for StructureNode objects, skip
@@ -183,7 +157,7 @@ class NodeTranslationListener
         }
     }
 
-    private function ensureSlugIsSlugified(NodeTranslation $nodeTranslation)
+    private function ensureSlugIsSlugified(NodeTranslation $nodeTranslation): void
     {
         if (null !== $nodeTranslation->getSlug()) {
             $nodeTranslation->setSlug(
@@ -201,7 +175,7 @@ class NodeTranslationListener
     private function updateNodeChildren(
         NodeTranslation $node,
         EntityManager $em
-    ) {
+    ): void {
         $children = $node->getNode()->getChildren();
         if (\count($children) > 0) {
             // @var Node $child
@@ -233,7 +207,7 @@ class NodeTranslationListener
      * @return bool|NodeTranslation returns the node when all is well because
      *                              it has to be saved
      */
-    private function updateUrl(NodeTranslation $nodeTranslation, $em)
+    private function updateUrl(NodeTranslation $nodeTranslation, EntityManager $em): bool|NodeTranslation
     {
         $result = $this->ensureUniqueUrl($nodeTranslation, $em);
 
@@ -282,8 +256,8 @@ class NodeTranslationListener
     private function ensureUniqueUrl(
         NodeTranslation &$translation,
         EntityManager $em,
-        $flashes = []
-    ) {
+        array $flashes = []
+    ): bool {
         // Can't use GetRef here yet since the NodeVersions aren't loaded yet for some reason.
         $nodeVersion = $translation->getPublicNodeVersion();
         $page = $em->getRepository($nodeVersion->getRefEntityName())
@@ -378,7 +352,7 @@ class NodeTranslationListener
      *
      * @return string incremented string
      */
-    private static function incrementString($string, $append = '-v')
+    private static function incrementString(string $string, string $append = '-v'): string
     {
         $finalDigitGrabberRegex = '/\d+$/';
         $matches = [];
@@ -396,7 +370,7 @@ class NodeTranslationListener
         return $string . $append . '1';
     }
 
-    private function isInRequestScope()
+    private function isInRequestScope(): bool
     {
         return $this->requestStack && $this->requestStack->getCurrentRequest();
     }
