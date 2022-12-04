@@ -10,9 +10,7 @@ use Throwable;
 
 class NodeLocaleListener implements EventSubscriberInterface
 {
-    public function __construct(private HgabkaUtils $utils)
-    {
-    }
+    public function __construct(private readonly HgabkaUtils $utils) {}
 
     public function onKernelRequest(RequestEvent $event)
     {
