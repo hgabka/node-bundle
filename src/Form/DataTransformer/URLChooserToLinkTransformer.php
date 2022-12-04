@@ -29,7 +29,7 @@ class URLChooserToLinkTransformer implements DataTransformerInterface
     public function reverseTransform(mixed $value): mixed
     {
         if (empty($value)) {
-            return;
+            return null;
         }
 
         return $value['link_url'];
