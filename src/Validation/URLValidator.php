@@ -7,9 +7,8 @@ trait URLValidator
     /**
      * Check if given text is e-mail address.
      *
-     * @param mixed $link
      */
-    public function isEmailAddress($link)
+    public function isEmailAddress($link): bool
     {
         return filter_var($link, \FILTER_VALIDATE_EMAIL);
     }
@@ -17,11 +16,10 @@ trait URLValidator
     /**
      * Check if given text is an internal link.
      *
-     * @param mixed $link
      */
-    public function isInternalLink($link)
+    public function isInternalLink(?string $link): bool
     {
-        preg_match_all("/\[(([a-z_A-Z]+):)?NT([0-9]+)\]/", $link, $matches, \PREG_SET_ORDER);
+        preg_match_all("/\[(([a-z_A-Z]+):)?NT([0-9]+)\]/", (string) $link, $matches, \PREG_SET_ORDER);
 
         return \count($matches) > 0;
     }
@@ -29,11 +27,10 @@ trait URLValidator
     /**
      * Check if given text is an internal media link.
      *
-     * @param mixed $link
      */
-    public function isInternalMediaLink($link)
+    public function isInternalMediaLink(?string $link): bool
     {
-        preg_match_all("/\[(([a-z_A-Z]+):)?M([0-9]+)\]/", $link, $matches, \PREG_SET_ORDER);
+        preg_match_all("/\[(([a-z_A-Z]+):)?M([0-9]+)\]/", (string) $link, $matches, \PREG_SET_ORDER);
 
         return \count($matches) > 0;
     }
