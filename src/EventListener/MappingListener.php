@@ -10,20 +10,7 @@ use Hgabka\NodeBundle\Entity\QueuedNodeTranslationAction;
  */
 class MappingListener
 {
-    /**
-     * @var string
-     */
-    private $className;
-
-    /**
-     * Constructor.
-     *
-     * @param string $className
-     */
-    public function __construct($className)
-    {
-        $this->className = $className;
-    }
+    public function __construct(private readonly ?string $className) {}
 
     /**
      * Called when class meta data is fetched.
