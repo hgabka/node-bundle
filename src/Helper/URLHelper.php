@@ -162,7 +162,7 @@ class URLHelper
     private function getMediaMap()
     {
         if (null === $this->mediaMap) {
-            $sql = 'SELECT id, url FROM kuma_media';
+            $sql = 'SELECT id, url FROM hg_media_media';
             $stmt = $this->em->getConnection()->prepare($sql);
             $result = $stmt->execute();
             $this->mediaMap = $result->fetchAllAssociative();
