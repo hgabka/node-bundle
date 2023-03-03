@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractFolderPageController extends AbstractController
+class FolderPageController extends AbstractController
 {
     public function __construct(protected URLHelper $URLHelper)
     {
