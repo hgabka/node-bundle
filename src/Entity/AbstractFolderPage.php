@@ -61,6 +61,6 @@ abstract class AbstractFolderPage extends AbstractPage implements SlugActionInte
 
     public function getControllerAction(): string
     {
-        return FolderPageController::class;
+        return FolderPageController::class . '::service';
     }
 }
