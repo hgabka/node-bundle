@@ -21,7 +21,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -48,7 +48,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $loader->load('services.yml');
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $cmfRoutingExtraConfig['chain']['routers_by_id']['router.default'] = 100;
         $cmfRoutingExtraConfig['chain']['replace_symfony_router'] = true;
@@ -64,7 +64,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig('twig', $twigConfig);
     }
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $container->setAlias('router', 'cmf_routing.router');
         $container->getAlias('router')->setPublic(true);
