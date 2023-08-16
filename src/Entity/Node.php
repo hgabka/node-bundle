@@ -81,6 +81,8 @@ class Node implements GedmoNode, EntityInterface
     #[ORM\Column(name: 'internal_name', type: 'string', nullable: true)]
     protected ?string $internalName = null;
 
+    protected ?self $sibling = null;
+
     /**
      * constructor.
      */
@@ -324,5 +326,15 @@ class Node implements GedmoNode, EntityInterface
         $this->refEntityName = $refEntityName;
 
         return $this;
+    }
+
+    public function getSibling(): ?self
+    {
+        return $this->sibling;
+    }
+
+    public function setSibling(self $sibling): void
+    {
+        $this->sibling = $sibling;
     }
 }
