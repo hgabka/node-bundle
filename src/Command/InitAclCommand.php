@@ -64,7 +64,7 @@ class InitAclCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>hgabka:init:acl</info> will create basic ACL entries for the nodes of the current project');
