@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
@@ -44,22 +46,22 @@ class NodeTranslationListener
         $this->requestStack = $requestStack;
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(PrePersistEventArgs $args)
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof NodeTranslation) {
-            $this->setSlugWhenEmpty($entity, $args->getEntityManager());
+            $this->setSlugWhenEmpty($entity, $args->getObjectManager());
             $this->ensureSlugIsSlugified($entity);
         }
     }
 
-    public function preUpdate(LifecycleEventArgs $args)
+    public function preUpdate(PreUpdateEventArgs $args)
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof NodeTranslation) {
-            $this->setSlugWhenEmpty($entity, $args->getEntityManager());
+            $this->setSlugWhenEmpty($entity, $args->getObjectManager());
             $this->ensureSlugIsSlugified($entity);
         }
     }
@@ -75,7 +77,7 @@ class NodeTranslationListener
      */
     public function onFlush(OnFlushEventArgs $args)
     {
-        $em = $args->getEntityManager();
+        $em = $args->getObjectManager();
 
         // Collect all nodetranslations that are updated
         foreach ($em->getUnitOfWork()->getScheduledEntityUpdates() as $entity) {
@@ -90,7 +92,7 @@ class NodeTranslationListener
      */
     public function postFlush(PostFlushEventArgs $args)
     {
-        $em = $args->getEntityManager();
+        $em = $args->getObjectManager();
 
         foreach ($this->nodeTranslations as $entity) {
             /** @var $entity NodeTranslation */
