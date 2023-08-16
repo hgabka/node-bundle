@@ -27,7 +27,7 @@ class CronUpdateNodeCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>hgabka:nodes:cron</info> will loop over all queued node translation action entries and update the nodetranslations if needed.');
