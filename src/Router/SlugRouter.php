@@ -124,7 +124,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @api
      */
-    public function setContext(RequestContext $context)
+    public function setContext(RequestContext $context): void
     {
         $this->context = $context;
     }
@@ -221,7 +221,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      * @param null|mixed $locale
      * @param mixed      $addLocale
      */
-    protected function addPreviewRoute($locale = null, $addLocale = true)
+    protected function addPreviewRoute($locale = null, $addLocale = true): void
     {
         $routeParameters = $this->getPreviewRouteParameters($locale, $addLocale);
         $this->addRoute(self::$SLUG_PREVIEW . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
@@ -233,7 +233,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      * @param null|mixed $locale
      * @param mixed      $addLocale
      */
-    protected function addSlugRoute($locale = null, $addLocale = true)
+    protected function addSlugRoute($locale = null, $addLocale = true): void
     {
         $routeParameters = $this->getSlugRouteParameters($locale, $addLocale);
         $this->addRoute(self::$SLUG . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
