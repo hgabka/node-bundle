@@ -80,16 +80,20 @@ class SlugController extends AbstractController
         $eventDispatcher = $this->eventDispatcher;
         $eventDispatcher->dispatch($securityEvent, Events::SLUG_SECURITY);
 
+        $params = [
+            'nodetranslation' => $nodeTranslation,
+            'slug' => $url,
+            'page' => $entity,
+            'resource' => $entity,
+            'nodemenu' => $nodeMenu,
+        ];
+
+        if ($preview) {
+            $params['isPreview'] = $preview;
+        }
         // render page
-        $renderContext = new RenderContext(
-            [
-                'nodetranslation' => $nodeTranslation,
-                'slug' => $url,
-                'page' => $entity,
-                'resource' => $entity,
-                'nodemenu' => $nodeMenu,
-            ]
-        );
+        $renderContext = new RenderContext($params);
+        
         if (method_exists($entity, 'getDefaultView')) {
             // @noinspection PhpUndefinedMethodInspection
             $renderContext->setView($entity->getDefaultView());
