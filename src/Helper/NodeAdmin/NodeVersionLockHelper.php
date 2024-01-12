@@ -7,31 +7,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\NodeBundle\Entity\NodeVersionLock;
 use Hgabka\NodeBundle\Repository\NodeVersionLockRepository;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class NodeVersionLockHelper implements ContainerAwareInterface
+class NodeVersionLockHelper
 {
-    use ContainerAwareTrait;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $objectManager;
-
-    public function __construct(ContainerInterface $container, EntityManagerInterface $em)
+    public function __construct(private readonly ParameterBagInterface $params, private readonly EntityManagerInterface $objectManager)
     {
-        $this->setContainer($container);
-        $this->setObjectManager($em);
-    }
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function setObjectManager($objectManager)
-    {
-        $this->objectManager = $objectManager;
     }
 
     /**
@@ -41,7 +23,7 @@ class NodeVersionLockHelper implements ContainerAwareInterface
      */
     public function isNodeVersionLocked(BaseUser $user, NodeTranslation $nodeTranslation, $isPublicNodeVersion)
     {
-        if ($this->container->getParameter('hg_node.lock_enabled')) {
+        if ($this->params->get('hg_node.lock_enabled')) {
             $this->removeExpiredLocks($nodeTranslation);
             $this->createNodeVersionLock($user, $nodeTranslation, $isPublicNodeVersion); // refresh lock
             $locks = $this->getNodeVersionLocksByNodeTranslation($nodeTranslation, $isPublicNodeVersion, $user);
@@ -73,7 +55,7 @@ class NodeVersionLockHelper implements ContainerAwareInterface
 
     protected function removeExpiredLocks(NodeTranslation $nodeTranslation)
     {
-        $threshold = $this->container->getParameter('hg_node.lock_threshold');
+        $threshold = $this->params->get('hg_node.lock_threshold');
         $locks = $this->objectManager->getRepository(NodeVersionLock::class)->getExpiredLocks($nodeTranslation, $threshold);
         foreach ($locks as $lock) {
             $this->objectManager->remove($lock);
@@ -114,7 +96,7 @@ class NodeVersionLockHelper implements ContainerAwareInterface
      */
     protected function getNodeVersionLocksByNodeTranslation(NodeTranslation $nodeTranslation, $isPublicVersion, BaseUser $userToExclude = null)
     {
-        $threshold = $this->container->getParameter('hg_node.lock_threshold');
+        $threshold = $this->params->get('hg_node.lock_threshold');
         /** @var NodeVersionLockRepository $objectRepository */
         $objectRepository = $this->objectManager->getRepository(NodeVersionLock::class);
 
