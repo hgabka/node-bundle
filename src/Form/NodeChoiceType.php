@@ -13,14 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeChoiceType extends AbstractType
 {
-    private RequestStack $requestStack;
-
-    private NodeManager $nodeManager;
-
-    public function __construct(RequestStack $requestStack, NodeManager $nodeManager)
+    public function __construct(private readonly RequestStack $requestStack, private readonly NodeManager $nodeManager)
     {
-        $this->requestStack = $requestStack;
-        $this->nodeManager = $nodeManager;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
