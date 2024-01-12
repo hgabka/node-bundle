@@ -72,17 +72,13 @@ class NodeChoiceType extends AbstractType
         $resolver->setAllowedTypes('root_node', ['null', 'string', Node::class]);
     }
 
-    public function getParent(): ?string
+    public function getParent(): string
     {
         return EntityType::class;
     }
 
     private function getCurrentLocale(): ?string
     {
-        if (null === $this->requestStack->getCurrentRequest()) {
-            return null;
-        }
-
-        return $this->requestStack->getCurrentRequest()->getLocale();
+        return $this->requestStack->getCurrentRequest()?->getLocale();
     }
 }
