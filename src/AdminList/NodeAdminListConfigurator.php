@@ -8,6 +8,7 @@ use Hgabka\NodeBundle\Admin\NodeAdmin;
 use Hgabka\NodeBundle\AdminList\FilterType\NodeSearchFilterType;
 use Hgabka\NodeBundle\Controller\NodeAdminController;
 use Hgabka\NodeBundle\Entity\Node;
+use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\UtilsBundle\AdminList\Configurator\AbstractDoctrineORMAdminListConfigurator;
 use Hgabka\UtilsBundle\AdminList\FilterType\ORM\BooleanFilterType;
 use Hgabka\UtilsBundle\AdminList\FilterType\ORM\DateFilterType;
@@ -17,7 +18,7 @@ use Hgabka\UtilsBundle\Helper\DomainConfigurationInterface;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionDefinition;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * NodeAdminListConfigurator.
@@ -200,7 +201,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     /**
      * @return string
      */
-    public function getBundleName()
+    public function getBundleName(): string
     {
         return 'HgabkaNodeBundle';
     }
@@ -208,9 +209,14 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     /**
      * @return string
      */
-    public function getEntityName()
+    public function getEntityName(): string
     {
         return 'NodeTranslation';
+    }
+
+    public function getEntityClass(): string
+    {
+        return NodeTranslation::class;
     }
 
     /**

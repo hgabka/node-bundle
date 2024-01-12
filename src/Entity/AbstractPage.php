@@ -16,31 +16,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class AbstractPage implements PageInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="id")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     */
     #[ORM\Column(type: 'string')]
     #[Assert\NotBlank]
     protected ?string $title = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true, name="page_title")
-     */
     #[ORM\Column(name: 'page_title', type: 'string', nullable: true)]
     protected ?string $pageTitle = null;
 

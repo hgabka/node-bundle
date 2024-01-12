@@ -1,14 +1,14 @@
 HgabkaNodeBundle_widgets:
     resource: '@HgabkaNodeBundle/Controller/WidgetsController.php'
-    type:     annotation
+    type:     attribute
     prefix:   /cms/nodewidgets
 
 HgabkaNodeBundle_nodes:
     resource: '@HgabkaNodeBundle/Controller/NodeAdminController.php'
-    type:     annotation
+    type:     attribute
     prefix:   /cms/nodes
 
 hgabka_node.url_replace.controller:
     resource: '@HgabkaNodeBundle/Controller/UrlReplaceController.php'
-    type:     annotation
+    type:     attribute
     prefix:   /cms/url-replace

@@ -18,7 +18,7 @@ use Hgabka\UtilsBundle\FlashMessages\FlashTypes;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\SlugifierInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Monolog\Logger;
+use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 

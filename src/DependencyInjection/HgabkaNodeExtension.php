@@ -45,7 +45,7 @@ class HgabkaNodeExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('hgabka_node.user_entity_class', $config['user_entity_class']);
         $container->setParameter('hgabka_node.route_config', $config['route']);
 
-        $loader->load('services.yml');
+        $loader->load('services.yaml');
     }
 
     public function prepend(ContainerBuilder $container): void
