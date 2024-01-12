@@ -2,6 +2,7 @@
 
 namespace Hgabka\NodeBundle\Repository;
 
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Hgabka\NodeBundle\Entity\HasNodeInterface;
 use Hgabka\NodeBundle\Entity\Node;
@@ -306,20 +307,16 @@ class NodeRepository extends NestedTreeRepository
     ) {
         $connection = $this->_em->getConnection();
         $qb = $connection->createQueryBuilder();
-        $databasePlatformName = $connection->getDatabasePlatform()->getName();
+        $databasePlatform = $connection->getDatabasePlatform();
         $createIfStatement = function (
             $expression,
             $trueValue,
             $falseValue
-        ) use ($databasePlatformName) {
-            switch ($databasePlatformName) {
-                case 'sqlite':
-                    $statement = 'CASE WHEN %s THEN %s ELSE %s END';
-
-                    break;
-                default:
-                    $statement = 'IF(%s, %s, %s)';
-            }
+        ) use ($databasePlatform) {
+            $statement = match (true) {
+                $databasePlatform instanceof SqlitePlatform => 'CASE WHEN %s THEN %s ELSE %s END',
+                default => 'IF(%s, %s, %s)'
+            };
 
             return sprintf($statement, $expression, $trueValue, $falseValue);
         };
