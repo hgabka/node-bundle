@@ -59,6 +59,7 @@ services:
         class: Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper
         autowire: true
         autoconfigure: true
+        public: false
 
     Hgabka\NodeBundle\Helper\NodeAdmin\NodeVersionLockHelper:
         alias: hgabka_node.admin_node.node_version_lock_helper
