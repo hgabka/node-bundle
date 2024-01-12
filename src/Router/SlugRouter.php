@@ -26,36 +26,25 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 {
-    public const STRATEGY_PREFIX = 'prefix';
-    public const STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
-    public const STRATEGY_CUSTOM = 'custom';
+    public const string STRATEGY_PREFIX = 'prefix';
+    public const string STRATEGY_PREFIX_EXCEPT_DEFAULT = 'prefix_except_default';
+    public const string STRATEGY_CUSTOM = 'custom';
 
-    public static $SLUG = '_slug';
-    public static $SLUG_PREVIEW = '_slug_preview';
+    public static string $SLUG = '_slug';
+    public static string $SLUG_PREVIEW = '_slug_preview';
 
-    /** @var RequestContext */
-    protected $context;
+    protected ?RequestContext $context = null;
 
-    /** @var RouteCollection */
-    protected $routeCollection;
+    protected ?RouteCollection $routeCollection = null;
 
-    /** @var UrlGenerator */
-    protected $urlGenerator;
+    protected ?UrlGenerator $urlGenerator = null;
 
-    /** @var ContainerInterface */
-    protected $container;
+    protected ?ContainerInterface $container = null;
 
-    /** @var string */
-    protected $slugPattern;
+    protected ?string $slugPattern = null;
 
-    /** @var HgabkaUtils */
-    protected $hgabkaUtils;
+    protected ?HgabkaUtils $hgabkaUtils = null;
 
-    /**
-     * The constructor for this service.
-     *
-     * @param ContainerInterface $container
-     */
     public function __construct($container, HgabkaUtils $hgabkaUtils)
     {
         $this->container = $container;
@@ -63,17 +52,6 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         $this->hgabkaUtils = $hgabkaUtils;
     }
 
-    /**
-     * Match given urls via the context to the routes we defined.
-     * This functionality re-uses the default Symfony way of routing and its
-     * components.
-     *
-     * @param string $pathinfo
-     *
-     * @throws ResourceNotFoundException
-     *
-     * @return array
-     */
     public function match(string $pathinfo): array
     {
         $urlMatcher = new UrlMatcher(
@@ -97,13 +75,6 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $result;
     }
 
-    /**
-     * Gets the request context.
-     *
-     * @return RequestContext The context
-     *
-     * @api
-     */
     public function getContext(): RequestContext
     {
         if (!isset($this->context)) {
@@ -117,39 +88,23 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $this->context;
     }
 
-    /**
-     * Sets the request context.
-     *
-     * @param RequestContext $context The context
-     *
-     * @api
-     */
     public function setContext(RequestContext $context): void
     {
         $this->context = $context;
     }
 
-    /**
-     * Generate an url for a supplied route.
-     *
-     * @param string   $name          The path
-     * @param array    $parameters    The route parameters
-     * @param bool|int $referenceType The type of reference to be generated (one of the UrlGeneratorInterface constants)
-     *
-     * @return null|string
-     */
     public function generate(string $name, array $parameters = [], int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): string
     {
         $strategy = $this->getRouteConfig()['strategy'];
         $prefixed = \in_array($strategy, [self::STRATEGY_PREFIX, self::STRATEGY_PREFIX_EXCEPT_DEFAULT], true);
         if (self::STRATEGY_PREFIX_EXCEPT_DEFAULT === $strategy
             && ((isset($parameters['_locale']) && $parameters['_locale'] === $this->hgabkaUtils->getDefaultLocale())
-            || !isset($parameters['_locale']) && $this->hgabkaUtils->getCurrentLocale() === $this->hgabkaUtils->getDefaultLocale())
-            ) {
+                || !isset($parameters['_locale']) && $this->hgabkaUtils->getCurrentLocale() === $this->hgabkaUtils->getDefaultLocale())
+        ) {
             $prefixed = false;
         }
 
-        if (\in_array($name, ['_slug', '_slug_preview'], true) && \count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
+        if (\in_array($name, [self::$SLUG, self::$SLUG_PREVIEW], true) && \count($this->hgabkaUtils->getAvailableLocales()) > 1 && $prefixed) {
             $lang = $parameters['_locale'] ?? $this->hgabkaUtils->getCurrentLocale();
             $name .= '_' . $lang;
         }
@@ -161,11 +116,6 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $this->urlGenerator->generate($name, $parameters, $referenceType);
     }
 
-    /**
-     * Getter for routeCollection.
-     *
-     * @return \Symfony\Component\Routing\RouteCollection
-     */
     public function getRouteCollection(): RouteCollection
     {
         if (null === $this->routeCollection) {
@@ -191,20 +141,17 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $this->routeCollection;
     }
 
-    public function supports($name)
+    public function supports(string $name): bool
     {
-        return 0 === strpos($name, '_slug');
+        return str_starts_with($name, self::$SLUG);
     }
 
     public function getRouteDebugMessage(string $name, array $parameters = []): string
     {
-        return 'Node bundle rote';
+        return 'Node bundle route';
     }
 
-    /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
-     */
-    protected function getMasterRequest()
+    protected function getMasterRequest(): ?Request
     {
         /** @var RequestStack $requestStack */
         $requestStack = $this->container->get('request_stack');
@@ -215,39 +162,19 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $requestStack->getMainRequest();
     }
 
-    /**
-     * Add the preview route to the route collection.
-     *
-     * @param null|mixed $locale
-     * @param mixed      $addLocale
-     */
-    protected function addPreviewRoute($locale = null, $addLocale = true): void
+    protected function addPreviewRoute(?string $locale = null, bool $addLocale = true): void
     {
         $routeParameters = $this->getPreviewRouteParameters($locale, $addLocale);
         $this->addRoute(self::$SLUG_PREVIEW . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
     }
 
-    /**
-     * Add the slug route to the route collection.
-     *
-     * @param null|mixed $locale
-     * @param mixed      $addLocale
-     */
-    protected function addSlugRoute($locale = null, $addLocale = true): void
+    protected function addSlugRoute(?string $locale = null, bool $addLocale = true): void
     {
         $routeParameters = $this->getSlugRouteParameters($locale, $addLocale);
         $this->addRoute(self::$SLUG . ($addLocale && $locale ? '_' . $locale : ''), $routeParameters);
     }
 
-    /**
-     * Return preview route parameters.
-     *
-     * @param null|mixed $locale
-     * @param mixed      $addLocale
-     *
-     * @return array
-     */
-    protected function getPreviewRouteParameters($locale = null, $addLocale = false)
+    protected function getPreviewRouteParameters(?string $locale = null, bool $addLocale = false): array
     {
         $previewPath = '/preview' . $this->adjustPath($this->getRoutePattern());
         if ($locale) {
@@ -275,15 +202,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         ];
     }
 
-    /**
-     * Return slug route parameters.
-     *
-     * @param null|mixed $locale
-     * @param mixed      $addLocale
-     *
-     * @return array
-     */
-    protected function getSlugRouteParameters($locale = null, $addLocale = false)
+    protected function getSlugRouteParameters(?string $locale = null, bool $addLocale = false): array
     {
         $slugPath = $this->adjustPath($this->getRoutePattern());
 
@@ -312,17 +231,17 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         ];
     }
 
-    protected function adjustPath($path)
+    protected function adjustPath(string $path): string
     {
         return '/{_locale}' . str_replace('/{_locale}', '', $path);
     }
 
-    protected function getRouteConfig()
+    protected function getRouteConfig(): array
     {
         return $this->container->getParameter('hgabka_node.route_config');
     }
 
-    protected function getRoutePattern()
+    protected function getRoutePattern(): string
     {
         $pattern = $this->getRouteConfig()['pattern'];
         if (isset($pattern[$this->hgabkaUtils->getCurrentLocale()])) {
@@ -333,14 +252,13 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
 
         return \count($this->hgabkaUtils->getAvailableLocales()) < 2
             ? str_replace('/{_locale}', '', $slugPattern)
-            : $slugPattern
-            ;
+            : $slugPattern;
     }
 
     /**
      * @return string
      */
-    protected function getDefaultLocale()
+    protected function getDefaultLocale(): string
     {
         return $this->hgabkaUtils->getDefaultLocale();
     }
@@ -348,15 +266,12 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
     /**
      * @return string
      */
-    protected function getSlugPattern()
+    protected function getSlugPattern(): string
     {
         return $this->slugPattern;
     }
 
-    /**
-     * @param string $name
-     */
-    protected function addRoute($name, array $parameters = [])
+    protected function addRoute(string $name, array $parameters = []): void
     {
         $this->routeCollection->add(
             $name,
@@ -368,12 +283,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         );
     }
 
-    /**
-     * @param array $matchResult
-     *
-     * @return \Kunstmaan\NodeBundle\Entity\NodeTranslation
-     */
-    protected function getNodeTranslation($matchResult)
+    protected function getNodeTranslation(array $matchResult): ?NodeTranslation
     {
         // The route matches, now check if it actually exists (needed for proper chain router chaining!)
         $nodeTranslationRepo = $this->getNodeTranslationRepository();
@@ -387,10 +297,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $nodeTranslation;
     }
 
-    /**
-     * @return \Kunstmaan\NodeBundle\Repository\NodeTranslationRepository
-     */
-    protected function getNodeTranslationRepository()
+    protected function getNodeTranslationRepository(): NodeTranslationRepository
     {
         $em = $this->container->get('doctrine.orm.entity_manager');
 
@@ -402,12 +309,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
         return $nodeTranslationRepo;
     }
 
-    /**
-     * @param array $locales
-     *
-     * @return string
-     */
-    protected function getEscapedLocales($locales)
+    protected function getEscapedLocales(array $locales): string
     {
         $escapedLocales = [];
         foreach ($locales as $locale) {
