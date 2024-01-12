@@ -166,7 +166,7 @@ class SlugRouter implements RouterInterface, VersatileGeneratorInterface
      *
      * @return \Symfony\Component\Routing\RouteCollection
      */
-    public function getRouteCollection()
+    public function getRouteCollection(): RouteCollection
     {
         if (null === $this->routeCollection) {
             $strategy = $this->getRouteConfig()['strategy'];
