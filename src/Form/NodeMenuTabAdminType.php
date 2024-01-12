@@ -12,14 +12,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NodeMenuTabAdminType extends AbstractType
 {
-    protected AuthorizationCheckerInterface $authChecker;
-
-    /**
-     * NodeMenuTabAdminType constructor.
-     */
-    public function __construct(AuthorizationCheckerInterface $authChecker)
+    public function __construct(private readonly AuthorizationCheckerInterface $authChecker)
     {
-        $this->authChecker = $authChecker;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
