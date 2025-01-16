@@ -57,87 +57,87 @@ class NodeTwigExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'get_node_for',
-                [$this, 'getNodeFor']
+                $this->getNodeFor(...),
             ),
             new TwigFunction(
                 'get_node_translation_for',
-                [$this, 'getNodeTranslationFor']
+                $this->getNodeTranslationFor(...),
             ),
             new TwigFunction(
                 'get_node_by_internal_name',
-                [$this, 'getNodeByInternalName']
+                $this->getNodeByInternalName(...),
             ),
             new TwigFunction(
                 'get_url_by_internal_name',
-                [$this, 'getUrlByInternalName']
+                $this->getUrlByInternalName(...),
             ),
             new TwigFunction(
                 'get_path_by_internal_name',
-                [$this, 'getPathByInternalName']
+                $this->getPathByInternalName(...),
             ),
             new TwigFunction(
                 'get_url_by_node_translation',
-                [$this, 'getUrlByNodeTranslation']
+                $this->getUrlByNodeTranslation(...),
             ),
             new TwigFunction(
                 'get_path_by_node_translation',
-                [$this, 'getPathByNodeTranslation']
+                $this->getPathByNodeTranslation(...),
             ),
             new TwigFunction(
                 'get_url_by_node',
-                [$this, 'getUrlByNode']
+                $this->getUrlByNode(...),
             ),
             new TwigFunction(
                 'get_path_by_node',
-                [$this, 'getPathByNode']
+                $this->getPathByNode(...),
             ),
             new TwigFunction(
                 'get_url_by_page',
-                [$this, 'getUrlByPage']
+                $this->getUrlByPage(...),
             ),
             new TwigFunction(
                 'get_path_by_page',
-                [$this, 'getPathByPage']
+                $this->getPathByPage(...),
             ),
             new TwigFunction(
                 'get_page_by_node_translation',
-                [$this, 'getPageByNodeTranslation']
+                $this->getPageByNodeTranslation(...),
             ),
             new TwigFunction(
                 'get_node_menu',
-                [$this, 'getNodeMenu']
+                $this->getNodeMenu(...),
             ),
             new TwigFunction(
                 'is_structure_node',
-                [$this, 'isStructureNode']
+                $this->isStructureNode(...)
             ),
             new TwigFunction(
                 'file_exists',
-                [$this, 'fileExists']
+                $this->fileExists(...),
             ),
             new TwigFunction(
                 'get_node_trans_by_node_id',
-                [$this, 'getNodeTranslationByNodeId']
+                $this->getNodeTranslationByNodeId(...),
             ),
             new TwigFunction(
                 'get_children_by_node_id',
-                [$this, 'getChildrenByNodeId']
+                $this->getChildrenByNodeId(...),
             ),
             new TwigFunction(
                 'get_children_by_root_node',
-                [$this, 'getChildrenByRootNode']
+                $this->getChildrenByRootNode(...),
             ),
             new TwigFunction(
                 'get_page_title',
-                [$this, 'getPageTitle']
+                $this->getPageTitle(...),
             ),
             new TwigFunction(
                 'get_tree_path_for_page',
-                [$this, 'getTreePathForPage']
+                $this->getTreePathForPage(...),
             ),
             new TwigFunction(
                 'get_tree_path_for_node',
-                [$this, 'getTreePathForNode']
+                $this->getTreePathForNode(...),
             ),
         ];
     }
@@ -294,7 +294,7 @@ class NodeTwigExtension extends AbstractExtension
      *
      * @return NodeMenu
      */
-    public function getNodeMenu($locale = null, Node $node = null, $includeHiddenFromNav = false)
+    public function getNodeMenu(?string $locale = null, Node $node = null, $includeHiddenFromNav = false)
     {
         if (null === $locale) {
             $locale = $this->hgabkaUtils->getAdminLocale();

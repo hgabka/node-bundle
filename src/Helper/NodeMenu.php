@@ -123,7 +123,7 @@ class NodeMenu
     /**
      * @param Node $currentNode
      */
-    public function setCurrentNode(Node $currentNode = null)
+    public function setCurrentNode(?Node $currentNode = null)
     {
         $this->currentNode = $currentNode;
     }
