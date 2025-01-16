@@ -294,7 +294,7 @@ class NodeTwigExtension extends AbstractExtension
      *
      * @return NodeMenu
      */
-    public function getNodeMenu(?string $locale = null, Node $node = null, $includeHiddenFromNav = false)
+    public function getNodeMenu(?string $locale = null, ?Node $node = null, bool $includeHiddenFromNav = false)
     {
         if (null === $locale) {
             $locale = $this->hgabkaUtils->getAdminLocale();
