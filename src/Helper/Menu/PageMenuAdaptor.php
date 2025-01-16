@@ -71,8 +71,8 @@ class PageMenuAdaptor implements MenuAdaptorInterface
     public function adaptChildren(
         MenuBuilder $menu,
         array &$children,
-        MenuItem $parent = null,
-        Request $request = null
+        ?MenuItem $parent = null,
+        ?Request $request = null
     ) {
         if (null === $parent) {
             $menuItem = new TopMenuItem($menu);
@@ -203,7 +203,7 @@ class PageMenuAdaptor implements MenuAdaptorInterface
         MenuBuilder $menu,
         array &$children,
         array $nodes,
-        MenuItem $parent = null,
+        ?MenuItem $parent = null,
         array $activeNodeIds
     ) {
         foreach ($nodes as $child) {
