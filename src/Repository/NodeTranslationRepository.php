@@ -57,7 +57,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return int
      */
-    public function getMaxChildrenWeight(Node $parentNode = null, $lang = null)
+    public function getMaxChildrenWeight(?Node $parentNode = null, ?string $lang = null)
     {
         $maxWeight = $this->getNodeTranslationsQueryBuilder($lang)
             ->select('max(nt.weight)')
@@ -78,7 +78,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getNodeTranslationsQueryBuilder($lang = null)
+    public function getNodeTranslationsQueryBuilder(?string $lang = null)
     {
         $queryBuilder = $this->createQueryBuilder('nt')
             ->select('nt,n,v')
@@ -111,7 +111,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getOnlineNodeTranslationsQueryBuilder($lang = null)
+    public function getOnlineNodeTranslationsQueryBuilder(?string $lang = null)
     {
         return $this->getNodeTranslationsQueryBuilder($lang)
             ->andWhere('nt.online = true');
@@ -125,7 +125,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getChildrenQueryBuilder(Node $parent, $lang = null)
+    public function getChildrenQueryBuilder(Node $parent, ?string $lang = null)
     {
         return $this->getNodeTranslationsQueryBuilder($lang)
             ->andWhere('n.parent = :parent')
@@ -140,7 +140,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getOnlineChildrenQueryBuilder(Node $parent, $lang = null)
+    public function getOnlineChildrenQueryBuilder(Node $parent, ?string $lang = null)
     {
         return $this->getChildrenQueryBuilder($parent, $lang)
             ->andWhere('nt.online = true');
@@ -155,7 +155,7 @@ class NodeTranslationRepository extends EntityRepository
      *
      * @return array
      */
-    public function getOnlineChildren(Node $parent, $lang = null)
+    public function getOnlineChildren(Node $parent, ?string $lang = null)
     {
         return $this->getOnlineChildrenQueryBuilder($parent, $lang)
             ->getQuery()->getResult();
@@ -190,7 +190,7 @@ class NodeTranslationRepository extends EntityRepository
      */
     public function getNodeTranslationForSlug(
         $slug,
-        NodeTranslation $parentNode = null
+        ?NodeTranslation $parentNode = null
     ) {
         if (empty($slug)) {
             return $this->getNodeTranslationForSlugPart(null, $slug);
@@ -222,8 +222,8 @@ class NodeTranslationRepository extends EntityRepository
         $urlSlug,
         $locale = '',
         $includeDeleted = false,
-        NodeTranslation $toExclude = null,
-        Node $rootNode = null
+        ?NodeTranslation $toExclude = null,
+        ?Node $rootNode = null
     ) {
         $qb = $this->createQueryBuilder('b')
             ->select('b', 'v')
@@ -287,8 +287,8 @@ class NodeTranslationRepository extends EntityRepository
         $urlSlug,
         $locale = '',
         $includeDeleted = false,
-        NodeTranslation $toExclude = null,
-        Node $rootNode = null
+        ?NodeTranslation $toExclude = null,
+        ?Node $rootNode = null
     ) {
         $translations = $this->getAllNodeTranslationsForUrl($urlSlug, $locale, $includeDeleted, $toExclude, $rootNode);
 
@@ -570,7 +570,7 @@ class NodeTranslationRepository extends EntityRepository
      * @return null|NodeTranslation
      */
     private function getNodeTranslationForSlugPart(
-        NodeTranslation $parentNode = null,
+        ?NodeTranslation $parentNode = null,
         $slugPart = ''
     ) {
         $qb = $this->createQueryBuilder('t')
