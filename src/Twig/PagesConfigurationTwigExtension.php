@@ -27,11 +27,11 @@ class PagesConfigurationTwigExtension extends AbstractExtension
         return [
             'get_possible_child_types' => new TwigFunction(
                 'get_possible_child_types',
-                [$this, 'getPossibleChildTypes']
+                $this->getPossibleChildTypes(...),
             ),
             'get_homepage_types' => new TwigFunction(
                 'get_homepage_types',
-                [$this, 'getHomepageTypes']
+                $this->getHomepageTypes(...),
             ),
         ];
     }
@@ -43,6 +43,7 @@ class PagesConfigurationTwigExtension extends AbstractExtension
      */
     public function getPossibleChildTypes($reference)
     {
+        dump($reference, $this->pagesConfiguration->getPossibleChildTypes($reference));
         return $this->pagesConfiguration->getPossibleChildTypes($reference);
     }
 
