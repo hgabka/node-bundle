@@ -12,55 +12,25 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ConfigureActionMenuEvent extends Event
 {
-    /**
-     * @var FactoryInterface
-     */
-    private $factory;
-
-    /**
-     * @var ItemInterface
-     */
-    private $menu;
-
-    /**
-     * @var NodeVersion
-     */
-    private $activeNodeVersion;
-
-    /**
-     * @param FactoryInterface $factory           The factory
-     * @param ItemInterface    $menu              The menu
-     * @param NodeVersion      $activeNodeVersion The nodeversion
-     */
-    public function __construct(FactoryInterface $factory, ItemInterface $menu, NodeVersion $activeNodeVersion = null)
+    public function __construct(
+        private readonly FactoryInterface $factory,
+        private readonly ItemInterface $menu,
+        private readonly ?NodeVersion $activeNodeVersion = null,
+    )
     {
-        $this->factory = $factory;
-        $this->menu = $menu;
-        $this->activeNodeVersion = $activeNodeVersion;
     }
 
-    /**
-     * @return FactoryInterface
-     */
-    public function getFactory()
+    public function getFactory(): FactoryInterface
     {
         return $this->factory;
     }
 
-    /**
-     * @return ItemInterface
-     */
-    public function getMenu()
+    public function getMenu(): ItemInterface
     {
         return $this->menu;
     }
 
-    /**
-     * Get activeNodeVersion.
-     *
-     * @return NodeVersion
-     */
-    public function getActiveNodeVersion()
+    public function getActiveNodeVersion(): ?NodeVersion
     {
         return $this->activeNodeVersion;
     }

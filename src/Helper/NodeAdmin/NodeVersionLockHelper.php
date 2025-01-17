@@ -40,7 +40,7 @@ class NodeVersionLockHelper
      *
      * @return array
      */
-    public function getUsersWithNodeVersionLock(NodeTranslation $nodeTranslation, $isPublicNodeVersion, BaseUser $userToExclude = null)
+    public function getUsersWithNodeVersionLock(NodeTranslation $nodeTranslation, $isPublicNodeVersion, ?BaseUser $userToExclude = null): ?array
     {
         return array_reduce(
             $this->getNodeVersionLocksByNodeTranslation($nodeTranslation, $isPublicNodeVersion, $userToExclude),
@@ -94,7 +94,7 @@ class NodeVersionLockHelper
      *
      * @return NodeVersionLock[]
      */
-    protected function getNodeVersionLocksByNodeTranslation(NodeTranslation $nodeTranslation, $isPublicVersion, BaseUser $userToExclude = null)
+    protected function getNodeVersionLocksByNodeTranslation(NodeTranslation $nodeTranslation, ?bool $isPublicVersion, ?BaseUser $userToExclude = null)
     {
         $threshold = $this->params->get('hg_node.lock_threshold');
         /** @var NodeVersionLockRepository $objectRepository */

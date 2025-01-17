@@ -100,7 +100,7 @@ class PagesConfiguration
      *
      * @return mixed
      */
-    private function getValue($ref, $name, $default = null)
+    private function getValue(?string $ref, ?string $name, mixed $default = null): mixed
     {
         $refName = \is_object($ref) ? ClassLookup::getClass($ref) : $ref;
 

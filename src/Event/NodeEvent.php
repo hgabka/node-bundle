@@ -15,136 +15,74 @@ use Symfony\Contracts\EventDispatcher\Event;
 class NodeEvent extends Event
 {
     /**
-     * @var HasNodeInterface
-     */
-    protected $page;
-
-    /**
-     * @var Node
-     */
-    protected $node;
-
-    /**
-     * @var NodeVersion
-     */
-    protected $nodeVersion;
-
-    /**
-     * @var NodeTranslation
-     */
-    protected $nodeTranslation;
-
-    /**
      * @var Response
      */
-    private $response;
+    private ?Response $response = null;
 
-    /**
-     * @param Node             $node            The node
-     * @param NodeTranslation  $nodeTranslation The nodetranslation
-     * @param NodeVersion      $nodeVersion     The node version
-     * @param HasNodeInterface $page            The object
-     */
-    public function __construct(Node $node, NodeTranslation $nodeTranslation, NodeVersion $nodeVersion, HasNodeInterface $page)
+    public function __construct(
+        protected Node $node,
+        protected NodeTranslation $nodeTranslation,
+        protected NodeVersion $nodeVersion,
+        protected HasNodeInterface $page,
+    )
     {
-        $this->node = $node;
-        $this->nodeTranslation = $nodeTranslation;
-        $this->nodeVersion = $nodeVersion;
-        $this->page = $page;
     }
 
-    /**
-     * @return NodeVersion
-     */
-    public function getNodeVersion()
+    public function getNodeVersion(): NodeVersion
     {
         return $this->nodeVersion;
     }
 
-    /**
-     * @param NodeVersion $nodeVersion
-     *
-     * @return NodeEvent
-     */
-    public function setNodeVersion($nodeVersion)
+    public function setNodeVersion(NodeVersion $nodeVersion): self
     {
         $this->nodeVersion = $nodeVersion;
 
         return $this;
     }
 
-    /**
-     * @return Node
-     */
-    public function getNode()
+    public function getNode(): Node
     {
         return $this->node;
     }
 
-    /**
-     * @param Node $node
-     *
-     * @return NodeEvent
-     */
-    public function setNode($node)
+    public function setNode(Node $node): self
     {
         $this->node = $node;
 
         return $this;
     }
 
-    /**
-     * @return NodeTranslation
-     */
-    public function getNodeTranslation()
+    public function getNodeTranslation(): NodeTranslation
     {
         return $this->nodeTranslation;
     }
 
-    /**
-     * @param NodeTranslation $nodeTranslation
-     *
-     * @return NodeEvent
-     */
-    public function setNodeTranslation($nodeTranslation)
+
+    public function setNodeTranslation(NodeTranslation $nodeTranslation): self
     {
         $this->nodeTranslation = $nodeTranslation;
 
         return $this;
     }
 
-    /**
-     * @return HasNodeInterface
-     */
-    public function getPage()
+    public function getPage(): HasNodeInterface
     {
         return $this->page;
     }
 
-    /**
-     * @param HasNodeInterface $page
-     *
-     * @return NodeEvent
-     */
-    public function setPage($page)
+    public function setPage(HasNodeInterface $page): self
     {
         $this->page = $page;
 
         return $this;
     }
 
-    /**
-     * @return null|Response
-     */
-    public function getResponse()
+    public function getResponse(): ?Response
     {
         return $this->response;
     }
 
-    /**
-     * @return NodeEvent
-     */
-    public function setResponse(Response $response)
+    public function setResponse(?Response $response): self
     {
         $this->response = $response;
 

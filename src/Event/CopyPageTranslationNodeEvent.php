@@ -12,121 +12,64 @@ use Hgabka\NodeBundle\Entity\NodeVersion;
  */
 class CopyPageTranslationNodeEvent extends NodeEvent
 {
-    /**
-     * @var NodeTranslation
-     */
-    private $originalNodeTranslation;
-
-    /**
-     * @var HasNodeInterface
-     */
-    private $originalPage;
-
-    /**
-     * @var string
-     */
-    private $originalLanguage;
-
-    /**
-     * @var NodeVersion
-     */
-    private $originalNodeVersion;
-
-    /**
-     * @param Node             $node                    The node
-     * @param NodeTranslation  $nodeTranslation         The nodetranslation
-     * @param NodeVersion      $nodeVersion             The node version
-     * @param HasNodeInterface $page                    The object
-     * @param NodeTranslation  $originalNodeTranslation The original node translation
-     * @param NodeVersion      $originalNodeVersion     The original node version
-     * @param HasNodeInterface $originalPage            The original page
-     * @param string           $originalLanguage        The original language
-     */
-    public function __construct(Node $node, NodeTranslation $nodeTranslation, NodeVersion $nodeVersion, HasNodeInterface $page, NodeTranslation $originalNodeTranslation, NodeVersion $originalNodeVersion, HasNodeInterface $originalPage, $originalLanguage)
+    public function __construct(
+        Node $node,
+        NodeTranslation $nodeTranslation,
+        NodeVersion $nodeVersion,
+        HasNodeInterface $page,
+        private NodeTranslation $originalNodeTranslation,
+        private NodeVersion $originalNodeVersion,
+        private HasNodeInterface $originalPage,
+        private ?string $originalLanguage,
+    )
     {
         parent::__construct($node, $nodeTranslation, $nodeVersion, $page);
-        $this->originalNodeTranslation = $originalNodeTranslation;
-        $this->originalPage = $originalPage;
-        $this->originalLanguage = $originalLanguage;
-        $this->originalNodeVersion = $originalNodeVersion;
     }
 
-    /**
-     * @param string $originalLanguage
-     *
-     * @return CopyPageTranslationNodeEvent
-     */
-    public function setOriginalLanguage($originalLanguage)
+    public function setOriginalLanguage(?string $originalLanguage): self
     {
         $this->originalLanguage = $originalLanguage;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOriginalLanguage()
+    public function getOriginalLanguage(): ?string
     {
         return $this->originalLanguage;
     }
 
-    /**
-     * @param NodeTranslation $originalNodeTranslation
-     *
-     * @return CopyPageTranslationNodeEvent
-     */
-    public function setOriginalNodeTranslation($originalNodeTranslation)
+    public function setOriginalNodeTranslation(NodeTranslation $originalNodeTranslation): self
     {
         $this->originalNodeTranslation = $originalNodeTranslation;
 
         return $this;
     }
 
-    /**
-     * @return NodeTranslation
-     */
-    public function getOriginalNodeTranslation()
+    public function getOriginalNodeTranslation(): NodeTranslation
     {
         return $this->originalNodeTranslation;
     }
 
-    /**
-     * @param HasNodeInterface $originalPage
-     *
-     * @return CopyPageTranslationNodeEvent
-     */
-    public function setOriginalPage($originalPage)
+    public function setOriginalPage(HasNodeInterface $originalPage): self
     {
         $this->originalPage = $originalPage;
 
         return $this;
     }
 
-    /**
-     * @return HasNodeInterface
-     */
-    public function getOriginalPage()
+    public function getOriginalPage(): HasNodeInterface
     {
         return $this->originalPage;
     }
 
-    /**
-     * @param NodeVersion $originalNodeVersion
-     *
-     * @return CopyPageTranslationNodeEvent
-     */
-    public function setOriginalNodeVersion($originalNodeVersion)
+    public function setOriginalNodeVersion(NodeVersion $originalNodeVersion): self
     {
         $this->originalNodeVersion = $originalNodeVersion;
 
         return $this;
     }
 
-    /**
-     * @return NodeVersion
-     */
-    public function getOriginalNodeVersion()
+    public function getOriginalNodeVersion(): NodeVersion
     {
         return $this->originalNodeVersion;
     }
