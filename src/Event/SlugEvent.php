@@ -11,47 +11,26 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class SlugEvent extends Event
 {
-    /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
-     * @var RenderContext
-     */
-    protected $renderContext;
-
-    /**
-     * @param Response $response
-     */
-    public function __construct(?Response $response = null, RenderContext $renderContext)
+    public function __construct(protected ?Response $response = null, protected ?RenderContext $renderContext = null)
     {
-        $this->response = $response;
-        $this->renderContext = $renderContext;
     }
 
-    /**
-     * @return Response
-     */
-    public function getResponse()
+    public function getResponse(): ?Response
     {
         return $this->response;
     }
 
-    public function setResponse(Response $response)
+    public function setResponse(?Response $response)
     {
         $this->response = $response;
     }
 
-    /**
-     * @return RenderContext
-     */
-    public function getRenderContext()
+    public function getRenderContext(): ?RenderContext
     {
         return $this->renderContext;
     }
 
-    public function setRenderContext(RenderContext $renderContext)
+    public function setRenderContext(?RenderContext $renderContext)
     {
         $this->renderContext = $renderContext;
     }

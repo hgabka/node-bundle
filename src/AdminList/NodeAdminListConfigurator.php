@@ -226,7 +226,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
      *
      * @return string
      */
-    public function getPathByConvention($suffix = null)
+    public function getPathByConvention(?string $suffix = null)
     {
         if (empty($suffix)) {
             return sprintf('%s_nodes', $this->getBundleName());

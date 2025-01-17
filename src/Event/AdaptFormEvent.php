@@ -15,57 +15,20 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class AdaptFormEvent extends Event
 {
-    /**
-     * @var TabPane
-     */
-    private $tabPane;
-
-    /**
-     * @var
-     */
-    private $page;
-
-    /**
-     * @var Node
-     */
-    private $node;
-
-    /**
-     * @var NodeTranslation
-     */
-    private $nodeTranslation;
-
-    /**
-     * @var NodeVersion
-     */
-    private $nodeVersion;
-
-    /**
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * @param TabPane          $tabPane         The tab pane
-     * @param HasNodeInterface $page            The page
-     * @param Node             $node            The node
-     * @param NodeTranslation  $nodeTranslation The node translation
-     * @param NodeVersion      $nodeVersion     The node version
-     */
-    public function __construct(Request $request, TabPane $tabPane, $page = null, Node $node = null, NodeTranslation $nodeTranslation = null, NodeVersion $nodeVersion = null)
+    public function __construct(
+        private readonly Request $request,
+        private readonly TabPane $tabPane,
+        private mixed $page = null,
+        private readonly ?Node $node = null,
+        private readonly ?NodeTranslation $nodeTranslation = null,
+        private readonly ?NodeVersion $nodeVersion = null)
     {
-        $this->request = $request;
-        $this->tabPane = $tabPane;
-        $this->page = $page;
-        $this->node = $node;
-        $this->nodeTranslation = $nodeTranslation;
-        $this->nodeVersion = $nodeVersion;
     }
 
     /**
      * @return Node
      */
-    public function getNode()
+    public function getNode(): ?Node
     {
         return $this->node;
     }
@@ -73,7 +36,7 @@ class AdaptFormEvent extends Event
     /**
      * @return NodeTranslation
      */
-    public function getNodeTranslation()
+    public function getNodeTranslation(): ?NodeTranslation
     {
         return $this->nodeTranslation;
     }
@@ -81,7 +44,7 @@ class AdaptFormEvent extends Event
     /**
      * @return NodeVersion
      */
-    public function getNodeVersion()
+    public function getNodeVersion(): ?NodeVersion
     {
         return $this->nodeVersion;
     }
@@ -89,7 +52,7 @@ class AdaptFormEvent extends Event
     /**
      * @return
      */
-    public function getPage()
+    public function getPage(): mixed
     {
         return $this->page;
     }
@@ -97,12 +60,12 @@ class AdaptFormEvent extends Event
     /**
      * @return TabPane
      */
-    public function getTabPane()
+    public function getTabPane(): TabPane
     {
         return $this->tabPane;
     }
 
-    public function getRequest()
+    public function getRequest(): Request
     {
         return $this->request;
     }

@@ -22,7 +22,7 @@ class NodeVersionLockRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return NodeVersionLock[]
      */
-    public function getLocksForNodeTranslation(NodeTranslation $nodeTranslation, $isPublicVersion, $threshold, $userToExclude = null)
+    public function getLocksForNodeTranslation(NodeTranslation $nodeTranslation, ?bool $isPublicVersion, ?int $threshold, ?BaseUser $userToExclude = null)
     {
         $qb = $this->createQueryBuilder('nvl')
             ->select('nvl')
@@ -50,7 +50,7 @@ class NodeVersionLockRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return mixed
      */
-    public function getExpiredLocks(NodeTranslation $nodeTranslation, $threshold)
+    public function getExpiredLocks(NodeTranslation $nodeTranslation, ?int $threshold)
     {
         $qb = $this->createQueryBuilder('nvl')
             ->select('nvl')

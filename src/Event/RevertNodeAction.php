@@ -12,70 +12,38 @@ use Hgabka\NodeBundle\Entity\NodeVersion;
  */
 class RevertNodeAction extends NodeEvent
 {
-    /**
-     * @var NodeVersion
-     */
-    public $originNodeVersion;
-
-    /**
-     * @var HasNodeInterface
-     */
-    public $originPage;
-
-    /**
-     * @param Node             $node              The node
-     * @param NodeTranslation  $nodeTranslation   The nodetranslation
-     * @param NodeVersion      $nodeVersion       The node version
-     * @param HasNodeInterface $page              The object
-     * @param NodeVersion      $originNodeVersion The node version we reverted to
-     * @param HasNodeInterface $originPage        The page we reverted to
-     */
-    public function __construct(Node $node, NodeTranslation $nodeTranslation, NodeVersion $nodeVersion, HasNodeInterface $page, NodeVersion $originNodeVersion, HasNodeInterface $originPage)
+    public function __construct(
+        Node $node,
+        NodeTranslation $nodeTranslation,
+        NodeVersion $nodeVersion,
+        HasNodeInterface $page,
+        public NodeVersion $originNodeVersion,
+        public HasNodeInterface $originPage,
+    )
     {
-        $this->node = $node;
-        $this->nodeTranslation = $nodeTranslation;
-        $this->nodeVersion = $nodeVersion;
-        $this->page = $page;
-        $this->originNodeVersion = $originNodeVersion;
-        $this->originPage = $originPage;
+        parent::__construct($node, $nodeTranslation, $nodeVersion, $page);
     }
 
-    /**
-     * @param NodeVersion $originNodeVersion
-     *
-     * @return RevertNodeAction
-     */
-    public function setOriginNodeVersion($originNodeVersion)
+    public function setOriginNodeVersion(NodeVersion $originNodeVersion): self
     {
         $this->originNodeVersion = $originNodeVersion;
 
         return $this;
     }
 
-    /**
-     * @return NodeVersion
-     */
-    public function getOriginNodeVersion()
+    public function getOriginNodeVersion(): NodeVersion
     {
         return $this->originNodeVersion;
     }
 
-    /**
-     * @param HasNodeInterface $originPage
-     *
-     * @return RevertNodeAction
-     */
-    public function setOriginPage($originPage)
+    public function setOriginPage(HasNodeInterface $originPage): self
     {
         $this->originPage = $originPage;
 
         return $this;
     }
 
-    /**
-     * @return HasNodeInterface
-     */
-    public function getOriginPage()
+    public function getOriginPage(): HasNodeInterface
     {
         return $this->originPage;
     }
