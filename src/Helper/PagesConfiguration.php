@@ -93,14 +93,7 @@ class PagesConfiguration
         return $homePageTypes;
     }
 
-    /**
-     * @param string         $ref
-     * @param string         $name
-     * @param callable|mixed $default
-     *
-     * @return mixed
-     */
-    private function getValue(?string $ref, ?string $name, mixed $default = null): mixed
+    private function getValue(mixed $ref, ?string $name, mixed $default = null): mixed
     {
         $refName = \is_object($ref) ? ClassLookup::getClass($ref) : $ref;
 
@@ -112,10 +105,10 @@ class PagesConfiguration
             return $default;
         }
 
-        $page = \is_string($ref) ? new $refName() : $ref;
+        $page = \is_string($ref) && class_exists($refName) ? new $refName() : $ref;
+
         $result = $default($page);
         unset($page);
-
         $this->configuration[$refName][$name] = $result;
 
         return $result;
