@@ -303,7 +303,7 @@ class NodeRepository extends NestedTreeRepository
         $permission,
         AclNativeHelper $aclNativeHelper,
         $includeHiddenFromNav = false,
-        Node $rootNode = null
+        ?Node $rootNode = null
     ) {
         $connection = $this->_em->getConnection();
         $qb = $connection->createQueryBuilder();
@@ -382,7 +382,7 @@ class NodeRepository extends NestedTreeRepository
      *
      * @return Node[]
      */
-    public function getAllParents(Node $node = null, $lang = null)
+    public function getAllParents(?Node $node = null, $lang = null)
     {
         if (null === $node) {
             return [];
@@ -426,7 +426,7 @@ class NodeRepository extends NestedTreeRepository
      *
      * @return Node
      */
-    public function getRootNodeFor(Node $node = null, $lang = null)
+    public function getRootNodeFor(?Node $node = null, $lang = null)
     {
         if (null === $node) {
             return null;
