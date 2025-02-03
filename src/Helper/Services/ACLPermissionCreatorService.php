@@ -54,7 +54,7 @@ class ACLPermissionCreatorService
      *
      * @api
      */
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(?ContainerInterface $container = null)
     {
         $this->setAclProvider($container->get('security.acl.provider'));
         $this->setObjectIdentityRetrievalStrategy($container->get('security.acl.object_identity_retrieval_strategy'));
