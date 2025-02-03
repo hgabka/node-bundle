@@ -58,7 +58,7 @@ class PageCreatorService
      *
      * @api
      */
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(?ContainerInterface $container = null)
     {
         $this->setEntityManager($container->get('doctrine.orm.entity_manager'));
         $this->setACLPermissionCreatorService($container->get('hgabka_node.acl_permission_creator_service'));
