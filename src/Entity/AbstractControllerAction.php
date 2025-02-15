@@ -19,7 +19,7 @@ abstract class AbstractControllerAction implements HasNodeInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     /**
      * @var string
