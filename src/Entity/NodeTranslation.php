@@ -21,7 +21,7 @@ class NodeTranslation implements EntityInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Node::class, inversedBy: 'nodeTranslations')]
     #[ORM\JoinColumn(name: 'node_id', referencedColumnName: 'id')]
