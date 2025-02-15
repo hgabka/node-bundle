@@ -14,7 +14,7 @@ class NodeVersionLock implements EntityInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(name: 'owner', type: 'string', length: 255)]
     private ?string $owner = null;
