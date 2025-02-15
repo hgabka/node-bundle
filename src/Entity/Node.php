@@ -43,7 +43,7 @@ class Node implements GedmoNode, EntityInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id;
+    public ?int $id;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id')]
