@@ -19,7 +19,7 @@ abstract class AbstractPage implements PageInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(type: 'string')]
     #[Assert\NotBlank]
