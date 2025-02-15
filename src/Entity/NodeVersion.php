@@ -22,7 +22,7 @@ class NodeVersion implements EntityInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: NodeTranslation::class, inversedBy: 'nodeVersions')]
     #[ORM\JoinColumn(name: 'node_translation_id', referencedColumnName: 'id')]
