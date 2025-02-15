@@ -18,7 +18,7 @@ class QueuedNodeTranslationAction implements EntityInterface
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: NodeTranslation::class)]
     #[ORM\JoinColumn(name: 'node_translation_id', referencedColumnName: 'id')]
