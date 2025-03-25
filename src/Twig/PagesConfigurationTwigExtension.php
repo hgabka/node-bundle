@@ -43,7 +43,6 @@ class PagesConfigurationTwigExtension extends AbstractExtension
      */
     public function getPossibleChildTypes($reference)
     {
-        dump($reference, $this->pagesConfiguration->getPossibleChildTypes($reference));
         return $this->pagesConfiguration->getPossibleChildTypes($reference);
     }
 
