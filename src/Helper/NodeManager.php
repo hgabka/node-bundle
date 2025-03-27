@@ -242,7 +242,7 @@ class NodeManager
      *
      * @return Node[]
      */
-    public function getChildrenByNodeId(int $nodeId, string $lang, ?string $refEntityName = null, $includeOffline = true)
+    public function getChildrenByNodeId(int $nodeId, string $lang, string|array|null $refEntityName = null, $includeOffline = true)
     {
         return $this
             ->manager
@@ -251,7 +251,7 @@ class NodeManager
         ;
     }
 
-    public function getChildrenByRootNode(Node $rootNode, string $lang, ?string $refEntityName = null)
+    public function getChildrenByRootNode(Node $rootNode, string $lang, string|array|null $refEntityName = null)
     {
         return $this
             ->manager
@@ -260,7 +260,7 @@ class NodeManager
         ;
     }
 
-    public function getChildrenByRootNodeQueryBuilder(Node $rootNode, string $lang, ?string $refEntityName = null)
+    public function getChildrenByRootNodeQueryBuilder(Node $rootNode, string $lang, string|array|null $refEntityName = null)
     {
         return $this
             ->manager
