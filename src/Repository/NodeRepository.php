@@ -101,9 +101,15 @@ class NodeRepository extends NestedTreeRepository
         }
 
         if (null !== $refEntityName) {
-            $qb
-                ->andWhere('v.refEntityName = :refEntityName')
-                ->setParameter('refEntityName', $refEntityName);
+            if (is_array($refEntityName)) {
+                $qb
+                    ->andWhere('v.refEntityName IN (:refEntityNames)')
+                    ->setParameter('refEntityNames', $refEntityName);
+            } else {
+                $qb
+                    ->andWhere('v.refEntityName = :refEntityName')
+                    ->setParameter('refEntityName', $refEntityName);
+            }
         }
 
         if (!$includeOffline) {
