@@ -40,7 +40,7 @@ class NodeVersion implements EntityInterface
     #[ORM\Column(name: 'updated', type: 'datetime')]
     protected ?DateTime $updated = null;
 
-    #[ORM\Column(name: 'ref_id', type: 'bigint')]
+    #[ORM\Column(name: 'ref_id', type: 'integer')]
     protected ?int $refId = null;
 
     #[ORM\Column(name: 'ref_entity_name', type: 'string')]

@@ -34,9 +34,9 @@ class NodeVersionLockRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('date', new \DateTime(sprintf('-%s seconds', $threshold)))
         ;
 
-        if (null !== $userToExclude && method_exists($userToExclude, 'getUsername')) {
+        if (null !== $userToExclude && method_exists($userToExclude, 'getUserIdentifier')) {
             $qb->andWhere('nvl.owner <> :owner')
-                ->setParameter('owner', $userToExclude->getUsername())
+                ->setParameter('owner', $userToExclude->getUserIdentifier())
             ;
         }
 

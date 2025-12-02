@@ -10,7 +10,6 @@ use Hgabka\NodeBundle\Helper\Menu\SimpleTreeView;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Hgabka\UtilsBundle\Helper\Security\Acl\AclNativeHelper;
 use Hgabka\UtilsBundle\Helper\Security\Acl\Permission\PermissionMap;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,27 +21,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class WidgetsController extends AbstractController
 {
-    /** @var ParameterBagInterface */
-    protected $params;
-
-    /** @var ManagerRegistry */
-    protected $doctrine;
-
-    /** @var AclNativeHelper */
-    protected $aclHelper;
-
-    /** @var HgabkaUtils */
-    protected $hgabkaUtils;
-
     /**
      * WidgetsController constructor.
      */
-    public function __construct(ParameterBagInterface $params, ManagerRegistry $doctrine, AclNativeHelper $aclHelper, HgabkaUtils $hgabkaUtils)
-    {
-        $this->params = $params;
-        $this->doctrine = $doctrine;
-        $this->aclHelper = $aclHelper;
-        $this->hgabkaUtils = $hgabkaUtils;
+    public function __construct(
+        protected readonly ParameterBagInterface $params,
+        protected readonly ManagerRegistry $doctrine,
+        protected readonly AclNativeHelper $aclHelper,
+        protected readonly HgabkaUtils $hgabkaUtils
+    ) {
     }
 
     public function getAclHelper(): AclNativeHelper
@@ -75,7 +62,7 @@ class WidgetsController extends AbstractController
         return $this->params->get($name);
     }
 
-    protected function getBaseTemplate()
+    protected function getBaseTemplate(): string
     {
         return $this->getParameter('sonata.admin.configuration.templates')['layout'];
     }
@@ -86,7 +73,7 @@ class WidgetsController extends AbstractController
      *
      * @return array
      */
-    private function getTemplateParameters(Request $request)
+    private function getTemplateParameters(Request $request): array
     {
         // @var EntityManager $em
         $em = $this->doctrine->getManager();

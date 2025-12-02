@@ -1,0 +1,9 @@
+<div class="form-group">
+    <select name="{{nameprefix}}comparator{{namesuffix}}" data-sonata-select2="false" class="form-control">
+        <option value="contains" {% if data.comparator is defined and data.comparator == "contains" %} selected="selected" {% endif %} >{{ 'kuma_admin_list.filter.contains' | trans }}</option>
+        <option value="doesnotcontain" {% if data.comparator is defined and data.comparator == "doesnotcontain" %} selected="selected" {% endif %} >{{ 'kuma_admin_list.filter.doesnotcontain' | trans }}</option>
+    </select>
+</div>
+<div class="form-group">
+    <input type="text" name="{{nameprefix}}value{{namesuffix}}" {% if data.value is defined %}value="{{data.value}}"{% endif %} class="form-control">
+</div>

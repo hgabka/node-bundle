@@ -88,7 +88,7 @@ class URLHelper
                     $nodeTranslationId = $match[3];
 
                     foreach ($map as $nodeTranslation) {
-                        if ($nodeTranslation['id'] === $nodeTranslationId) {
+                        if ((int) $nodeTranslation['id'] === (int) $nodeTranslationId) {
                             $urlParams = ['url' => $nodeTranslation['url'], '_locale' => $nodeTranslation['lang']];
                             $nodeTranslationFound = true;
                             // Only add locale if multilingual site
@@ -145,7 +145,7 @@ class URLHelper
         if (null === $this->nodeTranslationMap) {
             $sql = 'SELECT id, url, lang FROM hg_node_node_translations';
             $stmt = $this->em->getConnection()->prepare($sql);
-            $result = $stmt->execute();
+            $result = $stmt->executeQuery();
             $this->nodeTranslationMap = $result->fetchAllAssociative();
         }
 
@@ -162,9 +162,9 @@ class URLHelper
     private function getMediaMap()
     {
         if (null === $this->mediaMap) {
-            $sql = 'SELECT id, url FROM kuma_media';
+            $sql = 'SELECT id, url FROM hg_media_media';
             $stmt = $this->em->getConnection()->prepare($sql);
-            $result = $stmt->execute();
+            $result = $stmt->executeQuery();
             $this->mediaMap = $result->fetchAllAssociative();
         }
 

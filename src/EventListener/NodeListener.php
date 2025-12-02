@@ -13,29 +13,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class NodeListener
 {
     /**
-     * @var PermissionAdmin
-     */
-    protected $permissionAdmin;
-
-    /**
-     * @var PermissionMapInterface
-     */
-    protected $permissionMap;
-    /**
-     * AuthorizationCheckerInterface.
-     */
-    private $authorizationChecker;
-
-    /**
      * @param AuthorizationCheckerInterface $authorizationChecker The security context
      * @param PermissionAdmin               $permissionAdmin      The permission admin
      * @param PermissionMapInterface        $permissionMap        The permission map
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, PermissionAdmin $permissionAdmin, PermissionMapInterface $permissionMap)
-    {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->permissionAdmin = $permissionAdmin;
-        $this->permissionMap = $permissionMap;
+    public function __construct(
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly PermissionAdmin $permissionAdmin,
+        private readonly PermissionMapInterface $permissionMap
+    ) {
     }
 
     public function adaptForm(AdaptFormEvent $event)

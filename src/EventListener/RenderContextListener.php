@@ -4,27 +4,15 @@ namespace Hgabka\NodeBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeVersion;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
 
 class RenderContextListener
 {
-    /**
-     * @var EngineInterface
-     */
-    protected $templating;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-
-    public function __construct(Environment $templating, EntityManagerInterface $em)
+    public function __construct(protected readonly Environment $templating, protected readonly EntityManagerInterface $em)
     {
-        $this->templating = $templating;
-        $this->em = $em;
     }
 
     public function onKernelView(ViewEvent $event)
@@ -80,12 +68,7 @@ class RenderContextListener
             // the SensioFrameworkExtraBundle kernel.view will handle everything else
             $event->setControllerResult((array) $parameters);
 
-            $template = new Template([]);
-            $template->setTemplate($entity->getDefaultView());
-
-            if (empty($template->getOwner())) {
-                $template->setOwner([null, null]);
-            }
+            $template = new Template($entity->getDefaultView());
 
             $request->attributes->set('_template', $template);
         }

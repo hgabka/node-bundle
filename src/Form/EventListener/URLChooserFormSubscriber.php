@@ -13,7 +13,7 @@ class URLChooserFormSubscriber implements EventSubscriberInterface
 {
     use URLValidator;
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::POST_SET_DATA => 'postSetData',
@@ -23,7 +23,7 @@ class URLChooserFormSubscriber implements EventSubscriberInterface
     /**
      * When opening the form for the first time, check the type of URL and set the according fields.
      */
-    public function postSetData(FormEvent $event)
+    public function postSetData(FormEvent $event): void
     {
         $form = $event->getForm();
         $data = $form->getData();

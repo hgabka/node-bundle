@@ -4,6 +4,7 @@ namespace Hgabka\NodeBundle\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\NodeBundle\Entity\NodeTranslation;
 use Hgabka\PagePartBundle\Entity\PagePartRef;
 use Hgabka\UtilsBundle\Helper\HgabkaUtils;
@@ -11,19 +12,11 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class NodeSearcher
 {
-    /** @var EntityManagerInterface */
-    protected $doctrine;
-
-    /** @var HgabkaUtils */
-    protected $hgabkaUtils;
-
     /**
      * NodeSearcher constructor.
      */
-    public function __construct(EntityManagerInterface $doctrine, HgabkaUtils $hgabkaUtils)
+    public function __construct(protected EntityManagerInterface $doctrine, protected HgabkaUtils $hgabkaUtils)
     {
-        $this->doctrine = $doctrine;
-        $this->hgabkaUtils = $hgabkaUtils;
     }
 
     /**
@@ -44,7 +37,7 @@ class NodeSearcher
      * @param null   $rootNode        - csak ezen node alatt keressen, ha null, akkor minden node jöhet
      * @param null   $lang            - csak ezen nyelvű változatokban keres, ha null, akkor az aktuális nyelv lesz, ha más üres érték, akkor nincs nyelvi megkötés
      */
-    public function search(string $search, array $pageClasses, array $pagepartClasses, $rootNode = null, $lang = null)
+    public function search(string $search, array $pageClasses = [], array $pagepartClasses = [], $rootNode = null, $lang = null)
     {
         if (null === $lang) {
             $lang = $this->hgabkaUtils->getCurrentLocale();
@@ -53,19 +46,19 @@ class NodeSearcher
         /** @var QueryBuilder $qb */
         $qb =
             $this->doctrine->getRepository(NodeTranslation::class)
-             ->createQueryBuilder('nt')
-             ->select('nt')
-             ->innerJoin('nt.node', 'n')
-             ->innerJoin(
-                 'nt.publicNodeVersion',
-                 'v',
-                 'WITH',
-                 'nt.publicNodeVersion = v.id'
-             )
-             ->where('n.deleted = false')
-             ->andWhere('nt.online = true')
-             ->orderBy('nt.weight')
-             ->addOrderBy('nt.weight');
+                           ->createQueryBuilder('nt')
+                           ->select('nt')
+                           ->innerJoin('nt.node', 'n')
+                           ->innerJoin(
+                               'nt.publicNodeVersion',
+                               'v',
+                               'WITH',
+                               'nt.publicNodeVersion = v.id'
+                           )
+                           ->where('n.deleted = false')
+                           ->andWhere('nt.online = true')
+                           ->orderBy('nt.weight')
+                           ->addOrderBy('nt.weight');
 
         if (!empty($lang)) {
             $qb
@@ -80,10 +73,18 @@ class NodeSearcher
                ->setParameter('right', $rootNode->getRight());
         }
 
+        if (empty($pageClasses)) {
+            $pageClasses = $this->getAllPageClasses();
+        }
+
         if (!empty($pageClasses)) {
             $qb
                 ->andWhere($qb->expr()->in('v.refEntityName', array_keys($pageClasses)))
             ;
+        }
+
+        if (empty($pagepartClasses)) {
+            $pagepartClasses = $this->getAllPagePartClasses();
         }
 
         $qb->leftJoin(PagePartRef::class, 'pp', 'WITH', 'pp.pageEntityname = v.refEntityName AND pp.pageId = v.refId');
@@ -99,7 +100,7 @@ class NodeSearcher
                 ->setParameter('pagepartclass' . $key, $pagepartClass)
             ;
             $qb->addSelect('ppc' . $key);
-            if (\is_string($fields)) {
+            if (is_string($fields)) {
                 $fields = [$fields];
             }
 
@@ -119,7 +120,7 @@ class NodeSearcher
                 ->setParameter('pageclass' . $key, $pageClass)
             ;
             $qb->addSelect('pc' . $key);
-            if (\is_string($fields)) {
+            if (is_string($fields)) {
                 $fields = [$fields];
             }
 
@@ -149,14 +150,14 @@ class NodeSearcher
                 $ret[$row]['nodeTranslation'] = $result;
                 $ret[$row]['texts'] = [];
             }
-            if (\in_array(\get_class($result), array_keys($pagepartClasses), true)) {
+            if (in_array($result::class, array_keys($pagepartClasses), true)) {
                 if (empty($ret[$row]['pageParts'])) {
                     $ret[$row]['pageParts'][] = $result;
                 }
 
-                $fields = $pagepartClasses[\get_class($result)];
+                $fields = $pagepartClasses[$result::class];
                 if (!empty($fields)) {
-                    if (\is_string($fields)) {
+                    if (is_string($fields)) {
                         $fields = [$fields];
                     }
 
@@ -165,7 +166,7 @@ class NodeSearcher
                             $text = $propertyAccessor->getValue($result, $field);
                             if (false !== mb_strpos($text, $search)) {
                                 $ret[$row]['texts'][] = [
-                                    'class' => \get_class($result),
+                                    'class' => $result::class,
                                     'id' => $result->getId(),
                                     'field' => $field,
                                     'text' => $text,
@@ -175,9 +176,9 @@ class NodeSearcher
                     }
                 }
             }
-            if (\in_array(\get_class($result), array_keys($pageClasses), true)) {
+            if (in_array($result::class, array_keys($pageClasses), true)) {
                 $ret[$row]['page'] = $result;
-                $fields = $pageClasses[\get_class($result)];
+                $fields = $pageClasses[$result::class];
                 if (!empty($fields)) {
                     if (\is_string($fields)) {
                         $fields = [$fields];
@@ -188,7 +189,7 @@ class NodeSearcher
                             $text = $propertyAccessor->getValue($result, $field);
                             if (false !== mb_strpos($text, $search)) {
                                 $ret[$row]['texts'][] = [
-                                    'class' => \get_class($result),
+                                    'class' => $result::class,
                                     'id' => $result->getId(),
                                     'field' => $field,
                                     'text' => $text,
@@ -201,5 +202,83 @@ class NodeSearcher
         }
 
         return $ret;
+    }
+
+    public function getAllPageClasses(): array
+    {
+        $res =
+            $this
+                ->doctrine
+                ->getRepository(Node::class)
+                ->createQueryBuilder('n')
+                ->select('DISTINCT n.refEntityName')
+                ->getQuery()
+                ->getScalarResult()
+        ;
+
+        if (empty($res)) {
+            return [];
+        }
+
+        $classes = [];
+        foreach ($res as $row) {
+            $class = reset($row);
+            $pageFields = $this->getEntityTextFields($class);
+
+            if (!empty($pageFields)) {
+                $classes[$class] = $pageFields;
+            }
+        }
+
+        return $classes;
+    }
+
+    public function getAllPagePartClasses(): array
+    {
+        $res =
+            $this
+                ->doctrine
+                ->getRepository(PagePartRef::class)
+                ->createQueryBuilder('n')
+                ->select('DISTINCT n.pagePartEntityname')
+                ->getQuery()
+                ->getScalarResult()
+        ;
+
+        if (empty($res)) {
+            return [];
+        }
+
+        $classes = [];
+        foreach ($res as $row) {
+            $class = reset($row);
+            $pagePartFields = $this->getEntityTextFields($class);
+
+            if (!empty($pagePartFields)) {
+                $classes[$class] = $pagePartFields;
+            }
+        }
+
+        return $classes;
+    }
+
+    protected function getEntityTextFields(string $class): array
+    {
+        $textFields = [];
+        $md = $this->doctrine->getClassMetadata($class);
+
+        if ($md) {
+            if (!empty(($fields = $md->fieldMappings))) {
+                foreach ($fields as $name => $fieldData) {
+                    $type = $fieldData['type'] ?? null;
+
+                    if (null !== $type && in_array($type, ['integer', 'string', 'text', 'json', 'blob', 'json_array', 'array', 'simple_array'], true)) {
+                        $textFields[] = $name;
+                    }
+                }
+            }
+        }
+
+        return $textFields;
     }
 }

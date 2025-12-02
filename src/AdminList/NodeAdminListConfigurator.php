@@ -5,6 +5,7 @@ namespace Hgabka\NodeBundle\AdminList;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Hgabka\NodeBundle\Admin\NodeAdmin;
+use Hgabka\NodeBundle\AdminList\FilterType\NodeSearchFilterType;
 use Hgabka\NodeBundle\Controller\NodeAdminController;
 use Hgabka\NodeBundle\Entity\Node;
 use Hgabka\UtilsBundle\AdminList\Configurator\AbstractDoctrineORMAdminListConfigurator;
@@ -127,6 +128,7 @@ class NodeAdminListConfigurator extends AbstractDoctrineORMAdminListConfigurator
     {
         $this
             ->addFilter('title', new StringFilterType('title'), 'hg_node.admin.list.filter.title')
+            ->addFilter('search', new NodeSearchFilterType($this->nodeAdmin->getNodeSearcher()), 'hg_node.admin.list.filter.search')
             ->addFilter('created', new DateFilterType('created'), 'hg_node.admin.list.filter.created_at')
             ->addFilter('updated', new DateFilterType('updated'), 'hg_node.admin.list.filter.updated_at')
             ->addFilter('online', new BooleanFilterType('online'), 'hg_node.admin.list.filter.online');

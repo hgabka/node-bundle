@@ -4,33 +4,25 @@ namespace Hgabka\NodeBundle\Command;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'hgabka:nodes:fix-timestamps', description: 'Updates timestamps for all node translations', hidden: false)]
 class FixTimestampsCommand extends Command
 {
-    protected static $defaultName = 'hgabka:nodes:fix-timestamps';
-
-    /** @var EntityManagerInterface */
-    protected $entityManager;
-
-    /** @var EntityManagerInterface */
-    private $manager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(protected readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
-        $this->entityManager = $entityManager;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName(static::$defaultName)
-            ->setDescription('Update timestamps for all node translations.')
+        $this
             ->setHelp('The <info>hgabka:nodes:fix-timestamps</info> will loop over all node translation entries and update the timestamps for the entries.');
     }
 

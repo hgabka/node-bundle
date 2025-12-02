@@ -10,6 +10,8 @@ parameters:
 services:
     hgabka_node.admin.node:
         class: Hgabka\NodeBundle\Admin\NodeAdmin
+        calls:
+            - [setNodeSearcher, ['@Hgabka\NodeBundle\Search\NodeSearcher']]
         tags:
             - { name: sonata.admin, model_class: Hgabka\NodeBundle\Entity\Node, controller: Hgabka\NodeBundle\Controller\NodeAdminController, manager_type: orm, group: hg_node.group, icon: '<i class="fa fa-sticky-note"></i>', label: hg_node.admin.node.label, label_translator_strategy: 'sonata.admin.label.strategy.underscore', translation_domain: 'messages' }
 
@@ -101,7 +103,7 @@ services:
 
     hgabka_node.log_page_events.subscriber:
         class: Hgabka\NodeBundle\EventListener\LogPageEventsSubscriber
-        arguments: ['@hgabka_utils.logger', '@security.token_storage']
+        arguments: ['@hgabka_utils.logger', '@security.helper']
         tags:
             - { name: kernel.event_subscriber }
 

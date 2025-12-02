@@ -12,14 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UrlReplaceController
 {
-    /**
-     * @var URLHelper
-     */
-    private URL$urlHelper;
-
-    public function __construct(URLHelper $urlHelper)
+    public function __construct(private URLHelper $urlHelper)
     {
-        $this->urlHelper = $urlHelper;
     }
 
     #[Route('/replace', name: 'HgabkaNodeBundle_urlchooser_replace', condition: 'request.isXmlHttpRequest()')]

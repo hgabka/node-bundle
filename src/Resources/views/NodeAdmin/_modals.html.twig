@@ -233,7 +233,7 @@
                             <label for="addpage_title">
                                 {{ 'hg_node.modal.add_subpage.label.title'|trans() }}
                             </label>
-                            <input name="title" type="text" id="addpage_title" class="form-control">
+                            <input name="title" type="text" required id="addpage_title" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="addpage_type">
@@ -341,7 +341,7 @@
 {% if node.nodeTranslations(true) is not empty %}
     {% for translation in node.nodeTranslations(true) %}
         {% if translation.lang != nodeVersion.nodeTranslation.lang %}
-            {% set translationOptions = translationOptions|merge({(translation.lang): translation.id}) %}
+            {% set translationOptions = translationOptions|merge({('wt_kuma_extension.locales.'~translation.lang)|trans: translation.id}) %}
         {% endif %}
     {% endfor %}
 {% endif %}

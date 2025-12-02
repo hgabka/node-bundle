@@ -10,7 +10,7 @@ class URLChooserToLinkTransformer implements DataTransformerInterface
 {
     use URLValidator;
 
-    public function transform($value)
+    public function transform($value): mixed
     {
         if ($this->isEmailAddress($value)) {
             $linkType = URLChooserType::EMAIL;
@@ -26,10 +26,10 @@ class URLChooserToLinkTransformer implements DataTransformerInterface
         ];
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): mixed
     {
         if (empty($value)) {
-            return;
+            return null;
         }
 
         return $value['link_url'];

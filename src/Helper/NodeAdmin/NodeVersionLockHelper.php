@@ -88,14 +88,14 @@ class NodeVersionLockHelper implements ContainerAwareInterface
     protected function createNodeVersionLock(BaseUser $user, NodeTranslation $nodeTranslation, $isPublicVersion)
     {
         $lock = $this->objectManager->getRepository(NodeVersionLock::class)->findOneBy([
-            'owner' => $user->getUsername(),
+            'owner' => $user->getUserIdentifier(),
             'nodeTranslation' => $nodeTranslation,
             'publicVersion' => $isPublicVersion,
         ]);
         if (!$lock) {
             $lock = new NodeVersionLock();
         }
-        $lock->setOwner($user->getUsername());
+        $lock->setOwner($user->getUserIdentifier());
         $lock->setNodeTranslation($nodeTranslation);
         $lock->setPublicVersion($isPublicVersion);
         $lock->setCreatedAt(new \DateTime());

@@ -43,7 +43,7 @@ class NodeTranslation implements EntityInterface
     #[ORM\Column(name: 'url', type: 'string', nullable: true)]
     protected ?string $url = null;
 
-    #[ORM\ManyToOne(targetEntity: NodeVersion::class, fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: NodeVersion::class)]
     #[ORM\JoinColumn(name: 'public_node_version_id', referencedColumnName: 'id')]
     protected ?NodeVersion $publicNodeVersion = null;
 

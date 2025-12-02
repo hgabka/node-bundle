@@ -14,28 +14,13 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 class SlugListener
 {
     /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var ControllerResolverInterface
-     */
-    protected $resolver;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
      * SlugListener constructor.
      */
-    public function __construct(EntityManager $em, ControllerResolverInterface $resolver, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->em = $em;
-        $this->resolver = $resolver;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        protected readonly EntityManager $em,
+        protected readonly ControllerResolverInterface $resolver,
+        protected readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     /**

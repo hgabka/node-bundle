@@ -22,7 +22,7 @@ action:
     duplicate: Másolás
 
 modal:
-    sourcelanguage: modal.sourcelanguage
+    sourcelanguage: Forrás nyelvi verzió
 
 pages:
     copynotavailable: Másolás nem lehetséges
@@ -46,6 +46,10 @@ hg_node:
     title_edit: '"%title%" oldal szerkesztése'
     group: CMS
     form:
+        reset: Alaphelyzet    
+        folder_type:
+            only_structure: Struktúrális oldal (nincs URL)
+            remote_url: Átirányítás (nem struktúrális oldal esetén)
         error: 'Hiba'
         validation_errors: 'Az oldalt nem lehetett elmenteni, mert az űrlap hibákat tartalmaz'
         controller_action:
@@ -78,6 +82,7 @@ hg_node:
         offline.raw: Nem elérhető
         "go_to_draft_version.%url%.raw": Ugrás a <a href="%url%">piszkozat verzióhoz</a>
     admin:
+        back_to_list: Oldalak listája
         node:
             label: CMS oldalak
             list: Adminisztráció
@@ -119,6 +124,7 @@ hg_node:
                 created_at: Létrehozva
                 updated_at: Frissítve
                 online:     Online
+                search:     Oldal tartalom
 
     tab:
         properties:

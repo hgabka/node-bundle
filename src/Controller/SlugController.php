@@ -13,7 +13,7 @@ use Hgabka\NodeBundle\Event\SlugEvent;
 use Hgabka\NodeBundle\Event\SlugSecurityEvent;
 use Hgabka\NodeBundle\Helper\NodeMenu;
 use Hgabka\NodeBundle\Helper\RenderContext;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -27,38 +27,23 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class SlugController extends AbstractController
 {
-    /** @var NodeMenu */
-    protected $nodeMenu;
-
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
-    /** @var ManagerRegistry */
-    protected $doctrine;
-
     /**
      * SlugController constructor.
      */
-    public function __construct(NodeMenu $nodeMenu, EventDispatcherInterface $dispatcher, ManagerRegistry $doctrine)
-    {
-        $this->nodeMenu = $nodeMenu;
-        $this->eventDispatcher = $dispatcher;
-        $this->doctrine = $doctrine;
+    public function __construct(
+        protected readonly NodeMenu $nodeMenu,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly ManagerRegistry $doctrine
+    ) {
     }
 
     /**
      * Handle the page requests.
      *
-     * @param Request $request The request
-     * @param string  $url     The url
-     * @param bool    $preview Show in preview mode
-     *
      * @throws NotFoundHttpException
      * @throws AccessDeniedException
-     *
-     * @return array|Response
      */
-    public function slug(Request $request, $url = null, $preview = false)
+    public function slug(Request $request, ?string $url = null, bool $preview = false): array|Response
     {
         // @var EntityManager $em
         $em = $this->doctrine->getManager();
@@ -95,16 +80,20 @@ class SlugController extends AbstractController
         $eventDispatcher = $this->eventDispatcher;
         $eventDispatcher->dispatch($securityEvent, Events::SLUG_SECURITY);
 
+        $params = [
+            'nodetranslation' => $nodeTranslation,
+            'slug' => $url,
+            'page' => $entity,
+            'resource' => $entity,
+            'nodemenu' => $nodeMenu,
+        ];
+
+        if ($preview) {
+            $params['isPreview'] = $preview;
+        }
         // render page
-        $renderContext = new RenderContext(
-            [
-                'nodetranslation' => $nodeTranslation,
-                'slug' => $url,
-                'page' => $entity,
-                'resource' => $entity,
-                'nodemenu' => $nodeMenu,
-            ]
-        );
+        $renderContext = new RenderContext($params);
+
         if (method_exists($entity, 'getDefaultView')) {
             // @noinspection PhpUndefinedMethodInspection
             $renderContext->setView($entity->getDefaultView());
@@ -131,12 +120,7 @@ class SlugController extends AbstractController
             throw $this->createNotFoundException('No page found for slug ' . $url);
         }
 
-        $template = new Template([]);
-        $template->setTemplate($view);
-        if (empty($template->getOwner())) {
-            $template->setOwner([null, null]);
-        }
-
+        $template = new Template($view);
         $request->attributes->set('_template', $template);
 
         return $renderContext->getArrayCopy();

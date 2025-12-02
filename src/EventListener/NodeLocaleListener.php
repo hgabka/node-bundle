@@ -6,20 +6,12 @@ use Hgabka\UtilsBundle\Helper\HgabkaUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\RouterInterface;
+use Throwable;
 
 class NodeLocaleListener implements EventSubscriberInterface
 {
-    /** @var HgabkaUtils */
-    private $utils;
-
-    /**
-     * @param string          $defaultLocale The default locale
-     * @param RouterInterface $router        The router
-     */
-    public function __construct(HgabkaUtils $hgabkaUtils)
+    public function __construct(private readonly HgabkaUtils $utils)
     {
-        $this->utils = $hgabkaUtils;
     }
 
     public function onKernelRequest(RequestEvent $event)
@@ -27,19 +19,25 @@ class NodeLocaleListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $availableLocales = $this->utils->getAvailableLocales();
         $nodeLocale = $request->getLocale();
-        if (\count($availableLocales) > 1) {
-            if ($request->query->has('nodeLocale')) {
-                $nodeLocale = $request->query->get('nodeLocale');
-            } elseif ($this->session->has('nodeLocale')) {
-                $nodeLocale = $this->session->get('nodeLocale');
+        if (count($availableLocales) > 1) {
+            try {
+                $session = $request->getSession();
+            } catch (Throwable) {
+                $session = null;
             }
 
-            if (empty($nodeLocale) || !\in_array($nodeLocale, $availableLocales, true)) {
+            if ($request->query->has('nodeLocale')) {
+                $nodeLocale = $request->query->get('nodeLocale');
+            } elseif ($session && $session->has('nodeLocale')) {
+                $nodeLocale = $request->getSession()->get('nodeLocale');
+            }
+
+            if (empty($nodeLocale) || !in_array($nodeLocale, $availableLocales, true)) {
                 $nodeLocale = $request->getLocale();
             }
 
-            if ($request->getSession()) {
-                $request->getSession()->set('nodeLocale', $nodeLocale);
+            if ($session) {
+                $session->set('nodeLocale', $nodeLocale);
             }
         }
 
