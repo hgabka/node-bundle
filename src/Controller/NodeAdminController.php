@@ -791,8 +791,10 @@ class NodeAdminController extends CRUDController
         );
     }
 
-    public function editAction(Request $request, int $id): Response
+    public function editAction(Request $request): Response
     {
+        $id = $request->get($this->admin->getIdParameter());
+
         return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $id]);
     }
 
