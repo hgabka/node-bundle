@@ -311,7 +311,7 @@ class NodeRepository extends NestedTreeRepository
         $includeHiddenFromNav = false,
         ?Node $rootNode = null
     ) {
-        $connection = $this->_em->getConnection();
+        $connection = $this->getEntityManager()->getConnection();
         $qb = $connection->createQueryBuilder();
         $databasePlatform = $connection->getDatabasePlatform();
         $createIfStatement = function (
@@ -369,7 +369,7 @@ class NodeRepository extends NestedTreeRepository
         $permissionDef->setAlias('n');
         $qb = $aclNativeHelper->apply($qb, $permissionDef);
 
-        $stmt = $this->_em->getConnection()->prepare($qb->getSQL());
+        $stmt = $this->getEntityManager()->getConnection()->prepare($qb->getSQL());
         $stmt->bindValue(':lang', $lang);
         if (null !== $rootNode) {
             $stmt->bindValue(':left', $rootNode->getLeft());
