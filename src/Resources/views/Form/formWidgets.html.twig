@@ -1,5 +1,5 @@
 {% block urlchooser_widget %}
-    {% apply spaceless %}
+    {% apply hg_spaceless %}
         {% set linkUrl = form.link_url.vars %}
 
         <div id="{{ id }}-urlchooser-widget" class="urlchooser-wrapper" data-chooser-name="{{ full_name }}">
@@ -73,7 +73,7 @@
 {% endblock urlchooser_widget %}
 
 {% block slug_widget %}
-    {% apply spaceless %}
+    {% apply hg_spaceless %}
         <div id="{{ id }}-slug-chooser" class="js-slug-chooser" data-url-prefix="{{ path('_slug', {'url': prefix|default(''), _locale: app.request.attributes.get('nodeLocale')|default(defaultlocale)}) }}" data-reset="{{ reset }}">
             <div class="input-group">
                 <input type="text" name="{{ full_name }}" id="{{ id }}" value="{{ value|default('') }}" class="js-slug-chooser__input form-control">
