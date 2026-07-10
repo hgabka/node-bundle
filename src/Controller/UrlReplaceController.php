@@ -5,7 +5,7 @@ namespace Hgabka\NodeBundle\Controller;
 use Hgabka\NodeBundle\Helper\URLHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class UrlReplaceController.
@@ -21,7 +21,7 @@ class UrlReplaceController
     {
         $response = new JsonResponse();
 
-        $response->setData(['text' => $this->urlHelper->replaceUrl($request->get('text'))]);
+        $response->setData(['text' => $this->urlHelper->replaceUrl(\Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'text'))]);
 
         return $response;
     }

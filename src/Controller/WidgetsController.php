@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * WidgetsController.
@@ -101,7 +101,7 @@ class WidgetsController extends AbstractController
 
         if (\array_key_exists('HgabkaMediaBundle', $allBundles)) {
             $params = ['linkChooser' => 1];
-            $cKEditorFuncNum = $request->get('CKEditorFuncNum');
+            $cKEditorFuncNum = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'CKEditorFuncNum');
             if (null !== $cKEditorFuncNum) {
                 $params['CKEditorFuncNum'] = $cKEditorFuncNum;
             }

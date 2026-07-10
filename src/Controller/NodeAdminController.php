@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -195,7 +195,7 @@ class NodeAdminController extends CRUDController
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
-        $originalLanguage = $request->get('originallanguage');
+        $originalLanguage = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'originallanguage');
         $otherLanguageNodeTranslation = $node->getNodeTranslation($originalLanguage, true);
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
@@ -240,7 +240,7 @@ class NodeAdminController extends CRUDController
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
-        $otherLanguageNodeTranslation = $this->em->getRepository(NodeTranslation::class)->find($request->get('source'));
+        $otherLanguageNodeTranslation = $this->em->getRepository(NodeTranslation::class)->find(\Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'source'));
         $otherLanguageNodeNodeVersion = $otherLanguageNodeTranslation->getPublicNodeVersion();
         $otherLanguagePage = $otherLanguageNodeNodeVersion->getRef($this->em);
         $myLanguagePage = $this->cloneHelper
@@ -319,9 +319,9 @@ class NodeAdminController extends CRUDController
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($request->get('pub_date')) {
+        if (\Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'pub_date')) {
             $date = new \DateTime(
-                $request->get('pub_date') . ' ' . $request->get('pub_time')
+                \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'pub_date') . ' ' . \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'pub_time')
             );
             $this->nodeAdminPublisher->publishLater(
                 $nodeTranslation,
@@ -360,8 +360,8 @@ class NodeAdminController extends CRUDController
         $nodeTranslation = $node->getNodeTranslation($this->locale, true);
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($request->get('unpub_date')) {
-            $date = new \DateTime($request->get('unpub_date') . ' ' . $request->get('unpub_time'));
+        if (\Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'unpub_date')) {
+            $date = new \DateTime(\Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'unpub_date') . ' ' . \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'unpub_time'));
             $this->nodeAdminPublisher->unPublishLater($nodeTranslation, $date);
             $this->addFlash(
                 FlashTypes::SUCCESS,
@@ -413,7 +413,7 @@ class NodeAdminController extends CRUDController
     {
         $this->assertObjectExists($request, true);
 
-        $id = $request->get($this->admin->getIdParameter());
+        $id = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, $this->admin->getIdParameter());
         $this->admin->checkAccess('delete');
 
         $this->init($request);
@@ -497,7 +497,7 @@ class NodeAdminController extends CRUDController
             ->deepCloneAndSave($originalRef);
 
         // set the title
-        $title = $request->get('title');
+        $title = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'title');
         if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
@@ -553,7 +553,7 @@ class NodeAdminController extends CRUDController
 
         $this->denyAccessUnlessGranted(PermissionMap::PERMISSION_EDIT, $node);
 
-        $version = $request->get('version');
+        $version = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'version');
 
         if (empty($version) || !is_numeric($version)) {
             throw new InvalidArgumentException('No version was specified');
@@ -738,8 +738,8 @@ class NodeAdminController extends CRUDController
         $this->init($request);
         $this->admin->checkAccess('reorder');
         $nodes = [];
-        $nodeIds = $request->get('nodes');
-        $changeParents = $request->get('parent');
+        $nodeIds = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'nodes');
+        $changeParents = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'parent');
 
         foreach ($nodeIds as $id) {
             // @var Node $node
@@ -793,7 +793,7 @@ class NodeAdminController extends CRUDController
 
     public function editAction(Request $request): Response
     {
-        $id = $request->get($this->admin->getIdParameter());
+        $id = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, $this->admin->getIdParameter());
 
         return $this->redirectToRoute('HgabkaNodeBundle_nodes_edit', ['id' => $id]);
     }
@@ -838,7 +838,7 @@ class NodeAdminController extends CRUDController
         // @var HasNodeInterface $page
         $page = null;
         $draft = ('draft' === $subaction);
-        $saveAsDraft = $request->get('saveasdraft');
+        $saveAsDraft = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'saveasdraft');
         if ((!$draft && !empty($saveAsDraft)) || ($draft && null === $draftNodeVersion)) {
             // Create a new draft version
             $draft = true;
@@ -1218,7 +1218,7 @@ class NodeAdminController extends CRUDController
         // @var HasNodeInterface $newPage
         $newPage = new $type();
 
-        $title = $request->get('title');
+        $title = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'title');
         if (\is_string($title) && !empty($title)) {
             $newPage->setTitle($title);
         } else {
@@ -1238,7 +1238,7 @@ class NodeAdminController extends CRUDController
      */
     private function validatePageType($request)
     {
-        $type = $request->get('type');
+        $type = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'type');
 
         if (empty($type)) {
             throw new InvalidArgumentException('Please specify a type of page you want to create');

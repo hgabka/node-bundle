@@ -13,7 +13,6 @@ use Hgabka\NodeBundle\Event\SlugEvent;
 use Hgabka\NodeBundle\Event\SlugSecurityEvent;
 use Hgabka\NodeBundle\Helper\NodeMenu;
 use Hgabka\NodeBundle\Helper\RenderContext;
-use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -43,7 +42,7 @@ class SlugController extends AbstractController
      * @throws AccessDeniedException
      *
      */
-    public function slug(Request $request, ?string $url = null, bool $preview = false): array|Response
+    public function slug(Request $request, ?string $url = null, bool $preview = false): Response
     {
         // @var EntityManager $em
         $em = $this->doctrine->getManager();
@@ -120,10 +119,7 @@ class SlugController extends AbstractController
             throw $this->createNotFoundException('No page found for slug ' . $url);
         }
 
-        $template = new Template($view);
-        $request->attributes->set('_template', $template);
-
-        return $renderContext->getArrayCopy();
+        return $this->render($view, $renderContext->getArrayCopy());
     }
 
     /**
@@ -136,7 +132,7 @@ class SlugController extends AbstractController
         // @var HasNodeInterface $entity
         $entity = null;
         if ($preview) {
-            $version = $request->get('version');
+            $version = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'version');
             if (!empty($version) && is_numeric($version)) {
                 $nodeVersion = $em->getRepository(NodeVersion::class)->find($version);
                 if (null !== $nodeVersion) {

@@ -4,7 +4,6 @@ namespace Hgabka\NodeBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Hgabka\NodeBundle\Entity\NodeVersion;
-use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Twig\Environment;
@@ -33,8 +32,8 @@ class RenderContextListener
             $nodeMenu = $request->attributes->get('_nodeMenu');
             $parameters = $request->attributes->get('_renderContext');
 
-            if (true === $request->get('preview')) {
-                $version = $request->get('version');
+            if (true === \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'preview')) {
+                $version = \Hgabka\UtilsBundle\Helper\RequestHelper::get($request, 'version');
                 if (!empty($version) && is_numeric($version)) {
                     $nodeVersion = $this->em->getRepository(NodeVersion::class)->find($version);
                     if (null !== $nodeVersion) {
@@ -62,13 +61,7 @@ class RenderContextListener
                 $parameters = array_merge($parameters, $response);
             }
 
-            // set the rendercontext with all params as response, plus the template in the request attribs
-            // the SensioFrameworkExtraBundle kernel.view will handle everything else
-            $event->setControllerResult((array) $parameters);
-
-            $template = new Template($entity->getDefaultView());
-
-            $request->attributes->set('_template', $template);
+            $event->setResponse(new Response($this->templating->render($entity->getDefaultView(), $parameters)));
         }
     }
 }
