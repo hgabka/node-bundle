@@ -117,7 +117,7 @@ class URLHelper
                     $mediaId = $match[3];
 
                     foreach ($map as $mediaItem) {
-                        if ($mediaItem['id'] === $mediaId) {
+                        if ((int) $mediaItem['id'] === (int) $mediaId) {
                             $mediaFound = true;
                             $text = str_replace($fullTag, $mediaItem['url'], $text);
                         }
