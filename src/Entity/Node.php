@@ -43,7 +43,7 @@ class Node implements GedmoNode, EntityInterface
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    public ?int $id;
+    public ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id')]
@@ -307,6 +307,14 @@ class Node implements GedmoNode, EntityInterface
     }
 
     public function getLeft(): ?int
+    {
+        return $this->lft;
+    }
+
+    /**
+     * Alias of getLeft(); Doctrine's in-memory Criteria (e.g. getChildrenSorted()) looks for "get<Field>".
+     */
+    public function getLft(): ?int
     {
         return $this->lft;
     }

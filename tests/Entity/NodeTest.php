@@ -36,6 +36,14 @@ class NodeTest extends TestCase
         $this->assertSame(NodeAdminType::class, $node->getDefaultAdminType());
     }
 
+    public function testAFreshNodeCanBeInspectedBeforeItIsPersisted(): void
+    {
+        $node = new Node();
+
+        $this->assertNull($node->getId());
+        $this->assertSame('node , refEntityName: ', (string) $node);
+    }
+
     public function testToString(): void
     {
         $node = $this->node(5)->setRef(new ContentPage());
@@ -108,6 +116,21 @@ class NodeTest extends TestCase
         $parent->addNode($second);
 
         $this->assertSame([$second, $first], array_values($parent->getChildrenSorted(['id' => 'DESC'])->toArray()));
+    }
+
+    public function testChildrenAreSortedByTheLeftValueByDefault(): void
+    {
+        $parent = $this->node(1);
+        $first = $this->node(2);
+        $second = $this->node(3);
+        foreach ([[$second, 20], [$first, 10]] as [$child, $left]) {
+            (new \ReflectionProperty(Node::class, 'lft'))->setValue($child, $left);
+            $parent->addNode($child);
+        }
+
+        $this->assertSame([$first, $second], array_values($parent->getChildrenSorted()->toArray()));
+        $this->assertSame(10, $first->getLeft());
+        $this->assertSame(10, $first->getLft());
     }
 
     public function testSettersAreFluent(): void
