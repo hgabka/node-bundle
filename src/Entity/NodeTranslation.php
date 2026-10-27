@@ -4,7 +4,7 @@ namespace Hgabka\NodeBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Hgabka\NodeBundle\Form\NodeTranslationAdminType;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
@@ -246,12 +246,12 @@ class NodeTranslation implements EntityInterface
     }
 
     /**
-     * @param EntityManager $em   The entity manager
-     * @param string        $type The type
+     * @param EntityManagerInterface $em   The entity manager
+     * @param string                 $type The type
      *
      * @return null|object
      */
-    public function getRef(EntityManager $em, string $type = 'public'): mixed
+    public function getRef(EntityManagerInterface $em, string $type = 'public'): mixed
     {
         $nodeVersion = $this->getNodeVersion($type);
         if ($nodeVersion) {

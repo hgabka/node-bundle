@@ -68,7 +68,7 @@ abstract class AbstractPage implements PageInterface
     /**
      * @param mixed $id
      *
-     * @return AbstractPage
+     * @return static
      */
     public function setId(?int $id): self
     {
@@ -82,7 +82,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @param string $title
      *
-     * @return AbstractPage
+     * @return static
      */
     public function setTitle(?string $title): self
     {
@@ -106,7 +106,7 @@ abstract class AbstractPage implements PageInterface
      *
      * @param string $pageTitle
      *
-     * @return AbstractPage
+     * @return static
      */
     public function setPageTitle(?string $pageTitle): self
     {
@@ -138,7 +138,7 @@ abstract class AbstractPage implements PageInterface
     }
 
     /**
-     * @return AbstractPage
+     * @return static
      */
     public function setParent(?HasNodeInterface $parent): self
     {
