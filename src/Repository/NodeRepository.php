@@ -45,15 +45,15 @@ class NodeRepository extends NestedTreeRepository
     }
 
     /**
-     * @param null|int    $parentId                      The parent node id
-     * @param string      $lang                          The locale
-     * @param bool        $includeHiddenFromNav          Include nodes hidden from navigation or not
-     * @param bool        $includeHiddenWithInternalName
-     * @param null|Node   $rootNode                      Root node of the current tree
-     * @param null|string $refEntityName
-     * @param mixed       $includeOffline
+     * @param null|false|int $parentId                      The parent node id (false: no parent filter)
+     * @param string         $lang                          The locale
+     * @param bool           $includeHiddenFromNav          Include nodes hidden from navigation or not
+     * @param bool           $includeHiddenWithInternalName
+     * @param null|Node      $rootNode                      Root node of the current tree
+     * @param null|string    $refEntityName
+     * @param mixed          $includeOffline
      *
-     * @return Node[]
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getChildNodesQueryBuilder(
         $parentId,
