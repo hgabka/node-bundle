@@ -15,6 +15,10 @@ class NodeLocaleListener implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event)
     {
         $request = $event->getRequest();
+        if ($request->attributes->getBoolean('_stateless')) {
+            return;
+        }
+        
         $availableLocales = $this->utils->getAvailableLocales();
         $nodeLocale = $request->getLocale();
         if (count($availableLocales) > 1) {
