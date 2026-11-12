@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Hgabka\NodeBundle\Form\NodeTranslationAdminType;
 use Hgabka\NodeBundle\Repository\NodeTranslationRepository;
 use Hgabka\UtilsBundle\Entity\EntityInterface;
+use SortDirection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NodeTranslationRepository::class)]
@@ -48,7 +49,7 @@ class NodeTranslation implements EntityInterface
     protected ?NodeVersion $publicNodeVersion = null;
 
     #[ORM\OneToMany(targetEntity: NodeVersion::class, mappedBy: 'nodeTranslation')]
-    #[ORM\OrderBy(['created' => 'ASC'])]
+    #[ORM\OrderBy(['created' => SortDirection::Ascending])]
     #[Assert\Valid]
     protected Collection|array|null $nodeVersions = null;
 

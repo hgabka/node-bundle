@@ -14,6 +14,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "doctrine/orm": "^3.7",
         "symfony/framework-bundle": "^7.0|^8.0",
         "hgabka/utils-bundle": "^7.1|^8.0",
         "hgabka/pagepart-bundle": "^7.1|^8.0",
