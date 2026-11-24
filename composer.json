@@ -1,6 +1,6 @@
 {
     "name": "hgabka/node-bundle",
-    "type": "Symfony bundle",
+    "type": "symfony-bundle",
     "description": "Node bundle",
     "keywords": [
     ],
